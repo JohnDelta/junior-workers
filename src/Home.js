@@ -16,12 +16,17 @@ class Home extends React.Component{
         </div>
         
         <div className="main">
-          <h1 className="title">Main title of page</h1>
+          <h1 className="title">
+            <span>Your professional</span>
+            <span>career starts</span>
+            <span>here</span>
+          </h1>
           <img className="image" src="" />
           <button className="join-button">Join our community</button>
           <div className="main-circle" />
         </div>
 
+        <div className="info"></div>
       </div>
     );
   }
