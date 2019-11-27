@@ -7,7 +7,10 @@ class Home extends React.Component{
       <div className="Home">
         
         <div className="header">
-          <h1 className="title">Title</h1>
+          <div className="title">
+            <span>Junior</span>
+            <span style={{"marginLeft":"15px"}}>Workers</span>
+          </div>
           <button className="login-button">Login</button>
           <div className="header-circle" />
         </div>
@@ -15,7 +18,7 @@ class Home extends React.Component{
         <div className="main">
           <h1 className="title">Main title of page</h1>
           <img className="image" src="" />
-          <button className="join-button">Join us</button>
+          <button className="join-button">Join our community</button>
           <div className="main-circle" />
         </div>
 
