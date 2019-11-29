@@ -10,24 +10,111 @@
     flex-direction: column;
 }
 
-.header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    min-height: 18vh;
-    margin: 0px 20px;
+/*LOGO - START*/
+.logo-circle {
+    width: 250px;
+    height: 250px;
+    z-index: 90;
+    background-color: #D0321E;
+    border-radius: 50%;
+    padding: 250px;
+    position: fixed;
+    top: -300px;
+    left: -170px;
 }
-.header .title {
-    display: flex;
-    flex-direction: column;
-}
-.header .title span {
+.title1 , .title2 {
+    z-index: 100;
+    position: fixed;
     font-family: 'Fredoka One', cursive;
-    font-size: 46px;
+    font-size: 36px;
+    color: #ffffff;
+    top: 100px;
+    left: 50px;
+    text-align: center;
+}
+.title1 {
+    background-color: #ffffff;
+    color: #D0321E;
+    width: 160px;
+    padding: 6px;
+    top: 30px;
+    left: 30px;
+    border-radius: 14px;
+}
+@media screen and (min-width: 768px) {
+    .title1, .title2 {
+        font-size: 42px;
+    }
+    .logo-circle {
+        top: -290px;
+        left: -160px;
+    }
+}
+@media screen and (min-width: 1000px) {
+    .title1, .title2 {
+        font-size: 46px;
+    }
+    .logo-circle {
+        top: -280px;
+        left: -150px;
+    }
+}
+/*LOGO - END*/
+
+/*JOIN - START*/
+.join-circle {
+    position: fixed;
+    width: 450px;
+    height: 450px;
+    z-index: 90;
+    background-color: #428438;
+    border-radius: 50%;
+    bottom: -290px;
+    right: -200px;
+}
+.join-button {
+    position: fixed;
+    bottom: 20px;
+    right: 0px;
+    width: 210px;
+    z-index: 100;
+    border: none;
+    background-color: transparent;
+    font-size: 28px;
+    font-family: 'Fredoka One', cursive;
+    cursor: pointer;
     color: #ffffff;
 }
-.header .login-button {
+@media screen and (min-width: 768px) {
+    .join-circle {
+        bottom: -150px;
+        right: -150px;
+    }
+    .join-button {
+        font-size: 32px;
+        bottom: 80px;
+        right: 20px;
+    }
+}
+@media screen and (min-width: 1000px) {
+    .join-circle {
+        bottom: -100px;
+        right: -100px;
+    }
+    .join-button {
+        font-size: 36px;
+        bottom: 90px;
+        right: 30px;
+    }
+}
+/*JOIN - END*/
+
+/*LOGIN - START*/
+.login-button {
+    position: fixed;
+    z-index: 100;
+    top: 30px;
+    right: 30px;
     width: 100px;
     height: 100px;
     font-family: 'Fredoka One', cursive;
@@ -39,24 +126,17 @@
     align-self: center;
     color: #ffffff;
 }
-.header-circle {
-    width: 450px;
-    height: 450px;
-    z-index: -10;
-    background-color: #D0321E;
-    border-radius: 50%;
-    padding: 250px;
-    position: absolute;
-    top: -250px;
-    left: -150px;
-}
+/*LOGIN - END*/
 
-
+/*MAIN - START*/
 .main {
-    min-height: 82vh;
+    margin-top:50px;
+    margin-bottom:10%;
+    height: 100vh;
+    min-height: 770px;
     display: grid;
-    grid-template-rows: 50% 50%;
-    grid-template-columns: 55% 45%;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 0.55fr 0.45fr;
     justify-content: space-around;
     justify-items: center;
     align-items: center;
@@ -67,68 +147,82 @@
     max-width: 650px;
     max-height: 650px;
     background-color: transparent;
-    grid-row: 1/3;
-    grid-column: 1/2;
-    justify-self: end;
-}
-.main .join-button {
     grid-row: 2/3;
-    grid-column: 2/3;
-    align-self: end;
-    justify-self: end;
-    width: 200px;
-    margin: 0px 20px 20px 0px;
-    border: none;
-    background-color: transparent;
-    font-size: 36px;
-    font-family: 'Fredoka One', cursive;
-    cursor: pointer;
-    color: #ffffff;
+    grid-column: 1/3;
+    justify-self: start;
+    margin-left: 10px;
 }
 .main .title {
     grid-row: 1/2;
-    grid-column: 2/3;
-    justify-self: start;
+    grid-column: 1/3;
+    align-self: end;
     color: #fff1c1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .main .title span {
-    font-size: 55px;
+    font-size: 40px;
     display: block;
     text-align: center;
 }
-.main .title i {
-    margin-top: 4px;
-    border: 6px solid #fff1c1;
-    border-radius: 50%;
-    padding: 3px;
-    color: #fff1c1;
-    text-decoration: none;
+.search-bar {
+    margin-top: 10px;
+    border: 3px solid #fff1c1;
+    border-radius: 6px;
+    padding: 4px;
+    font-size: 22px;
 }
-.main-circle {
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    z-index: -10;
-    background-color: #428438;
-    border-radius: 50%;
-    bottom: -250px;
-    right: -150px;
+@media screen and (min-width: 768px) {
+    .main .image {
+        grid-row: 1/3;
+        grid-column: 1/2;
+        justify-self: end;
+        margin-left: 0px;
+    }
+    .main .title {
+        grid-row: 1/2;
+        grid-column: 2/3;
+        justify-self: start;
+        align-self: end;
+    }
+    .main .title span {
+        font-size: 46px;
+    }
 }
+@media screen and (min-width: 1000px) {
+    .main .image {
+        grid-row: 1/3;
+        grid-column: 1/2;
+        justify-self: end;
+    }
+    .main .title {
+        grid-row: 1/2;
+        grid-column: 2/3;
+        justify-self: start;
+        align-self: end;
+    }
+    .main .title span {
+        font-size: 55px;
+    }
+}
+/*MAIN - END*/
 
+/*INFO - START*/
 .infos {
-    margin-top: 18vh;
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 100%;
     justify-content: center;
     justify-items: center;
     row-gap: 100px;
 }
 .infos-title {
-    grid-column: 1/3;
-    font-size: 45px;
+    grid-column: 1/2;
+    font-size: 35px;
     color: #fff1c1;
-    width: 50%;
-    justify-self: start;
+    width: 80%;
+    justify-self: center;
     margin-left: 40px;
 }
 .info {
@@ -141,7 +235,7 @@
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background-color: #D0321E;
+    background-color: #428438;
     color: #ffffff;
     font-size: 36px;
     display: flex;
@@ -150,6 +244,12 @@
     font-family: 'Fredoka One', cursive;
     text-align: center;
 }
+.info:nth-child(odd) .info-title {
+    background-color: #D0321E;
+}
+.info:nth-child(even) .info-title {
+    background-color: #428438;
+}
 .info-uses {
     display: flex;
     flex-direction: column;
@@ -157,21 +257,57 @@
     align-items: center;
 }
 .info-use {
-    color: #ffffff;
-    width: 100%;
-    font-size: 36px;
+    color: #000000;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    font-size: 28px;
     margin: 20px 0px 20px 0px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
 }
-.info-use i {
-    margin-right: 8px;
-    color: #1E89D0;
+@media screen and (min-width: 768px) {
+    .infos-title {
+        grid-column: 1/3;
+        font-size: 40px;
+        width: 70%;
+    }
+    .infos {
+        display: grid;
+        grid-template-columns: 40% 40%;
+        justify-content: center;
+        justify-items: center;
+        row-gap: 100px;
+    }
 }
+@media screen and (min-width: 1000px) {
+    .infos-title {
+        font-size: 45px;
+        width: 50%;
+    }
+}
+/*INFO - END*/
 
+/*FOOTER - START*/
 .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 18vh;
-    height: 10vh;
+    height: 50px;
     background-color: #000000;
+    color: #ffffff;
+    font-size: 18px;
+    font-family: monospace;
 }
+.footer a {
+    margin-left: 6px;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 900;
+}
+/*FOOTER - END*/
