@@ -1,0 +1,153 @@
+/*JOIN - START*/
+.join-circle {
+    position: fixed;
+    width: 420px;
+    height: 420px;
+    z-index: 90;
+    background-color: #428438;
+    border-radius: 50%;
+    bottom: -200px;
+    right: -200px;
+    transition-duration: 0.3s;
+}
+.join-button {
+    position: fixed;
+    bottom: -20px;
+    right: -20px;
+    width: 230px;
+    height: 230px;
+    z-index: 100;
+    border: none;
+    background-color: transparent;
+    font-size: 28px;
+    font-family: 'Fredoka One', cursive;
+    cursor: pointer;
+    color: #ffffff;
+    border-radius: 50%;
+    transition-duration: 0.3s;
+    outline: none;
+}
+.join-button:hover ~.join-circle {
+    transform: scale(1.1);
+}
+.join-button:hover {
+    transform: scale(1.1);
+}
+.join {
+    align-self: center;
+    width: 100vw;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    z-index: 80;
+    display: none;
+}
+.join-form {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-around;
+    align-items: start;
+    padding: 10px;
+    row-gap: 20px;
+    column-gap: 30px;
+    margin-top: 18vh;
+}
+.join-section {
+    grid-column: 1/3;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-around;
+    align-items: start;
+}
+.join-title-label {
+    font-size: 22px;
+    grid-column: 1/3;
+    border-bottom: 3px solid #ffffff;
+    color: #ffffff;
+    margin-bottom: 24px;
+}
+.join-input-text {
+    outline: none;
+    padding-left: 5px;
+    grid-column: 2/3;
+    font-size: 20px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+}
+.join-label {
+    grid-column: 1/3;
+    color: #ffffff;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+.join-submit {
+    margin: 20px 0px 40px 0px;
+    grid-column: 1/3;
+    width: 100%;
+    border: none;
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 22px;
+    border-radius: 10px;
+    padding: 4px;
+    font-family: 'Fredoka One', cursive;
+    letter-spacing: 1px;
+    cursor: pointer;
+    outline: none;
+    transition-duration: 0.3s;
+}
+.join-submit:hover {
+    transform: scale(1.05);
+}
+.join-message {
+    font-size: 32px;
+    color: #ffffff;
+    justify-self: center;
+    grid-column: 1/3;
+}
+@media screen and (min-width: 768px) {
+    .join-circle {
+        bottom: -180px;
+        right: -180px;
+    }
+    .join-button {
+        font-size: 32px;
+        bottom: -10px;
+        right: -10px;
+    }
+    .join-form {
+        margin: 0px;
+    }
+    .join-section {
+        grid-column: auto;
+    }
+    .join-submit {
+        width: 40%;
+    }
+}
+@media screen and (min-width: 1000px) {
+    .join-circle {
+        bottom: -150px;
+        right: -150px;
+    }
+    .join-button {
+        font-size: 36px;
+        bottom: 0px;
+        right: 0px;
+    }
+}
+.join-button-active {
+    font-size: 52px;
+    bottom: -55px;
+    right: -55px;
+}
+.join-circle-active {
+    width: 350px;
+    height: 350px;
+    bottom: -200px;
+    right: -200px;
+}
+/*JOIN - END*/

@@ -1,49 +1,56 @@
 import React from 'react';
 import './Home.css';
+import Login from './Login.js';
+import Join from './Join.js';
 
 class Home extends React.Component{
   constructor() {
     super();
     this.state = {
-      loginButtonText : "Login",
-      loginError : "",
+      toggleLoginFlag: false,
+      loginButtonText: "Login",
+      toggleJoinFlag: false,
       joinButtonText: "Join our community",
       joinError : ""
     };
     this.onClickLoginHandle = this.onClickLoginHandle.bind(this);
-    this.onClickJoinHangle = this.onClickJoinHangle.bind(this);
+    this.onClickJoinHandle = this.onClickJoinHandle.bind(this);
   }
 
-  onClickLoginHandle(e) {
-    let loginForm = document.querySelector(".login");
-    if(loginForm.style.display === "flex") {
-      loginForm.style.display = "none";
-    } else {
-      loginForm.style.display = "flex";
+  onClickLoginHandle() {
+    // if the join panel is open, close it
+    if(this.state.joinButtonText === "X") {
+      this.onClickJoinHandle();
     }
-
+    // toggle login form
+    this.setState({
+      toggleLoginFlag: !this.state.toggleLoginFlag
+    });
+    // change text of login button
     let loginButton = document.querySelector(".login-button");
     if(this.state.loginButtonText === "Login") {
-      this.setState({
+    this.setState({
         loginButtonText: "X"
-      });
-      loginButton.classList.add("login-button-active");
+    });
+    loginButton.classList.add("login-button-active");
     } else {
-      this.setState({
+    this.setState({
         loginButtonText: "Login"
-      });
-      loginButton.classList.remove("login-button-active");
+    });
+    loginButton.classList.remove("login-button-active");
     }
   }
 
-  onClickJoinHangle(e) {
-    let joinForm = document.querySelector(".join");
-    if(joinForm.style.display === "flex") {
-      joinForm.style.display = "none";
-    } else {
-      joinForm.style.display = "flex";
+  onClickJoinHandle() {
+    //if the login panel is open, close it
+    if(this.state.loginButtonText === "X") {
+      this.onClickLoginHandle();
     }
-
+    // toggle join form
+    this.setState({
+      toggleJoinFlag: !this.state.toggleJoinFlag
+    });
+    // change text of join button
     let joinButton = document.querySelector(".join-button");
     let joinCircle = document.querySelector(".join-circle");
     if(this.state.joinButtonText === "Join our community") {
@@ -64,6 +71,8 @@ class Home extends React.Component{
   render() {
     return(
       <div className="Home">
+
+        <img id="bg" className="background" src={require('./images/backgroundBig.jpg')} />
         
         <div className="logo">
           <div className="title1">Junior</div>
@@ -71,36 +80,17 @@ class Home extends React.Component{
           <div className="logo-circle" />
         </div>
 
-        <button className="join-button" onClick={this.onClickJoinHangle} value="join">
+        <button className="join-button" onClick={this.onClickJoinHandle} value="join">
           {this.state.joinButtonText}
         </button>
         <div className="join-circle" />
-        <div className="join">
-          <form className="join-form">
-            <div className="join-error">{this.state.joinError}</div>
-            <div className="join-label">Username</div>
-            <input className="join-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
-            <div className="join-label">Password</div>
-            <input className="join-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
-            <button className="join-submit">Create account</button>
-          </form>
-        </div>
+        <Join toggleJoinFlag={this.state.toggleJoinFlag} />
+        
 
         <button className="login-button" onClick={this.onClickLoginHandle} value="login">
           {this.state.loginButtonText}
         </button>
-        <div className="login">
-          <form className="login-form">
-            <div className="login-error">{this.state.loginError}</div>
-            <div className="login-label">Username</div>
-            <div className="login-input-before fa fa-user" />
-            <input className="login-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
-            <div className="login-label">Password</div>
-            <div className="login-input-before fa fa-lock" />
-            <input className="login-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
-            <button className="login-submit">Sign in</button>
-          </form>
-        </div>
+        <Login toggleLoginFlag={this.state.toggleLoginFlag} />
         
         <div className="main">
           <h1 className="title">
@@ -109,7 +99,7 @@ class Home extends React.Component{
             <span>here</span>
             <input className="search-bar" type="text" placeholder="type something..." />
           </h1>
-          <img className="image" src={require(`./images/background_image.png`)} />
+          <img className="image" src={require(`./images/main_image.png`)} />
         </div>
 
         <div className="infos" id="infos">
