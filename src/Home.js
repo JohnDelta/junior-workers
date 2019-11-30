@@ -2,6 +2,37 @@ import React from 'react';
 import './Home.css';
 
 class Home extends React.Component{
+  constructor() {
+    super();
+    this.state = {
+      loginButtonText : "Login",
+      loginError : ""
+    };
+    this.onClickLoginHandle = this.onClickLoginHandle.bind(this);
+  }
+
+  onClickLoginHandle(e) {
+    let loginForm = document.querySelector(".login");
+    if(loginForm.style.display === "flex") {
+      loginForm.style.display = "none";
+    } else {
+      loginForm.style.display = "flex";
+    }
+
+    let loginButton = document.querySelector(".login-button");
+    if(this.state.loginButtonText === "Login") {
+      this.setState({
+        loginButtonText: "X"
+      });
+      loginButton.style.fontSize = "32px";
+    } else {
+      this.setState({
+        loginButtonText: "Login"
+      });
+      loginButton.style.fontSize = "22px";
+    }
+  }
+
   render() {
     return(
       <div className="Home">
@@ -17,8 +48,20 @@ class Home extends React.Component{
           <div className="join-circle" />
         </div>
 
+        <button className="login-button" onClick={this.onClickLoginHandle} value="login">
+          {this.state.loginButtonText}
+        </button>
         <div className="login">
-          <button className="login-button">Login</button>
+          <form className="login-form">
+            <div className="login-error">{this.state.loginError}</div>
+            <div className="login-label">Username</div>
+            <div className="login-input-before fa fa-user" />
+            <input className="login-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
+            <div className="login-label">Password</div>
+            <div className="login-input-before fa fa-lock" />
+            <input className="login-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
+            <button className="login-submit">Sign in</button>
+          </form>
         </div>
         
         <div className="main">
