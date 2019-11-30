@@ -6,9 +6,12 @@ class Home extends React.Component{
     super();
     this.state = {
       loginButtonText : "Login",
-      loginError : ""
+      loginError : "",
+      joinButtonText: "Join our community",
+      joinError : ""
     };
     this.onClickLoginHandle = this.onClickLoginHandle.bind(this);
+    this.onClickJoinHangle = this.onClickJoinHangle.bind(this);
   }
 
   onClickLoginHandle(e) {
@@ -24,12 +27,37 @@ class Home extends React.Component{
       this.setState({
         loginButtonText: "X"
       });
-      loginButton.style.fontSize = "32px";
+      loginButton.classList.add("login-button-active");
     } else {
       this.setState({
         loginButtonText: "Login"
       });
-      loginButton.style.fontSize = "22px";
+      loginButton.classList.remove("login-button-active");
+    }
+  }
+
+  onClickJoinHangle(e) {
+    let joinForm = document.querySelector(".join");
+    if(joinForm.style.display === "flex") {
+      joinForm.style.display = "none";
+    } else {
+      joinForm.style.display = "flex";
+    }
+
+    let joinButton = document.querySelector(".join-button");
+    let joinCircle = document.querySelector(".join-circle");
+    if(this.state.joinButtonText === "Join our community") {
+      this.setState({
+        joinButtonText: "X"
+      });
+      joinButton.classList.add("join-button-active");
+      joinCircle.classList.add("join-circle-active");
+    } else {
+      this.setState({
+        joinButtonText: "Join our community"
+      });
+      joinButton.classList.remove("join-button-active");
+      joinCircle.classList.remove("join-circle-active");
     }
   }
 
@@ -43,9 +71,19 @@ class Home extends React.Component{
           <div className="logo-circle" />
         </div>
 
+        <button className="join-button" onClick={this.onClickJoinHangle} value="join">
+          {this.state.joinButtonText}
+        </button>
+        <div className="join-circle" />
         <div className="join">
-          <button className="join-button">Join our community</button>
-          <div className="join-circle" />
+          <form className="join-form">
+            <div className="join-error">{this.state.joinError}</div>
+            <div className="join-label">Username</div>
+            <input className="join-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
+            <div className="join-label">Password</div>
+            <input className="join-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
+            <button className="join-submit">Create account</button>
+          </form>
         </div>
 
         <button className="login-button" onClick={this.onClickLoginHandle} value="login">

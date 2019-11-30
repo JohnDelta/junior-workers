@@ -71,14 +71,16 @@
     z-index: 90;
     background-color: #428438;
     border-radius: 50%;
-    bottom: -290px;
+    bottom: -200px;
     right: -200px;
+    transition-duration: 0.3s;
 }
 .join-button {
     position: fixed;
-    bottom: 20px;
-    right: 0px;
-    width: 210px;
+    bottom: -20px;
+    right: -20px;
+    width: 230px;
+    height: 230px;
     z-index: 100;
     border: none;
     background-color: transparent;
@@ -86,28 +88,106 @@
     font-family: 'Fredoka One', cursive;
     cursor: pointer;
     color: #ffffff;
+    border-radius: 50%;
+    transition-duration: 0.3s;
+    outline: none;
+}
+.join-button:hover ~.join-circle {
+    transform: scale(1.1);
+}
+.join-button:hover {
+    transform: scale(1.1);
+}
+.join {
+    align-self: center;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    z-index: 80;
+    display: none;
+}
+.join-form {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+.join-input-text {
+    outline: none;
+    padding-left: 3px;
+    grid-column: 2/3;
+    font-size: 26px;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+}
+.join-label {
+    grid-column: 1/3;
+    color: #ffffff;
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+.join-submit {
+    margin-top: 20px;
+    grid-column: 1/3;
+    width: 60%;
+    border: none;
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 28px;
+    border-radius: 10px;
+    padding: 4px;
+    font-family: 'Fredoka One', cursive;
+    letter-spacing: 1px;
+    cursor: pointer;
+    outline: none;
+    transition-duration: 0.3s;
+}
+.join-submit:hover {
+    transform: scale(1.05);
+}
+.join-error {
+    font-size: 32px;
+    color: #D0321E;
+    justify-self: center;
+    grid-column: 1/3;
 }
 @media screen and (min-width: 768px) {
+    .join-circle {
+        bottom: -180px;
+        right: -180px;
+    }
+    .join-button {
+        font-size: 32px;
+        bottom: -10px;
+        right: -10px;
+    }
+}
+@media screen and (min-width: 1000px) {
     .join-circle {
         bottom: -150px;
         right: -150px;
     }
     .join-button {
-        font-size: 32px;
-        bottom: 80px;
-        right: 20px;
+        font-size: 36px;
+        bottom: 0px;
+        right: 0px;
     }
 }
-@media screen and (min-width: 1000px) {
-    .join-circle {
-        bottom: -100px;
-        right: -100px;
-    }
-    .join-button {
-        font-size: 36px;
-        bottom: 90px;
-        right: 30px;
-    }
+.join-button-active {
+    font-size: 52px;
+    bottom: -55px;
+    right: -55px;
+}
+.join-circle-active {
+    width: 350px;
+    height: 350px;
+    bottom: -200px;
+    right: -200px;
 }
 /*JOIN - END*/
 
@@ -127,6 +207,7 @@
     grid-template-columns: auto auto;
     justify-content: center;
     align-items: center;
+    padding: 10px;
 }
 .login-input-text {
     outline: none;
@@ -175,6 +256,10 @@
     align-self: center;
     color: #ffffff;
     outline: none;
+    transition-duration: 0.3s;
+}
+.login-button:hover {
+    transform: scale(1.1);
 }
 .login-submit {
     margin-top: 20px;
@@ -190,12 +275,19 @@
     letter-spacing: 1px;
     cursor: pointer;
     outline: none;
+    transition-duration: 0.3s;
+}
+.login-submit:hover {
+    transform: scale(1.05);
 }
 .login-error {
     font-size: 32px;
     color: #D0321E;
     justify-self: center;
     grid-column: 1/3;
+}
+.login-button-active {
+    font-size: 32px;
 }
 /*LOGIN - END*/
 
@@ -232,6 +324,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    pointer-events: none;
 }
 .main .title span {
     font-size: 40px;
