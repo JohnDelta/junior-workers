@@ -33,8 +33,14 @@ $user->lastname = $data->lastname;
 $user->email = $data->email;
 $user->password = $data->password;
 
-// create user
-if(!empty($user->firstname) &&
+// check if user exists
+if($user->emailExists()) {
+    //set response code & return message
+    http_response_code(400);
+    echo json_encode(array("Message" => "Email exists"));
+} else {
+    // create user
+    if(!empty($user->firstname) &&
     !empty($user->lastname) &&
     !empty($user->email) &&
     !empty($user->password) &&
@@ -43,10 +49,11 @@ if(!empty($user->firstname) &&
         http_response_code(200);
         echo json_encode(array("Message" => "User created"));
     } 
-else {
+    else {
     //set response code & return message
     http_response_code(400);
     echo json_encode(array("Message" => "Unable to create user"));
+    }
 }
 
 ?>
