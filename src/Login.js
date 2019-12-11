@@ -6,12 +6,17 @@ class Login extends React.Component {
         super();
         this.state = {
             loginError: "",
-            toggleLoginFlag: false
+            toggleLoginFlag: false,
+            email: "",
+            password: ""
           };
         this.toggleLogin = this.toggleLogin.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidUpdate() {
+        // Parent of login changes the flag state to toggle login form
         if(this.props.toggleLoginFlag !== this.state.toggleLoginFlag) {
             this.setState({
                 toggleLoginFlag: this.props.toggleLoginFlag
@@ -20,6 +25,7 @@ class Login extends React.Component {
         }
     }
 
+    // Toggle show login form
     toggleLogin() {
         let loginForm = document.querySelector(".login");
         if(loginForm.style.display === "flex") {
@@ -29,6 +35,42 @@ class Login extends React.Component {
         }
     }
 
+    // Handle input change of login form
+    handleInputChange(e) {
+        if(e.target.name === "email") {
+            this.setState({
+                email: e.target.value
+            });
+        } else if (e.target.name === "password") {
+            this.setState({
+                password: e.target.value
+            });
+        }
+    }
+
+    // Handle Submit of login form
+    async handleSubmit(e) {
+        const url = 'localhost:80//junior-workers/api/login.php';
+        const data = {"email":"this.state.email", "password":"this.state.password"};
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const json = await response.json();
+            console.error('Success:', json);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    
+
     render() {
         return(
             <div className="login">
@@ -37,11 +79,24 @@ class Login extends React.Component {
 
                     <div className="login-label">Username</div>
                     <div className="login-input-before fa fa-user" />
-                    <input className="login-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
+                    <input
+                        name="email"
+                        className="login-input-text" 
+                        type="text" minLength="6" 
+                        maxLength="90" 
+                        placeholder="John@mail.com"
+                        onChange={this.handleInputChange} />
                     <div className="login-label">Password</div>
                     <div className="login-input-before fa fa-lock" />
-                    <input className="login-input-text" type="text" minLength="6" maxLength="30" placeholder="type something" />
-                    <button className="login-submit">Sign in</button>
+                    <input 
+                        name="password"
+                        className="login-input-text" 
+                        type="password" 
+                        minLength="6" 
+                        maxLength="40" 
+                        placeholder="abc123" 
+                        onChange={this.handleInputChange}/>
+                    <button className="login-submit" onClick={this.handleSubmit}>Sign in</button>
                 </form>
             </div>
         );
