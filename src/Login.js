@@ -50,7 +50,7 @@ class Login extends React.Component {
 
     // Handle Submit of login form
     async handleSubmit(e) {
-        const url = 'localhost:80//junior-workers/api/login.php';
+        const url = 'http://localhost/junior-workers/api/login.php';
         const data = {"email":"this.state.email", "password":"this.state.password"};
 
         try {
@@ -63,6 +63,7 @@ class Login extends React.Component {
                 body: JSON.stringify(data),
             });
             const json = await response.json();
+            if(response.status === 401) console.log("aaaaa");
             console.error('Success:', json);
         } catch (error) {
             console.error('Error:', error);
@@ -74,7 +75,7 @@ class Login extends React.Component {
     render() {
         return(
             <div className="login">
-                <form className="login-form">
+                <div className="login-form">
                     <div className="login-message" style={{"color":"#D0321E"}}>{this.state.loginError}</div>
 
                     <div className="login-label">Username</div>
@@ -97,7 +98,7 @@ class Login extends React.Component {
                         placeholder="abc123" 
                         onChange={this.handleInputChange}/>
                     <button className="login-submit" onClick={this.handleSubmit}>Sign in</button>
-                </form>
+                </div>
             </div>
         );
     }
