@@ -51,7 +51,7 @@ class Login extends React.Component {
     // Handle Submit of login form
     async handleSubmit(e) {
         const url = 'http://localhost/junior-workers/api/login.php';
-        const data = {"email":"this.state.email", "password":"this.state.password"};
+        const data = {"email":this.state.email, "password":this.state.password};
 
         try {
             const response = await fetch(url, {
@@ -62,9 +62,18 @@ class Login extends React.Component {
                 },
                 body: JSON.stringify(data),
             });
-            const json = await response.json();
-            if(response.status === 401) console.log("aaaaa");
-            console.error('Success:', json);
+            
+            if(response.status === 401) {
+                this.setState({
+                    loginError : "Unable to login"
+                });
+            }
+            else if (response.status == 200) {
+                const json = await response.json();
+                this.setState({
+                    loginError : "Access!"
+                });
+            }
         } catch (error) {
             console.error('Error:', error);
         }
