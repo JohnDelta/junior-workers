@@ -1,0 +1,84 @@
+/*
+    COLORS:
+        RED:#D0321E
+        GREEN:#428438
+        BLUE:#1E89D0
+*/
+
+.Profil {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: space-around;
+}
+
+.background {
+    background-attachment: fixed;
+    position: fixed;
+    top:0px;
+    left:0px;
+    z-index: -100;
+    height: 100vh;
+    filter: brightness(0.25);
+}
+@media screen and (min-width: 1150px) {
+    .background {
+        width: 100vw;
+        height: auto;
+    }
+}
+
+/*LOGO - START*/
+.logo-circle {
+    width: 250px;
+    height: 250px;
+    z-index: 90;
+    background-color: #D0321E;
+    border-radius: 50%;
+    padding: 250px;
+    position: fixed;
+    top: -340px;
+    left: -210px;
+}
+.title1 , .title2 {
+    z-index: 100;
+    position: fixed;
+    font-family: 'Fredoka One', cursive;
+    font-size: 36px;
+    color: #ffffff;
+    top: 70px;
+    left: 30px;
+    text-align: center;
+}
+.title1 {
+    background-color: #ffffff;
+    color: #D0321E;
+    width: 160px;
+    padding: 6px;
+    top: 15px;
+    left: 10px;
+    border-radius: 14px;
+}
+@media screen and (min-width: 768px) {
+    .title1, .title2 {
+        font-size: 42px;
+    }
+    .logo-circle {
+        top: -320px;
+        left: -190px;
+    }
+    .title2 {
+        top: 80px;
+    }
+}
+@media screen and (min-width: 1000px) {
+    .title1, .title2 {
+        font-size: 46px;
+    }
+    .logo-circle {
+        top: -310px;
+        left: -180px;
+    }
+}
+/*LOGO - END*/
+
