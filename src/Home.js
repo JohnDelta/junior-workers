@@ -71,7 +71,6 @@ class Home extends React.Component{
   render() {
     return(
       <div className="Home">
-
         <img id="bg" className="background" src={require('./images/backgroundBig.jpg')} />
         
         <div className="logo">

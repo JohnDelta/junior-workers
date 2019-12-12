@@ -1,10 +1,12 @@
 import React from 'react';
 import './Login.css';
+import  { Redirect } from 'react-router-dom';
 
 class Login extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            redirectToProfil: false,
             loginError: "",
             toggleLoginFlag: false,
             email: "",
@@ -70,20 +72,28 @@ class Login extends React.Component {
             }
             else if (response.status == 200) {
                 const json = await response.json();
-                this.setState({
-                    loginError : "Access!"
-                });
+                this.setState({redirectToProfil : true});
             }
         } catch (error) {
             console.error('Error:', error);
+            this.setState({
+                loginError : "Unable to login"
+            });
         }
     }
 
     
 
     render() {
+        var redirect = "";
+        if(this.state.redirectToProfil === true) {
+            redirect = <Redirect to="/profil" />;
+            this.setState({redirectToProfil : false});
+        }
+
         return(
             <div className="login">
+                {redirect}
                 <div className="login-form">
                     <div className="login-message" style={{"color":"#D0321E"}}>{this.state.loginError}</div>
 

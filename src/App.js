@@ -2,11 +2,12 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
 } from "react-router-dom";
 import './App.css';
 import Navbar from './Navbar.js';
 import Home from './Home.js';
+import Profil from './Profil.js';
 
 class App extends React.Component{
   render() {
@@ -14,12 +15,16 @@ class App extends React.Component{
       <Router>
         <div className="App">
           <Switch>
-            <Route path="/about">
+            <Route exact path="/about">
               <About />
             </Route>
 
-            <Route path="/users">
+            <Route exact path="/users">
               <Users />
+            </Route>
+
+            <Route exact path="/profil">
+              <Profil />
             </Route>
             
             <Route path="/">
