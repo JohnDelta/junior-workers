@@ -15,10 +15,20 @@ class Profil extends React.Component {
                 <div className="logo">
                     <div className="title1">Junior</div>
                     <div className="title2">Workers</div>
-                    <div className="logo-circle" />
                 </div>
 
                 <Navbar />
+
+                <div className="profil-container">
+                    <div className="profil-image">
+                    </div>
+                    <div className="profil-header">
+
+                    </div>
+                    <div className="profil-content">
+
+                    </div>
+                </div>
 
             </div>
         );

@@ -5,20 +5,62 @@
         BLUE:#1E89D0
 */
 
+/*NAVBAR - START*/
 .Navbar {
-    background-color: #232323;
-    width: 120px;
-    height: 100vh;
-    align-self: flex-end;
+    z-index: 110;
+    width: 90px;
+    height: 15vh;
+    position: fixed;
+    top: 0;
+    right: 0px;
     display: flex;
     justify-content: center;
+    align-items: center;
+    transition: 0.5s ease-out;
+}
+.navbar-active {
+    background-color: #232323;
+}
+.nav-toggle {
+    width: 25px;
+	height: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	cursor: pointer;
+}
+.nav-toggle div {
+    width: 30px;
+	height: 4px;
+	background-color: #FFFFFF;
+	transition: transform 0.5s ease-out;
+}
+.div1-active {
+    transform: rotate(45deg) translateY(8px) translateX(6px);
+}
+.div2-active {
+    transform: scale(0);
+}
+.div3-active {
+    transform: rotate(-45deg) translateY(-8px) translateX(6px);
 }
 .nav-links {
+    z-index: 110;
+    width: 90px;
+    height: 85vh;
+    position: fixed;
+    top: 15vh;
+    right: -90px;
     display: grid;
     grid-template-rows: repeat(3, 90px) minmax(90px, 90%);
     align-content: start;
     row-gap: 10px;
-    margin: 10px 0px 10px 0px;
+    background-color: transparent;
+    transition:  0.5s ease-out;
+}
+.nav-links-active {
+    right: 0px;
+    background-color: #232323;
 }
 .nav-link {
     display: flex;
@@ -28,13 +70,13 @@
     cursor: pointer;
 }
 .nav-link i {
-    font-size: 4em;
+    font-size: 2.5em;
     color: #FFFFFF;
 }
 .nav-link .text {
     text-decoration: none;
     font-family: 'Fredoka One', cursive;
-    font-size: 1.2em;
+    font-size: 0.8em;
     color: #FFFFFF;
 }
 .nav-down {
@@ -49,3 +91,24 @@
 .link-active {
     color: #fff1c1 !important;
 }
+@media screen and (min-width: 768px) {
+
+}
+@media screen and (min-width: 1000px) {
+    .Navbar {
+        width: 90px;
+        height: 100vh;
+    }
+    .nav-links {
+        position: fixed;
+        height: 100vh;
+        top: 0;
+        right: 0px;
+        display: grid;
+        background-color: #232323;
+    }
+    .nav-toggle {
+        display: none;
+    }
+}
+/*NAVBAR - END*/
