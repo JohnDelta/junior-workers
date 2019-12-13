@@ -36,13 +36,13 @@
     background-color: #D0321E;
     border-radius: 50%;
     padding: 250px;
-    position: fixed;
+    position: absolute;
     top: -340px;
     left: -210px;
 }
 .title1 , .title2 {
     z-index: 100;
-    position: fixed;
+    position: absolute;
     font-family: 'Fredoka One', cursive;
     font-size: 36px;
     color: #ffffff;

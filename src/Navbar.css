@@ -83,18 +83,12 @@
     align-self: end;
 }
 .nav-link:hover i {
-    color: #fff1c1;
+    color: #ffffff;
 }
 .nav-link:hover .text {
-    color: #fff1c1;
+    color: #ffffff;
 }
-.link-active {
-    color: #fff1c1 !important;
-}
-@media screen and (min-width: 768px) {
-
-}
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 1100px) {
     .Navbar {
         width: 90px;
         height: 100vh;

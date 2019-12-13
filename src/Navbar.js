@@ -6,8 +6,8 @@ import {
 import './Navbar.css';
 
 class Navbar extends React.Component{
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.toggleNavbar = this.toggleNavbar.bind(this);
   }
 
@@ -26,7 +26,11 @@ class Navbar extends React.Component{
   }
 
   render() {
-    var linkActive = {color: "#fff1c1"};
+    var profilStyle, homeStyle = {};
+    if(this.props.selectedLink === "profil")
+      profilStyle = {color: "#fff1c1"};
+    if(this.props.selectedLink === "home")
+      homeStyle = {color: "#fff1c1"}; 
 
     return(
       <div className="Navbar">
@@ -37,14 +41,14 @@ class Navbar extends React.Component{
         </div>
         <ul className="nav-links">
           <li className="nav-link">
-            <i className="fa fa-home link-active" />
-            <Link className="text link-active" to="/">
+            <i className="fa fa-home" style={homeStyle} />
+            <Link className="text link-active" to="/" style={homeStyle}>
               Home
             </Link>
           </li>
           <li className="nav-link">
-            <i className="fa fa-user" />
-            <Link className="text" to="/" >
+            <i className="fa fa-user" style={profilStyle}/>
+            <Link className="text" to="/" style={profilStyle}>
               Profil
             </Link>
           </li>
