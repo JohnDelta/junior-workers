@@ -23,6 +23,7 @@ class Profil extends React.Component {
 
         this.toggleEdit = this.toggleEdit.bind(this);
         this.removeWork = this.removeWork.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     // open edit mode - be able to edit all values (remove and add new)
@@ -42,6 +43,21 @@ class Profil extends React.Component {
         });
     }
 
+    // handle the input type="text" changes
+    handleInputChange(e) {
+        // the name of the calling component should be sectionName_indexOfLine_indexOfAttr
+        var params = e.target.name.split("_");
+        var section = params[0];
+        var line = params[1];
+        var attr = params[2];
+        var value = e.target.value;
+        var newExperience = this.state.experience;
+        newExperience[line][attr] = value;
+        this.setState({
+            experience: newExperience
+        });
+    }
+
     render() {
 
         // Map experience from json to div
@@ -50,13 +66,31 @@ class Profil extends React.Component {
             if(item !== ""){
                 // add remove job if you are on edit mode
                 var removeButton = "";
-                if(this.state.editFlag) removeButton = 
-                    <button className="work-remove" name={index} onClick={this.removeWork}>x</button>;
+                var readonly = true;
+                if(this.state.editFlag) {
+                    removeButton = <button className="work-remove" name={index} onClick={this.removeWork}>x</button>;
+                    readonly = false;
+                } 
                 experienceMap.push(
                     <div className="work" key={"experience"+index}>
-                        <div className="work-title">{item.title}</div>
-                        <div className="work-company">{item.company}</div>
-                        <div className="work-date">{item.date}</div>
+                        <input 
+                            type="text" 
+                            readOnly={readonly} 
+                            name={"experience_"+index+"_title"} 
+                            onChange={this.handleInputChange} 
+                            defaultValue={item.title} />
+                        <input 
+                            type="text" 
+                            readOnly={readonly} 
+                            name={"experience_"+index+"_company"} 
+                            onChange={this.handleInputChange} 
+                            defaultValue={item.company} />
+                        <input 
+                            type="text" 
+                            readOnly={readonly} 
+                            name={"experience_"+index+"_date"} 
+                            onChange={this.handleInputChange} 
+                            defaultValue={item.date} />
                         {removeButton}
                     </div>
                 );
