@@ -22,7 +22,8 @@ class Profil extends React.Component {
         };
 
         this.toggleEdit = this.toggleEdit.bind(this);
-        this.removeWork = this.removeWork.bind(this);
+        this.removeItem = this.removeItem.bind(this);
+        this.addItem = this.addItem.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
@@ -33,20 +34,39 @@ class Profil extends React.Component {
         });
     }
 
-    // remove work item from user's work experience 
-    removeWork(e) {
-        var workIndexToRemove = e.target.name;
+    // remove item from user's input type = "text" info
+    // the name of the calling component should have
+    //  this format sectionName_indexOfLine
+    removeItem(e) {
+        var params = e.target.id.split("_");
+        var section = params[0];
+        var line = params[1];
         var newExperience = this.state.experience;
-        newExperience[workIndexToRemove] = "";
+        newExperience[line] = "";
+        this.setState({
+            experience: newExperience
+        });
+    }
+
+    // add item as user's input type = "text" info
+    // the name of the calling component should have
+    //  this name sectionName (which is in)
+    addItem(e) {
+        var section = e.target.id;
+        var newExperience = this.state.experience;
+        newExperience.push({
+            "title": "", "company": "", "date": ""
+        });
         this.setState({
             experience: newExperience
         });
     }
 
     // handle the input type="text" changes
+    // the name of the calling component should have
+    //  this format sectionName_indexOfLine_indexOfAttr
     handleInputChange(e) {
-        // the name of the calling component should be sectionName_indexOfLine_indexOfAttr
-        var params = e.target.name.split("_");
+        var params = e.target.id.split("_");
         var section = params[0];
         var line = params[1];
         var attr = params[2];
@@ -60,15 +80,26 @@ class Profil extends React.Component {
 
     render() {
 
+        // On edit mode, display exit and save changes button
+        var changeButtons = "";
+        if(this.state.editFlag) {
+            changeButtons = <div className="change-buttons">
+                                <button><i className="fa fa-check" /></button>
+                                <button><i className="fa fa-times" /></button>
+                            </div>;
+        }
+
         // Map experience from json to div
         var experienceMap = [];
         this.state.experience.forEach((item, index) => {
             if(item !== ""){
-                // add remove job if you are on edit mode
+                // display remove job if you are on edit mode
                 var removeButton = "";
                 var readonly = true;
                 if(this.state.editFlag) {
-                    removeButton = <button className="work-remove" name={index} onClick={this.removeWork}>x</button>;
+                    removeButton = <button className="work-remove" id={"experience_"+index+"_remove"} onClick={this.removeItem}>
+                        <i className="fa fa-times" />
+                    </button>;
                     readonly = false;
                 } 
                 experienceMap.push(
@@ -76,19 +107,19 @@ class Profil extends React.Component {
                         <input 
                             type="text" 
                             readOnly={readonly} 
-                            name={"experience_"+index+"_title"} 
+                            id={"experience_"+index+"_title"} 
                             onChange={this.handleInputChange} 
                             defaultValue={item.title} />
                         <input 
                             type="text" 
                             readOnly={readonly} 
-                            name={"experience_"+index+"_company"} 
+                            id={"experience_"+index+"_company"} 
                             onChange={this.handleInputChange} 
                             defaultValue={item.company} />
                         <input 
                             type="text" 
                             readOnly={readonly} 
-                            name={"experience_"+index+"_date"} 
+                            id={"experience_"+index+"_date"} 
                             onChange={this.handleInputChange} 
                             defaultValue={item.date} />
                         {removeButton}
@@ -96,11 +127,11 @@ class Profil extends React.Component {
                 );
             }
         });
-        // add job option if you are on edit mode
         if(this.state.experience.length === 0) experienceMap = "No experience so far";
+        // display add job option if you are on edit mode
         var addExperienceButton = "";
         if(this.state.editFlag) addExperienceButton = 
-            <button className="add-btn">
+            <button className="add-btn" onClick={this.addItem} name="experience">
                 <i className="fa fa-plus" />Add Experience
             </button>;
 
@@ -136,6 +167,7 @@ class Profil extends React.Component {
                             {experienceMap}
                             {addExperienceButton}
                         </div>
+                        {changeButtons}
                     </div>
                 </div>
 
