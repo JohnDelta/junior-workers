@@ -88,7 +88,7 @@
 .nav-link:hover .text {
     color: #ffffff;
 }
-@media screen and (min-width: 1100px) {
+@media screen and (min-width: 850px) {
     .Navbar {
         width: 90px;
         height: 100vh;

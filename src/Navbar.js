@@ -26,11 +26,14 @@ class Navbar extends React.Component{
   }
 
   render() {
-    var profilStyle, homeStyle = {};
+    var profilStyle = {};
+    var homeStyle = {};
+    var commentsStyle = {};
+    var exitStyle = {};
     if(this.props.selectedLink === "profil")
-      profilStyle = {color: "#fff1c1"};
+      profilStyle = {color: "#F25F5C"};
     if(this.props.selectedLink === "home")
-      homeStyle = {color: "#fff1c1"}; 
+      homeStyle = {color: "#F25F5C"}; 
 
     return(
       <div className="Navbar">
@@ -53,14 +56,14 @@ class Navbar extends React.Component{
             </Link>
           </li>
           <li className="nav-link">
-            <i className="fa fa-comments" />
-            <Link className="text" to="/" >
+            <i className="fa fa-comments"  style={commentsStyle} />
+            <Link className="text" to="/" style={commentsStyle} >
               Messages
             </Link>
           </li>
           <li className="nav-link nav-down">
-            <i className="fa fa-sign-out" />
-            <Link className="text" to="/" >
+            <i className="fa fa-sign-out" style={exitStyle} />
+            <Link className="text" to="/" style={exitStyle} >
               Exit
             </Link>
           </li>
