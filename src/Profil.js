@@ -7,24 +7,20 @@ class Profil extends React.Component {
         super();
         this.state = {
             editFlag : false,
-            experience : [
-                {
-                    "title":"programmer",
-                    "company":"goggle",
-                    "date":"34/23 - 34/34"
-                },
-                {
-                    "title":"not programmer",
-                    "company":"not goggle",
-                    "date":"not 34/23 - 34/34"
-                },
-            ]
+            experience : []
         };
 
         this.toggleEdit = this.toggleEdit.bind(this);
         this.removeItem = this.removeItem.bind(this);
         this.addItem = this.addItem.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.discardChanges = this.discardChanges.bind(this);
+
+        this.getUserData = this.getUserData.bind(this);
+    }
+
+    componentDidMount() {
+        this.getUserData();
     }
 
     // open edit mode - be able to edit all values (remove and add new)
@@ -78,6 +74,40 @@ class Profil extends React.Component {
         });
     }
 
+    discardChanges() {
+        this.setState({
+            experience : []
+        });
+        this.getUserData();
+    }
+
+    // Handle Submit of login form
+    async getUserData() {
+        const url = 'http://localhost:80//junior-workers/api/get-experience.php';
+        const data = {"jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9leGFtcGxlLm9yZyIsImF1ZCI6Imh0dHA6XC9cL2V4YW1wbGUuY29tIiwiaWF0IjoxMzU2OTk5NTI0LCJuYmYiOjEzNTcwMDAwMDAsImRhdGEiOnsiaWRfdXNlciI6IjMifX0.xHRgutqlwwoi6PLWz9x0xaTelSZmFDXls8tD9Cjh8tU"};
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            
+            if(response.status !== 200) {
+                console.error("WRONG!")
+            }
+            else if (response.status == 200) {
+                const json = await response.json();
+                this.setState({experience : json["experience"]});
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     render() {
 
         // On edit mode, display exit and save changes button
@@ -85,9 +115,16 @@ class Profil extends React.Component {
         if(this.state.editFlag) {
             changeButtons = <div className="change-buttons">
                                 <button><i className="fa fa-check" /></button>
-                                <button><i className="fa fa-times" /></button>
+                                <button onClick={this.discardChanges}><i className="fa fa-times" /></button>
                             </div>;
         }
+
+        // display add job option if you are on edit mode
+        var addExperienceButton = "";
+        if(this.state.editFlag) addExperienceButton = 
+            <button className="add-btn" onClick={this.addItem} name="experience">
+                <i className="fa fa-plus" />Add Experience
+            </button>;
 
         // Map experience from json to div
         var experienceMap = [];
@@ -128,12 +165,7 @@ class Profil extends React.Component {
             }
         });
         if(this.state.experience.length === 0) experienceMap = "No experience so far";
-        // display add job option if you are on edit mode
-        var addExperienceButton = "";
-        if(this.state.editFlag) addExperienceButton = 
-            <button className="add-btn" onClick={this.addItem} name="experience">
-                <i className="fa fa-plus" />Add Experience
-            </button>;
+        
 
         return(
             <div className="Profil">

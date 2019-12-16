@@ -45,7 +45,7 @@ $user->email = $data->email;
 $user->password = $data->password;
 
 // check if user exists
-if($user->emailExists()) {
+if($user->getParameters()) {
     //set response code & return message
     http_response_code(400);
     echo json_encode(array("Message" => "Email exists"));
@@ -61,9 +61,9 @@ if($user->emailExists()) {
         echo json_encode(array("Message" => "User created"));
     } 
     else {
-    //set response code & return message
-    http_response_code(400);
-    echo json_encode(array("Message" => "Unable to create user"));
+        //set response code & return message
+        http_response_code(400);
+        echo json_encode(array("Message" => "Unable to create user"));
     }
 }
 

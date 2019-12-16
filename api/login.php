@@ -47,7 +47,7 @@ $data = json_decode(file_get_contents("php://input"));
 $user->email = $data->email;
 
 // check if user exists and if his password matches the hashed in db
-if($user->emailExists() && password_verify($data->password, $user->password)) {
+if($user->getParameters() && password_verify($data->password, $user->password)) {
     // generate and send back a jwt
     $token = array(
         "iss" => $iss,
@@ -55,10 +55,7 @@ if($user->emailExists() && password_verify($data->password, $user->password)) {
         "iat" => $iat,
         "nbf" => $nbf,
         "data" => array(
-            "id" => $user->id,
-            "firstname" => $user->firstname,
-            "lastname" => $user->lastname,
-            "email" => $user->email
+            "id_user" => $user->id
         )
      );
   

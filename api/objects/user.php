@@ -11,13 +11,18 @@
  * Functions:
  *  Create(): Given the connection and user arguments creates a user and insert
  *            it into the database
+ *  emailExists(): Given an email as public var, check if the user exists in the db,
+ *             if it does return all the other info about them too.
  */
+
+include_once("objects/experience.php");
 
 class User {
     private $conn;
-    private $tableName = "users";
+    private $tableName = "user";
 
-    public $id;
+    // user's attributes
+    public $id_user;
     public $firstname;
     public $lastname;
     public $email;
@@ -58,20 +63,61 @@ class User {
         return false;
     }
 
-    function emailExists() {
+    function getParameters() {
+        // create query to get all attributes using the  email as key
         $query = "SELECT id_user, firstname, lastname, password FROM ".$this->tableName." WHERE email=:email";
+        
+        // create statement from connection
         $stmt = $this->conn->prepare($query);
+
+        // sanitize given email
         $this->email = htmlspecialchars(strip_tags($this->email));
+        
+        // bind parameter into statemnt
         $stmt->bindParam(":email", $this->email);
+
+        // execute query
         $stmt->execute();
+
+        // get number of results back
         $numberOfRows = $stmt->rowCount();
+
         if($numberOfRows > 0) {
-            // user exists, update the parameters
+            // user exists, update the rest of the parameters
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->id = $row["id_user"];
             $this->firstname = $row["firstname"];
             $this->lastname = $row["lastname"];
             $this->password = $row["password"];
+            return true;
+        }
+        // else return false
+        return false;
+    }
+
+    function exist() {
+        // create query to get all attributes using the  email as key
+        $query = "SELECT id_user FROM ".$this->tableName." WHERE id_user = :id_user";
+        
+        // create statement from connection
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize given email
+        $this->id_user = htmlspecialchars(strip_tags($this->id_user));
+        
+        // bind parameter into statemnt
+        $stmt->bindParam(":id_user", $this->id_user);
+
+        // execute query
+        $stmt->execute();
+
+        // get number of results back
+        $numberOfRows = $stmt->rowCount();
+
+        if($numberOfRows > 0) {
+            // user exists, update the rest of the parameters
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->id = $row["id_user"];
             return true;
         }
         // else return false
