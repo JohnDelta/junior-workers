@@ -55,7 +55,7 @@ if($user->getParameters() && password_verify($data->password, $user->password)) 
         "iat" => $iat,
         "nbf" => $nbf,
         "data" => array(
-            "id_user" => $user->id
+            "email" => $user->email
         )
      );
   

@@ -12,7 +12,7 @@ class Experience {
     public $id_user;
     // experience attributes
     public $id_experience = array();
-    public $title = array();
+    public $id_profession = array();
     public $company = array();
     public $date = array();
 
@@ -31,8 +31,8 @@ class Experience {
         $this->conn->beginTransaction();
 
         // make a query to insert all 
-        $query = "INSERT INTO ".$this->tableName." (title, company, date, id_user)  
-        VALUES (:title, :company, :date, :id_user)";
+        $query = "INSERT INTO ".$this->tableName." (id_profession, company, date, id_user)  
+        VALUES (:id_profession, :company, :date, :id_user)";
 
         // create prepare statement
         $stmt = $this->conn->prepare($query);
@@ -40,14 +40,14 @@ class Experience {
         // sanitize each entry given
         $this->id_user = htmlspecialchars(strip_tags($this->id_user));
         for($i = 0; $i < count($this->title); $i++) {
-            $this->title[$i] = htmlspecialchars(strip_tags($this->title[$i]));
+            $this->id_profession[$i] = htmlspecialchars(strip_tags($this->title[$i]));
             $this->company[$i] = htmlspecialchars(strip_tags($this->company[$i]));
             $this->date[$i] = htmlspecialchars(strip_tags($this->date[$i]));
 
             // bind parameters to the prepare statement
-            $stmt->bindParam(':title', $this->title[$i], PDO::PARAM_STR_CHAR, 100);
-            $stmt->bindParam(':company', $this->title[$i], PDO::PARAM_STR_CHAR, 100);
-            $stmt->bindParam(':date', $this->title[$i], PDO::PARAM_STR_CHAR, 10);
+            $stmt->bindParam(':id_profession', $this->id_profession[$i], PDO::PARAM_STR_CHAR, 100);
+            $stmt->bindParam(':company', $this->company[$i], PDO::PARAM_STR_CHAR, 100);
+            $stmt->bindParam(':date', $this->date[$i], PDO::PARAM_STR_CHAR, 10);
             $stmt->bindParam(':id_user', $this->id_user, PDO::PARAM_INT, 10);
 
             // execute each query

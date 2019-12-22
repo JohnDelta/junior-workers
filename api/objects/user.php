@@ -63,9 +63,10 @@ class User {
         return false;
     }
 
+    // given the user's email, get all their data
     function getParameters() {
-        // create query to get all attributes using the  email as key
-        $query = "SELECT id_user, firstname, lastname, password FROM ".$this->tableName." WHERE email=:email";
+        // create query to get all attributes using the  id as key
+        $query = "SELECT firstname, lastname, id_user, password FROM ".$this->tableName." WHERE email=:email";
         
         // create statement from connection
         $stmt = $this->conn->prepare($query);
@@ -89,35 +90,6 @@ class User {
             $this->firstname = $row["firstname"];
             $this->lastname = $row["lastname"];
             $this->password = $row["password"];
-            return true;
-        }
-        // else return false
-        return false;
-    }
-
-    function exist() {
-        // create query to get all attributes using the  email as key
-        $query = "SELECT id_user FROM ".$this->tableName." WHERE id_user = :id_user";
-        
-        // create statement from connection
-        $stmt = $this->conn->prepare($query);
-
-        // sanitize given email
-        $this->id_user = htmlspecialchars(strip_tags($this->id_user));
-        
-        // bind parameter into statemnt
-        $stmt->bindParam(":id_user", $this->id_user);
-
-        // execute query
-        $stmt->execute();
-
-        // get number of results back
-        $numberOfRows = $stmt->rowCount();
-
-        if($numberOfRows > 0) {
-            // user exists, update the rest of the parameters
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->id = $row["id_user"];
             return true;
         }
         // else return false

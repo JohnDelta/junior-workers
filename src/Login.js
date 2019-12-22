@@ -65,13 +65,14 @@ class Login extends React.Component {
                 body: JSON.stringify(data),
             });
             
-            if(response.status === 401) {
+            if(response.status !== 200) {
                 this.setState({
                     loginError : "Unable to login"
                 });
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 const json = await response.json();
+                localStorage.setItem("jwt", json["jwt"]);
                 this.setState({redirectToProfil : true});
             }
         } catch (error) {
@@ -97,12 +98,12 @@ class Login extends React.Component {
                 <div className="login-form">
                     <div className="login-message" style={{"color":"#D0321E"}}>{this.state.loginError}</div>
 
-                    <div className="login-label">Username</div>
+                    <div className="login-label">Email</div>
                     <div className="login-input-before fa fa-user" />
                     <input
                         name="email"
                         className="login-input-text" 
-                        type="text" minLength="6" 
+                        type="email" minLength="6" 
                         maxLength="90" 
                         placeholder="John@mail.com"
                         onChange={this.handleInputChange} />

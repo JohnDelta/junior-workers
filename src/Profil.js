@@ -6,6 +6,7 @@ class Profil extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            jwt: "",
             editFlag : false,
             experience : []
         };
@@ -20,6 +21,7 @@ class Profil extends React.Component {
     }
 
     componentDidMount() {
+        this.setState({jwt: localStorage.getItem("jwt")});
         this.getUserData();
     }
 
@@ -83,7 +85,7 @@ class Profil extends React.Component {
 
     // Handle Submit of login form
     async getUserData() {
-        const url = 'http://localhost:80//junior-workers/api/get-experience.php';
+        /*const url = 'http://localhost:80//junior-workers/api/get-experience.php';
         const data = {"jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9leGFtcGxlLm9yZyIsImF1ZCI6Imh0dHA6XC9cL2V4YW1wbGUuY29tIiwiaWF0IjoxMzU2OTk5NTI0LCJuYmYiOjEzNTcwMDAwMDAsImRhdGEiOnsiaWRfdXNlciI6IjMifX0.xHRgutqlwwoi6PLWz9x0xaTelSZmFDXls8tD9Cjh8tU"};
 
         try {
@@ -105,7 +107,7 @@ class Profil extends React.Component {
             }
         } catch (error) {
             console.error('Error:', error);
-        }
+        }*/
     }
 
     render() {
