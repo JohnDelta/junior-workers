@@ -6,22 +6,36 @@ class Profil extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            jwt: "",
+            jwt: localStorage.getItem("jwt"),
             editFlag : false,
-            experience : []
+            data : {
+                "user": [],
+                "experience": [],
+                "skill": [],
+                "education": []
+            }
         };
 
         this.toggleEdit = this.toggleEdit.bind(this);
         this.removeItem = this.removeItem.bind(this);
         this.addItem = this.addItem.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.discardChanges = this.discardChanges.bind(this);
+        
 
+        // keep these
         this.getUserData = this.getUserData.bind(this);
+        this.availabilityChange = this.availabilityChange.bind(this);
+        this.userDataChange = this.userDataChange.bind(this);
+        this.discardChanges = this.discardChanges.bind(this);
+        this.saveChanges = this.saveChanges.bind(this);
+
+        /**
+         * next: display properly new added work experience.
+         * then modify experience.php to work with that on read and then on post.
+         */
     }
 
     componentDidMount() {
-        this.setState({jwt: localStorage.getItem("jwt")});
         this.getUserData();
     }
 
@@ -30,6 +44,47 @@ class Profil extends React.Component {
         this.setState({
             editFlag : !this.state.editFlag
         });
+        // if you close edit without saving first, reset changes
+        if(this.state.editFlag) {
+            this.getUserData();
+        }
+    }
+
+    // handle user data input change 
+    userDataChange(e) {
+        var id = e.target.id;
+        var value = e.target.value;
+        var temp = this.state.data;
+
+        if(id === "firstname") {
+            temp["user"]["firstname"] = value;
+        } else if(id === "lastname") {
+            temp["user"]["lastname"] = value;
+        } else if(id === "title") {
+            temp["user"]["title"] = value;
+        }
+
+        this.setState({
+            data: temp
+        });
+    }
+
+    // handle the change state of availability
+    availabilityChange() {
+        var temp;
+        if(this.state.data["user"]["availability"] === "1") {
+            temp = this.state.data;
+            temp["user"]["availability"] = "0";
+            this.setState({
+                data: temp
+            });
+        } else {
+            temp = this.state.data;
+            temp["user"]["availability"] = "1";
+            this.setState({
+                data: temp
+            });
+        }
     }
 
     // remove item from user's input type = "text" info
@@ -76,18 +131,24 @@ class Profil extends React.Component {
         });
     }
 
+    // remove all user's data and get them from db again
     discardChanges() {
         this.setState({
-            experience : []
+            data : {
+                "user": [],
+                "experience": [],
+                "skill": [],
+                "education": []
+            }
         });
         this.getUserData();
+        this.toggleEdit();
     }
 
-    // Handle Submit of login form
-    async getUserData() {
-        /*const url = 'http://localhost:80//junior-workers/api/get-experience.php';
-        const data = {"jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9leGFtcGxlLm9yZyIsImF1ZCI6Imh0dHA6XC9cL2V4YW1wbGUuY29tIiwiaWF0IjoxMzU2OTk5NTI0LCJuYmYiOjEzNTcwMDAwMDAsImRhdGEiOnsiaWRfdXNlciI6IjMifX0.xHRgutqlwwoi6PLWz9x0xaTelSZmFDXls8tD9Cjh8tU"};
-
+    // post all user's data changes to db
+    async saveChanges() {
+        const url = 'http://localhost:80//junior-workers/api/post-user-data.php';
+        const data = {"jwt": this.state.jwt, "data": this.state.data};
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -97,29 +158,68 @@ class Profil extends React.Component {
                 },
                 body: JSON.stringify(data),
             });
-            
             if(response.status !== 200) {
-                console.error("WRONG!")
+                console.error("Unable to post user's data")
             }
             else if (response.status == 200) {
                 const json = await response.json();
-                this.setState({experience : json["experience"]});
+                console.log("Data posted");
+                this.getUserData();
+                this.toggleEdit();
             }
         } catch (error) {
             console.error('Error:', error);
-        }*/
+        }
+    }
+
+    // Get all user's data using their jwt auth
+    async getUserData() {
+        const url = 'http://localhost:80//junior-workers/api/get-user-data.php';
+        const data = {"jwt": this.state.jwt};
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if(response.status !== 200) {
+                console.error("Unable to get user's data")
+            }
+            else if (response.status == 200) {
+                const json = await response.json();
+                this.setState({data : json});
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
     render() {
 
-        // On edit mode, display exit and save changes button
+        // On edit mode change
+        var readonly = true;
         var changeButtons = "";
+        var availabilityButton = "";
         if(this.state.editFlag) {
+            // make all input editable
+            readonly = false;
+            // display save and exit changes button
             changeButtons = <div className="change-buttons">
-                                <button><i className="fa fa-check" /></button>
+                                <button onClick={this.saveChanges}><i className="fa fa-check" /></button>
                                 <button onClick={this.discardChanges}><i className="fa fa-times" /></button>
                             </div>;
+            // add availability change button
+            availabilityButton = <button className="profil-availability-button" onClick={this.availabilityChange}>
+                                    <i className="fa fa-refresh" />
+                                </button>;
         }
+
+        // availability state change
+        var availabilityText = <p>Not available to hire</p>;
+        if(this.state.data["user"]["availability"] === "1") availabilityText = <p>Available to hire</p>;
 
         // display add job option if you are on edit mode
         var addExperienceButton = "";
@@ -130,16 +230,14 @@ class Profil extends React.Component {
 
         // Map experience from json to div
         var experienceMap = [];
-        this.state.experience.forEach((item, index) => {
+        this.state.data["experience"].forEach((item, index) => {
             if(item !== ""){
                 // display remove job if you are on edit mode
                 var removeButton = "";
-                var readonly = true;
                 if(this.state.editFlag) {
                     removeButton = <button className="work-remove" id={"experience_"+index+"_remove"} onClick={this.removeItem}>
                         <i className="fa fa-times" />
                     </button>;
-                    readonly = false;
                 } 
                 experienceMap.push(
                     <div className="work" key={"experience"+index}>
@@ -166,8 +264,9 @@ class Profil extends React.Component {
                 );
             }
         });
-        if(this.state.experience.length === 0) experienceMap = "No experience so far";
+        if(this.state.data["experience"].length === 0) experienceMap = "No experience so far";
         
+
 
         return(
             <div className="Profil">
@@ -186,9 +285,36 @@ class Profil extends React.Component {
                         <button className="profil-edit-btn" onClick={this.toggleEdit}>
                             <i className="fa fa-edit" />
                         </button>
-                        <div className="profil-fullname">John Deligiannis</div>
-                        <div className="profil-headline">Software Developer</div>
-                        <div className="profil-availability">Available to hire</div>
+                        <input 
+                            type="text" 
+                            className="profil-name firstname"
+                            value={this.state.data["user"]["firstname"]}
+                            readOnly={readonly}
+                            placeholder="Firstname"
+                            id="firstname"
+                            onChange={this.userDataChange}
+                        />
+                        <input 
+                            type="text" 
+                            className="profil-name lastname"
+                            value={this.state.data["user"]["lastname"]}
+                            readOnly={readonly}
+                            placeholder="Lastname"
+                            id="lastname"
+                            onChange={this.userDataChange}
+                        />
+                        <input
+                            type="text" 
+                            className="profil-headline"
+                            value={this.state.data["user"]["title"]}
+                            readOnly={readonly}
+                            placeholder="Profession title"
+                            id="title"
+                            onChange={this.userDataChange}
+                        />
+                        <div className="profil-availability">
+                            {availabilityText}{availabilityButton}
+                        </div>
                         <button className="profil-resume">
                             <i className="fa fa-arrow-down" />
                             Resume

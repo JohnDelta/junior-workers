@@ -75,19 +75,23 @@
 .profil-header {
     display: grid;
     grid-template-columns: 0.75fr 0.25fr;
-    grid-template-rows: repeat(4, auto);
+    grid-template-rows: repeat(4, 25%);
     background-color: #247BA0;
     align-content: start;
-    padding: 30px;
+    padding: 20px 30px 20px 30px;
     /*
     background: rgb(255,255,255);
     background: linear-gradient(0deg, rgba(255,255,255,1) 7%, rgba(255,241,193,1) 100%);
     */
 }
+.profil-header input::placeholder {
+    color: rgb(0, 71, 101);
+}
 .profil-edit-btn {
     grid-row: 1/2;
     grid-column: 2/3;
     justify-self: end;
+    align-self: start;
     padding: 5px;
     border-radius: 25%;
     display: flex;
@@ -102,30 +106,67 @@
     font-size: 2.5em;
     color: #FFE066;
 }
-.profil-fullname {
-    grid-row: 1/2;
-    grid-column: 1/2;
+.profil-name {
     font-size: 22px;
     font-weight: 900;
     color: #FFE066;
+    border: none;
+    border-bottom: 2px solid #FFE066;
+    background-color: transparent;
+    outline: none;
+    align-self: start;
+}
+.profil-name .firstname {
+    grid-row: 1/2;
+    grid-column: 1/2;
+}
+.profil-name .lasttname {
+    grid-row: 2/3;
+    grid-column: 1/2;
+}
+.profil-name:read-only {
+    border: none;
 }
 .profil-headline {
-    grid-row: 2/3;
-    grid-column: 1/3;
-    font-size: 18px;
-    padding-left: 10px;
-    color: #ffffff;
-}
-.profil-availability {
     grid-row: 3/4;
     grid-column: 1/3;
+    align-self: start;
+    font-size: 18px;
+    padding-left: 10px;
+    margin-top: 4px;
+    color: #ffffff;
+    border: none;
+    border-bottom: 2px solid #FFE066;
+    background-color: transparent;
+    outline: none;
+}
+.profil-headline:read-only {
+    border: none;
+}
+.profil-availability {
+    grid-row: 4/5;
+    grid-column: 1/2;
     font-size: 15px;
     padding-left: 10px;
     color: #ffffff;
+    align-self: end;
+    display: flex;
+    align-items: center;
+}
+.profil-availability-button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+.profil-availability-button i {
+    pointer-events: none;
+    font-size: 1.5em;
+    color: #ffffff;
+    margin-left: 6px;
 }
 .profil-resume {
     grid-row: 4/5;
-    grid-column: 1/3;
+    grid-column: 2/3;
     padding: 6px;
     font-weight: 900;
     color: #ffffff;
@@ -142,7 +183,7 @@
     margin-right: 4px;
 }
 @media screen and (min-width: 768px) {
-    .profil-fullname {
+    .profil-name {
         font-size: 32px;
     }
     .profil-headline {
@@ -156,7 +197,7 @@
     }
 }
 @media screen and (min-width: 1000px) {
-    .profil-fullname {
+    .profil-name {
         font-size: 34px;
     }
     .profil-headline {

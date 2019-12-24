@@ -75,12 +75,12 @@
 }
 .nav-link .text {
     text-decoration: none;
-    font-family: 'Fredoka One', cursive;
     font-size: 0.8em;
     color: #FFFFFF;
 }
 .nav-down {
     align-self: end;
+    margin-bottom: 20px;
 }
 .nav-link:hover i {
     color: #ffffff;

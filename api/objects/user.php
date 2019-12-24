@@ -27,6 +27,8 @@ class User {
     public $lastname;
     public $email;
     public $password;
+    public $title;
+    public $availability;
 
     public function __construct($conn)
     {
@@ -65,8 +67,8 @@ class User {
 
     // given the user's email, get all their data
     function getParameters() {
-        // create query to get all attributes using the  id as key
-        $query = "SELECT firstname, lastname, id_user, password FROM ".$this->tableName." WHERE email=:email";
+        // create query to get all attributes using the  email as key
+        $query = "SELECT firstname, lastname, id_user, password, title, availability FROM ".$this->tableName." WHERE email=:email";
         
         // create statement from connection
         $stmt = $this->conn->prepare($query);
@@ -90,9 +92,42 @@ class User {
             $this->firstname = $row["firstname"];
             $this->lastname = $row["lastname"];
             $this->password = $row["password"];
+            $this->availability = $row["availability"];
+            $this->title = $row["title"];
             return true;
         }
         // else return false
+        return false;
+    }
+
+    // given the user's email, alter their attributes
+    function alterAll() {
+        // create query to alter all attributes using the email as key
+        $query = "UPDATE ".$this->tableName
+            ." SET firstname=:firstname, lastname=:lastname, title=:title, availability=:availability"
+            ." WHERE email=:email";
+        
+        // create prepare statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize given values
+        $this->firstname = htmlspecialchars(strip_tags($this->firstname));
+        $this->lastname = htmlspecialchars(strip_tags($this->lastname));
+        $this->availability = htmlspecialchars(strip_tags($this->availability));
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+
+        // bind parameters into the prepare statement
+        $stmt->bindParam(":firstname", $this->firstname);
+        $stmt->bindParam(":lastname", $this->lastname);
+        $stmt->bindParam(":availability", $this->availability);
+        $stmt->bindParam(":title", $this->title);
+        $stmt->bindParam(":email", $this->email);
+
+        // execute query
+        if($stmt->execute()){
+            return true;
+        } 
         return false;
     }
 }
