@@ -66,7 +66,6 @@ if($user->getParameters() && password_verify($data->password, $user->password)) 
      $jwt = JWT::encode($token, $key);
      echo json_encode(
              array(
-                 "message" => "Successful login.",
                  "jwt" => $jwt
              )
          );

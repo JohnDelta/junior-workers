@@ -45,7 +45,8 @@ if($jwt){
     try {
         // decode jwt
         $decoded = JWT::decode($jwt, $key, array('HS256'));
-        getExperience($decoded->data->email);
+        // send the email from jwt to authenticate user and return all their data
+        getData($decoded->data->email);
     }
     catch (Exception $e){
         // set response code
@@ -66,9 +67,8 @@ else {
     echo json_encode(array("message" => "Access denied."));
 }
 
-// if the jwt is correct run this
-// get total user's data and send it as json
-function getExperience($email) {
+// if the jwt is correct extract user's email and get all their data
+function getData($jwt_email) {
     // get database connection
     $database = new Database();
     $conn = $database->getConnection();
@@ -77,11 +77,10 @@ function getExperience($email) {
     $user = new User($conn);
 
     // set user paramter
-    $user->email = $email;
+    $user->email = $jwt_email;
 
-    // check if the user is valid
+    // check if the user is valid and get all their other attributes
     if($user->getParameters()) {
-        /*
         // initialize experience object
         $experience = new Experience($conn);
 
@@ -93,15 +92,13 @@ function getExperience($email) {
 
         // make experience output
         $experienceData = array();
-        for($i = 0; $i < count($experience->title); $i++) {
+        for($i = 0; $i < count($experience->id_profession); $i++) {
             array_push($experienceData, array(
-                "title" => $experience->title[$i],
+                "id_profession" => $experience->id_profession[$i],
                 "company" => $experience->company[$i],
                 "date" => $experience->date[$i]
             ));
-        }*/
-
-        $experience = array();
+        }
 
         // make users'info output
         $userData = array(
@@ -117,9 +114,8 @@ function getExperience($email) {
     
         // send json
         echo json_encode(array(
-            "message" => "Access granded.",
             "user" => $userData,
-            "experience" => $experience
+            "experience" => $experienceData
         ));
     } else {
         // set response code

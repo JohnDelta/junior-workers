@@ -8,6 +8,11 @@ class Profil extends React.Component {
         this.state = {
             jwt: localStorage.getItem("jwt"),
             editFlag : false,
+            dropListData: {
+                "profession": [],
+                "skill": [],
+                "education": []
+            },
             data : {
                 "user": [],
                 "experience": [],
@@ -17,26 +22,20 @@ class Profil extends React.Component {
         };
 
         this.toggleEdit = this.toggleEdit.bind(this);
-        this.removeItem = this.removeItem.bind(this);
-        this.addItem = this.addItem.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        
-
-        // keep these
         this.getUserData = this.getUserData.bind(this);
         this.availabilityChange = this.availabilityChange.bind(this);
         this.userDataChange = this.userDataChange.bind(this);
         this.discardChanges = this.discardChanges.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
-
-        /**
-         * next: display properly new added work experience.
-         * then modify experience.php to work with that on read and then on post.
-         */
+        this.userExperienceChange = this.userExperienceChange.bind(this);
+        this.addUserExperience = this.addUserExperience.bind(this);
+        this.removeUserExperience = this.removeUserExperience.bind(this);
+        this.getDropListData = this.getDropListData.bind(this);
     }
 
     componentDidMount() {
         this.getUserData();
+        this.getDropListData();
     }
 
     // open edit mode - be able to edit all values (remove and add new)
@@ -87,47 +86,42 @@ class Profil extends React.Component {
         }
     }
 
-    // remove item from user's input type = "text" info
-    // the name of the calling component should have
-    //  this format sectionName_indexOfLine
-    removeItem(e) {
-        var params = e.target.id.split("_");
-        var section = params[0];
-        var line = params[1];
-        var newExperience = this.state.experience;
-        newExperience[line] = "";
-        this.setState({
-            experience: newExperience
-        });
-    }
-
-    // add item as user's input type = "text" info
-    // the name of the calling component should have
-    //  this name sectionName (which is in)
-    addItem(e) {
-        var section = e.target.id;
-        var newExperience = this.state.experience;
-        newExperience.push({
-            "title": "", "company": "", "date": ""
-        });
-        this.setState({
-            experience: newExperience
-        });
-    }
-
-    // handle the input type="text" changes
-    // the name of the calling component should have
-    //  this format sectionName_indexOfLine_indexOfAttr
-    handleInputChange(e) {
-        var params = e.target.id.split("_");
-        var section = params[0];
-        var line = params[1];
-        var attr = params[2];
+    // handle user's experience input change
+    // each work component is distinguished by an id with the form : experience__indexInJson__nameOfItem
+    // ex. experience__0__company means the item with index 0 and name company called the function 
+    userExperienceChange(e) {
         var value = e.target.value;
-        var newExperience = this.state.experience;
-        newExperience[line][attr] = value;
+        var attr = e.target.id.split("__");
+        var index = attr[1];
+        var name = attr[2];
+        var temp = this.state.data;
+        temp["experience"][index][name] = value;
         this.setState({
-            experience: newExperience
+            data: temp
+        });
+    }
+
+    // add user's experience item
+    addUserExperience() {
+        var temp = this.state.data;
+        temp["experience"].push({
+            "id_profession": this.state.dropListData.profession[0].id_profession, "company": "", "date": ""
+        });
+        this.setState({
+            data: temp
+        });
+    }
+
+    // remove user's experience
+    // each work component remove button is distinguished by an id with the form : experience__indexInJson__remove
+    // ex. experience__0__company means the item with index 0 will be removed from json 
+    removeUserExperience(e) {
+        var attr = e.target.id.split("__");
+        var index = attr[1];
+        var temp = this.state.data;
+        temp["experience"][index] = "";
+        this.setState({
+            data: temp
         });
     }
 
@@ -146,7 +140,9 @@ class Profil extends React.Component {
     }
 
     // post all user's data changes to db
-    async saveChanges() {
+    async saveChanges(e) {
+        e.preventDefault();
+
         const url = 'http://localhost:80//junior-workers/api/post-user-data.php';
         const data = {"jwt": this.state.jwt, "data": this.state.data};
         try {
@@ -163,7 +159,7 @@ class Profil extends React.Component {
             }
             else if (response.status == 200) {
                 const json = await response.json();
-                console.log("Data posted");
+                //console.log("Data posted");
                 this.getUserData();
                 this.toggleEdit();
             }
@@ -197,36 +193,59 @@ class Profil extends React.Component {
         }
     }
 
+    async getDropListData() {
+        const url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            });
+            if(response.status !== 200) {
+                console.error("Unable to get drop list data")
+            }
+            else if (response.status == 200) {
+                const json = await response.json();
+                this.setState({
+                    dropListData: json
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     render() {
 
         // On edit mode change
         var readonly = true;
         var changeButtons = "";
         var availabilityButton = "";
+        var addExperienceButton = "";
+
         if(this.state.editFlag) {
             // make all input editable
             readonly = false;
             // display save and exit changes button
             changeButtons = <div className="change-buttons">
-                                <button onClick={this.saveChanges}><i className="fa fa-check" /></button>
+                                <button type="submit"><i className="fa fa-check" /></button>
                                 <button onClick={this.discardChanges}><i className="fa fa-times" /></button>
                             </div>;
             // add availability change button
             availabilityButton = <button className="profil-availability-button" onClick={this.availabilityChange}>
                                     <i className="fa fa-refresh" />
                                 </button>;
+            // display add experience option
+            addExperienceButton = <button className="add-btn" onClick={this.addUserExperience} name="experience">
+                                    <i className="fa fa-plus" />Add Experience
+                                </button>;
         }
 
-        // availability state change
+        // display availability according to state
         var availabilityText = <p>Not available to hire</p>;
-        if(this.state.data["user"]["availability"] === "1") availabilityText = <p>Available to hire</p>;
-
-        // display add job option if you are on edit mode
-        var addExperienceButton = "";
-        if(this.state.editFlag) addExperienceButton = 
-            <button className="add-btn" onClick={this.addItem} name="experience">
-                <i className="fa fa-plus" />Add Experience
-            </button>;
+        if(this.state.data["user"]["availability"] === "1") availabilityText = <p>Available to hire</p>; 
 
         // Map experience from json to div
         var experienceMap = [];
@@ -235,36 +254,52 @@ class Profil extends React.Component {
                 // display remove job if you are on edit mode
                 var removeButton = "";
                 if(this.state.editFlag) {
-                    removeButton = <button className="work-remove" id={"experience_"+index+"_remove"} onClick={this.removeItem}>
+                    removeButton = <button className="work-remove" id={"experience__"+index+"__remove"} onClick={this.removeUserExperience}>
                         <i className="fa fa-times" />
                     </button>;
-                } 
+                }
+                // map all professions into option - select
+                var professionMap = [];
+                this.state.dropListData["profession"].forEach((pro_item, pro_index) => {
+                    professionMap.push(
+                        <option value={pro_item.id_profession} key={"profession_option__"+index+"__"+pro_index}>{pro_item.title}</option>
+                    );
+                });
+                // push experience div
                 experienceMap.push(
                     <div className="work" key={"experience"+index}>
+                        <p className="work-label">Worked as</p>
+                        <select 
+                            id={"experience__"+index+"__id_profession"}
+                            readOnly={readonly} 
+                            value={item.id_profession}
+                            onChange={this.userExperienceChange} >
+                            {professionMap}
+                        </select>
+                        <p className="work-label">At</p>
                         <input 
                             type="text" 
                             readOnly={readonly} 
-                            id={"experience_"+index+"_title"} 
-                            onChange={this.handleInputChange} 
-                            defaultValue={item.title} />
+                            id={"experience__"+index+"__company"} 
+                            onChange={this.userExperienceChange} 
+                            defaultValue={item.company}
+                            placeholder="company"
+                            required={true} />
+                        <p className="work-label">Between</p>
                         <input 
                             type="text" 
                             readOnly={readonly} 
-                            id={"experience_"+index+"_company"} 
-                            onChange={this.handleInputChange} 
-                            defaultValue={item.company} />
-                        <input 
-                            type="text" 
-                            readOnly={readonly} 
-                            id={"experience_"+index+"_date"} 
-                            onChange={this.handleInputChange} 
-                            defaultValue={item.date} />
+                            id={"experience__"+index+"__date"} 
+                            onChange={this.userExperienceChange} 
+                            defaultValue={item.date}
+                            placeholder="date"
+                            required={true} />
                         {removeButton}
                     </div>
                 );
             }
         });
-        if(this.state.data["experience"].length === 0) experienceMap = "No experience so far";
+        if(this.state.data["experience"] === []) experienceMap = "No experience so far";
         
 
 
@@ -320,7 +355,7 @@ class Profil extends React.Component {
                             Resume
                         </button>
                     </div>
-                    <div className="profil-content">
+                    <form className="profil-content" id="profil-form" onSubmit={this.saveChanges}>
                         <div className="title">Work Experience</div>
                         <div className="title-hr" />
                         <div className="section">
@@ -328,7 +363,7 @@ class Profil extends React.Component {
                             {addExperienceButton}
                         </div>
                         {changeButtons}
-                    </div>
+                    </form>
                 </div>
 
             </div>

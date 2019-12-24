@@ -287,10 +287,14 @@
 /*PROFIL - WORK - START*/
 .profil-content .section .work {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
+}
+.profil-content .section .work .work-label {
+    grid-column: 1/2;
+    margin-right: 6px;
 }
 .profil-content .section .work input[type="text"] {
-    grid-column: 1/2;
+    grid-column: 2/3;
     border: none;
     border-bottom: 2px solid #247BA0;
     background-color: transparent;
@@ -304,7 +308,7 @@
 .profil-content .section .work-remove {
     margin-left: 10px;
     grid-row: 1/4;
-    grid-column: 2/3;
+    grid-column: 3/4;
     align-self: center;
     justify-self: end;
     color: #ffffff;

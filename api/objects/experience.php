@@ -39,16 +39,16 @@ class Experience {
 
         // sanitize each entry given
         $this->id_user = htmlspecialchars(strip_tags($this->id_user));
-        for($i = 0; $i < count($this->title); $i++) {
-            $this->id_profession[$i] = htmlspecialchars(strip_tags($this->title[$i]));
+        for($i = 0; $i < count($this->id_profession); $i++) {
+            $this->id_profession[$i] = htmlspecialchars(strip_tags($this->id_profession[$i]));
             $this->company[$i] = htmlspecialchars(strip_tags($this->company[$i]));
             $this->date[$i] = htmlspecialchars(strip_tags($this->date[$i]));
 
             // bind parameters to the prepare statement
-            $stmt->bindParam(':id_profession', $this->id_profession[$i], PDO::PARAM_STR_CHAR, 100);
-            $stmt->bindParam(':company', $this->company[$i], PDO::PARAM_STR_CHAR, 100);
-            $stmt->bindParam(':date', $this->date[$i], PDO::PARAM_STR_CHAR, 10);
-            $stmt->bindParam(':id_user', $this->id_user, PDO::PARAM_INT, 10);
+            $stmt->bindParam(':id_profession', $this->id_profession[$i]);
+            $stmt->bindParam(':company', $this->company[$i]);
+            $stmt->bindParam(':date', $this->date[$i]);
+            $stmt->bindParam(':id_user', $this->id_user);
 
             // execute each query
             $stmt->execute();
@@ -61,7 +61,7 @@ class Experience {
     // check if the user has experience, if they have, get them all
     public function getAll() {
         // create the select all experience query
-        $query = "SELECT id_experience, title, company, date FROM ".$this->tableName. "
+        $query = "SELECT id_experience, id_profession, company, date FROM ".$this->tableName. "
             WHERE id_user = :id_user";
 
         // create statement
@@ -71,7 +71,7 @@ class Experience {
         $this->id_user = htmlspecialchars(strip_tags($this->id_user));
 
         // bind the parameter to the statement
-        $stmt->bindParam(":id_user", $this->id_user, PDO::PARAM_INT, 10);
+        $stmt->bindParam(":id_user", $this->id_user);
 
         // execute query
         $stmt->execute();
@@ -80,7 +80,7 @@ class Experience {
         if($stmt->rowCount() > 0) {
             while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 array_push($this->id_experience, $row["id_experience"]);
-                array_push($this->title, $row["title"]);
+                array_push($this->id_profession, $row["id_profession"]);
                 array_push($this->company, $row["company"]);
                 array_push($this->date, $row["date"]);
             }
@@ -103,7 +103,7 @@ class Experience {
         $stmt = $this->conn->prepare($query);
 
         // bind parameter to statement
-        $stmt->bindParam(":id_user", $this->id_user, PDO::PARAM_INT, 10);
+        $stmt->bindParam(":id_user", $this->id_user);
 
         // execute query
         if($stmt->execute()) {

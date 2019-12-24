@@ -73,9 +73,6 @@ function postData($jwt_email, $data) {
     $database = new Database();
     $conn = $database->getConnection();
 
-    // get user's data
-    $userData = $data->user;
-
     // initialize user
     $user = new User($conn);
 
@@ -86,13 +83,28 @@ function postData($jwt_email, $data) {
     if($user->getParameters()) {
 
         // alter user's data
-        $user->firstname = $userData->firstname;
-        $user->lastname = $userData->lastname;
-        $user->title = $userData->title;
-        $user->availability = $userData->availability;
+        $user->firstname = $data->user->firstname;
+        $user->lastname = $data->user->lastname;
+        $user->title = $data->user->title;
+        $user->availability = $data->user->availability;
         if($user->alterAll()) {
 
-            // HERE ALTER THE OTHER DATA LATER...
+            // get all experience and insert it
+            // if the values are "" it means their're removed
+            $experience = new Experience($conn);
+            if($experience != "") {
+                $experience->id_user = $user->id_user;
+                foreach($data->experience as $line) {
+                    if($line != "") {
+                        array_push($experience->id_profession, $line->id_profession);
+                        array_push($experience->company, $line->company);
+                        array_push($experience->date, $line->date);
+                    }
+                }
+                $experience->insertAll();
+            } else {
+                $experience->removeAll();
+            }
 
             // set response code
             http_response_code(200);

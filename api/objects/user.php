@@ -88,7 +88,7 @@ class User {
         if($numberOfRows > 0) {
             // user exists, update the rest of the parameters
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->id = $row["id_user"];
+            $this->id_user = $row["id_user"];
             $this->firstname = $row["firstname"];
             $this->lastname = $row["lastname"];
             $this->password = $row["password"];
