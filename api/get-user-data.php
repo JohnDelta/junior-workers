@@ -22,10 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	exit(0);
 }
 
-// include database and experience scripts
+// include scripts
 include_once("config/database.php");
 include_once("objects/experience.php");
 include_once("objects/user.php");
+include_once("objects/skill.php");
  
 // required to decode jwt
 include_once 'config/core.php';
@@ -100,6 +101,23 @@ function getData($jwt_email) {
             ));
         }
 
+        // initialize skill object
+        $skill = new Skill($conn);
+
+        // extract parameters from the data
+        $skill->id_user = $user->id_user;
+
+        // get all skill parameters
+        $skill->getAll();
+
+        // make skill output
+        $skillData = array();
+        for($i = 0; $i < count($skill->id_skill); $i++) {
+            array_push($skillData, array(
+                "id_skill" => $skill->id_skill[$i]
+            ));
+        }
+
         // make users'info output
         $userData = array(
             "firstname" => $user->firstname,
@@ -115,7 +133,9 @@ function getData($jwt_email) {
         // send json
         echo json_encode(array(
             "user" => $userData,
-            "experience" => $experienceData
+            "experience" => $experienceData,
+            "skill" => $skillData,
+            "education" => array()
         ));
     } else {
         // set response code

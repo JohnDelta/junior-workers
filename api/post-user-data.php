@@ -22,10 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	exit(0);
 }
 
-// include database and experience scripts
+// include scripts
 include_once("config/database.php");
 include_once("objects/experience.php");
 include_once("objects/user.php");
+include_once("objects/skill.php");
  
 // required to decode jwt
 include_once 'config/core.php';
@@ -92,7 +93,7 @@ function postData($jwt_email, $data) {
             // get all experience and insert it
             // if the values are "" it means their're removed
             $experience = new Experience($conn);
-            if($experience != "") {
+            if($data->experience != "" && !empty($data->experience)) {
                 $experience->id_user = $user->id_user;
                 foreach($data->experience as $line) {
                     if($line != "") {
@@ -104,6 +105,21 @@ function postData($jwt_email, $data) {
                 $experience->insertAll();
             } else {
                 $experience->removeAll();
+            }
+
+            // get all skill and insert it
+            // if the values are "" it means their're removed
+            $skill = new Skill($conn);
+            if($data->skill != "" && !empty($data->skill)) {
+                $skill->id_user = $user->id_user;
+                foreach($data->skill as $line) {
+                    if($line != "") {
+                        array_push($skill->id_skill, $line->id_skill);
+                    }
+                }
+                $skill->insertAll();
+            } else {
+                $skill->removeAll();
             }
 
             // set response code

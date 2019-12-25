@@ -23,13 +23,17 @@ class Profil extends React.Component {
 
         this.toggleEdit = this.toggleEdit.bind(this);
         this.getUserData = this.getUserData.bind(this);
+
+        this.userHeaderChange = this.userHeaderChange.bind(this);
         this.availabilityChange = this.availabilityChange.bind(this);
-        this.userDataChange = this.userDataChange.bind(this);
+
         this.discardChanges = this.discardChanges.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
-        this.userExperienceChange = this.userExperienceChange.bind(this);
-        this.addUserExperience = this.addUserExperience.bind(this);
-        this.removeUserExperience = this.removeUserExperience.bind(this);
+        
+        this.userDataChange = this.userDataChange.bind(this);
+        this.removeUserData = this.removeUserData.bind(this);
+        this.addUserData = this.addUserData.bind(this);
+
         this.getDropListData = this.getDropListData.bind(this);
     }
 
@@ -50,7 +54,8 @@ class Profil extends React.Component {
     }
 
     // handle user data input change 
-    userDataChange(e) {
+    userHeaderChange(e) {
+        e.preventDefault();
         var id = e.target.id;
         var value = e.target.value;
         var temp = this.state.data;
@@ -86,40 +91,55 @@ class Profil extends React.Component {
         }
     }
 
-    // handle user's experience input change
-    // each work component is distinguished by an id with the form : experience__indexInJson__nameOfItem
-    // ex. experience__0__company means the item with index 0 and name company called the function 
-    userExperienceChange(e) {
+    // handle user's data input change
+    // each Data component is distinguished by an id with the form : nameOfData__indexInJson__nameOfItem
+    // ex. skill__0__title means the data item skill with index 0 and name title called the function 
+    userDataChange(e) {
+        e.preventDefault();
         var value = e.target.value;
         var attr = e.target.id.split("__");
+        var dataName = attr[0];
         var index = attr[1];
         var name = attr[2];
         var temp = this.state.data;
-        temp["experience"][index][name] = value;
+        temp[dataName][index][name] = value;
         this.setState({
             data: temp
         });
     }
 
-    // add user's experience item
-    addUserExperience() {
+    // add user's skill item
+    addUserData(e) {
+        e.preventDefault();
         var temp = this.state.data;
-        temp["experience"].push({
-            "id_profession": this.state.dropListData.profession[0].id_profession, "company": "", "date": ""
-        });
+        var dataName = e.target.name;
+        if(dataName === "experience") {
+            temp["experience"].push({
+                "id_profession": this.state.dropListData.profession[0].id_profession, "company": "", "date": ""
+            });
+        } else if (dataName === "skill") {
+            temp["skill"].push({
+                "id_skill": this.state.dropListData.skill[0].id_skill});
+        } else if (dataName === "education") {
+            temp["education"].push({
+                "id_education": this.state.dropListData.education[0].id_education, "title": ""
+            });
+        }
         this.setState({
             data: temp
         });
     }
 
-    // remove user's experience
-    // each work component remove button is distinguished by an id with the form : experience__indexInJson__remove
-    // ex. experience__0__company means the item with index 0 will be removed from json 
-    removeUserExperience(e) {
+    // remove user's data
+    // each data component remove button is distinguished by an id with the form : dataName__indexInJson__remove
+    // ex. skill__0__title means the data item experience with index 0 and name title will be removed from json 
+    removeUserData(e) {
+        e.preventDefault();
         var attr = e.target.id.split("__");
+        var dataName = attr[0];
         var index = attr[1];
         var temp = this.state.data;
-        temp["experience"][index] = "";
+        temp[dataName][index] = "";
         this.setState({
             data: temp
         });
@@ -224,6 +244,7 @@ class Profil extends React.Component {
         var changeButtons = "";
         var availabilityButton = "";
         var addExperienceButton = "";
+        var addSkillButton = "";
 
         if(this.state.editFlag) {
             // make all input editable
@@ -238,8 +259,12 @@ class Profil extends React.Component {
                                     <i className="fa fa-refresh" />
                                 </button>;
             // display add experience option
-            addExperienceButton = <button className="add-btn" onClick={this.addUserExperience} name="experience">
+            addExperienceButton = <button className="add-btn" onClick={this.addUserData} name="experience">
                                     <i className="fa fa-plus" />Add Experience
+                                </button>;
+            // display add Skill option
+            addSkillButton = <button className="add-btn" onClick={this.addUserData} name="skill">
+                                    <i className="fa fa-plus" />Add Skill
                                 </button>;
         }
 
@@ -254,7 +279,7 @@ class Profil extends React.Component {
                 // display remove job if you are on edit mode
                 var removeButton = "";
                 if(this.state.editFlag) {
-                    removeButton = <button className="work-remove" id={"experience__"+index+"__remove"} onClick={this.removeUserExperience}>
+                    removeButton = <button className="work-remove" id={"experience__"+index+"__remove"} onClick={this.removeUserData}>
                         <i className="fa fa-times" />
                     </button>;
                 }
@@ -273,7 +298,7 @@ class Profil extends React.Component {
                             id={"experience__"+index+"__id_profession"}
                             readOnly={readonly} 
                             value={item.id_profession}
-                            onChange={this.userExperienceChange} >
+                            onChange={this.userDataChange} >
                             {professionMap}
                         </select>
                         <p className="work-label">At</p>
@@ -281,7 +306,7 @@ class Profil extends React.Component {
                             type="text" 
                             readOnly={readonly} 
                             id={"experience__"+index+"__company"} 
-                            onChange={this.userExperienceChange} 
+                            onChange={this.userDataChange} 
                             defaultValue={item.company}
                             placeholder="company"
                             required={true} />
@@ -290,7 +315,7 @@ class Profil extends React.Component {
                             type="text" 
                             readOnly={readonly} 
                             id={"experience__"+index+"__date"} 
-                            onChange={this.userExperienceChange} 
+                            onChange={this.userDataChange} 
                             defaultValue={item.date}
                             placeholder="date"
                             required={true} />
@@ -301,7 +326,41 @@ class Profil extends React.Component {
         });
         if(this.state.data["experience"] === []) experienceMap = "No experience so far";
         
-
+        // Map skill from json to div
+        var skillMap = [];
+        this.state.data["skill"].forEach((item, index) => {
+            if(item !== ""){
+                // display remove skill if you are on edit mode
+                var removeButton = "";
+                if(this.state.editFlag) {
+                    removeButton = <button className="skill-remove" id={"skill__"+index+"__remove"} onClick={this.removeUserData}>
+                        <i className="fa fa-times" />
+                    </button>;
+                }
+                // map all skills into option - select
+                var skillsMap = [];
+                this.state.dropListData["skill"].forEach((pro_item, pro_index) => {
+                    skillsMap.push(
+                        <option value={pro_item.id_skill} key={"skill_option__"+index+"__"+pro_index}>{pro_item.title}</option>
+                    );
+                });
+                // push skill div
+                skillMap.push(
+                    <div className="skill" key={"skill"+index}>
+                        <div className="skill-dot"></div>
+                        <select 
+                            id={"skill__"+index+"__id_skill"}
+                            readOnly={readonly} 
+                            value={item.id_skill}
+                            onChange={this.userDataChange} >
+                            {skillsMap}
+                        </select>
+                        {removeButton}
+                    </div>
+                );
+            }
+        });
+        if(this.state.data["skill"] === [] || this.state.data["skill"].length === 0) skillMap = "No skills so far";
 
         return(
             <div className="Profil">
@@ -327,7 +386,7 @@ class Profil extends React.Component {
                             readOnly={readonly}
                             placeholder="Firstname"
                             id="firstname"
-                            onChange={this.userDataChange}
+                            onChange={this.userHeaderChange}
                         />
                         <input 
                             type="text" 
@@ -336,7 +395,7 @@ class Profil extends React.Component {
                             readOnly={readonly}
                             placeholder="Lastname"
                             id="lastname"
-                            onChange={this.userDataChange}
+                            onChange={this.userHeaderChange}
                         />
                         <input
                             type="text" 
@@ -345,7 +404,7 @@ class Profil extends React.Component {
                             readOnly={readonly}
                             placeholder="Profession title"
                             id="title"
-                            onChange={this.userDataChange}
+                            onChange={this.userHeaderChange}
                         />
                         <div className="profil-availability">
                             {availabilityText}{availabilityButton}
@@ -361,6 +420,20 @@ class Profil extends React.Component {
                         <div className="section">
                             {experienceMap}
                             {addExperienceButton}
+                        </div>
+                        <div className="title">Skills</div>
+                        <div className="title-hr" />
+                        <div className="section">
+                            {skillMap}
+                            {addSkillButton}
+                        </div>
+                        <div className="title">Education</div>
+                        <div className="title-hr" />
+                        <div className="section">
+                        </div>
+                        <div className="title">Personal Contact</div>
+                        <div className="title-hr" />
+                        <div className="section">
                         </div>
                         {changeButtons}
                     </form>
