@@ -47,6 +47,7 @@ if($jwt){
     try {
         // decode jwt
         $decoded = JWT::decode($jwt, $key, array('HS256'));
+
         // send the email from jwt to authenticate user and the data to alter
         postData($decoded->data->email, $data);
     }
@@ -91,7 +92,7 @@ function postData($jwt_email, $data) {
         if($user->alterAll()) {
 
             // get all experience and insert it
-            // if the values are "" it means their're removed
+            // if the values are "" it means they've been removed
             $experience = new Experience($conn);
             if($data->experience != "" && !empty($data->experience)) {
                 $experience->id_user = $user->id_user;
@@ -108,7 +109,7 @@ function postData($jwt_email, $data) {
             }
 
             // get all skill and insert it
-            // if the values are "" it means their're removed
+            // if the values are "" it means they've been removed
             $skill = new Skill($conn);
             if($data->skill != "" && !empty($data->skill)) {
                 $skill->id_user = $user->id_user;

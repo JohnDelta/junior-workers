@@ -29,6 +29,9 @@ $conn = $database->getConnection();
 $skill = array();
 $profession = array();
 $education = array();
+$education_level = array();
+$language = array();
+$language_level = array();
 
 try {
     //get all skills
@@ -61,6 +64,36 @@ try {
         ));
     }
 
+    //get all education level
+    $query = "SELECT * FROM education_level";
+    $stmt = $conn->query($query);
+    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        array_push($education_level, array(
+            "id_education_level" => $row["id_education_level"],
+            "title" => $row["title"]
+        ));
+    }
+
+    //get all language
+    $query = "SELECT * FROM language";
+    $stmt = $conn->query($query);
+    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        array_push($language, array(
+            "id_language" => $row["id_language"],
+            "title" => $row["title"]
+        ));
+    }
+
+    //get all language level
+    $query = "SELECT * FROM language_level";
+    $stmt = $conn->query($query);
+    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        array_push($language_level, array(
+            "id_language_level" => $row["id_language_level"],
+            "title" => $row["title"]
+        ));
+    }
+
     // set response code
     http_response_code(200);
         
@@ -68,7 +101,10 @@ try {
     echo json_encode(array(
         "skill" => $skill,
         "education" => $education,
-        "profession" => $profession
+        "education_level" => $education_level,
+        "profession" => $profession,
+        "language" => $language,
+        "language_level" => $language_level
     ));
     
 } catch(Exception $e) {

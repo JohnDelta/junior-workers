@@ -122,7 +122,8 @@ class Profil extends React.Component {
                 "id_skill": this.state.dropListData.skill[0].id_skill});
         } else if (dataName === "education") {
             temp["education"].push({
-                "id_education": this.state.dropListData.education[0].id_education, "title": ""
+                "id_education": this.state.dropListData.education[0].id_education, 
+                "id_education_skill": this.state.dropListData.education_level[0].id_education_level 
             });
         }
         this.setState({
@@ -245,6 +246,7 @@ class Profil extends React.Component {
         var availabilityButton = "";
         var addExperienceButton = "";
         var addSkillButton = "";
+        var addEducationButton = "";
 
         if(this.state.editFlag) {
             // make all input editable
@@ -265,6 +267,10 @@ class Profil extends React.Component {
             // display add Skill option
             addSkillButton = <button className="add-btn" onClick={this.addUserData} name="skill">
                                     <i className="fa fa-plus" />Add Skill
+                                </button>;
+            // display add Education option
+            addEducationButton = <button className="add-btn" onClick={this.addUserData} name="education">
+                                    <i className="fa fa-plus" />Add Education
                                 </button>;
         }
 
@@ -362,6 +368,56 @@ class Profil extends React.Component {
         });
         if(this.state.data["skill"] === [] || this.state.data["skill"].length === 0) skillMap = "No skills so far";
 
+        // Map education from json to div
+        var educationMap = [];
+        this.state.data["education"].forEach((item, index) => {
+            if(item !== ""){
+                // display remove education if you are on edit mode
+                var removeButton = "";
+                if(this.state.editFlag) {
+                    removeButton = <button className="skill-remove" id={"education__"+index+"__remove"} onClick={this.removeUserData}>
+                        <i className="fa fa-times" />
+                    </button>;
+                }
+                // map all education into option - select
+                var allEducationMap = [];
+                this.state.dropListData["education"].forEach((pro_item, pro_index) => {
+                    allEducationMap.push(
+                        <option value={pro_item.id_education} key={"education_option__"+index+"__"+pro_index}>{pro_item.title}</option>
+                    );
+                });
+                // map all education levels into option - select
+                var allEducationLevelsMap = [];
+                this.state.dropListData["education_level"].forEach((pro_item, pro_index) => {
+                    allEducationLevelsMap.push(
+                        <option value={pro_item.id_education_level} key={"education_level_option__"+index+"__"+pro_index}>{pro_item.title}</option>
+                    );
+                });
+                // push education div
+                educationMap.push(
+                    <div className="education" key={"education"+index}>
+                        <div className="education-dot"></div>
+                        <select 
+                            id={"education__"+index+"__id_education"}
+                            readOnly={readonly} 
+                            value={item.id_education}
+                            onChange={this.userDataChange} >
+                            {allEducationMap}
+                        </select>
+                        <select 
+                            id={"education__"+index+"__id_education_level"}
+                            readOnly={readonly} 
+                            value={item.id_education_level}
+                            onChange={this.userDataChange} >
+                            {allEducationLevelsMap}
+                        </select>
+                        {removeButton}
+                    </div>
+                );
+            }
+        });
+        if(this.state.data["education"] === [] || this.state.data["education"].length === 0) educationMap = "No education so far";
+
         return(
             <div className="Profil">
                 <img id="bg" className="background" src={require('./images/backgroundBig.jpg')} />
@@ -430,6 +486,8 @@ class Profil extends React.Component {
                         <div className="title">Education</div>
                         <div className="title-hr" />
                         <div className="section">
+                            {educationMap}
+                            {addEducationButton}
                         </div>
                         <div className="title">Personal Contact</div>
                         <div className="title-hr" />

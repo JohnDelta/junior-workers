@@ -368,7 +368,40 @@
 /*PROFIL - SKILLS - END*/
 
 /*PROFIL - EDUCATION - START*/
-
+.profil-content .section .education {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    align-items: center;
+    justify-content: start;
+}
+.profil-content .section .education-dot {
+    width: 15px;
+    height: 15px;
+    background-color: #247BA0;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.profil-content .section .education-remove {
+    margin-left: 10px;
+    align-self: center;
+    justify-self: end;
+    color: #ffffff;
+    background-color: #F25F5C;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    font-weight: 900;
+    text-align: center;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.profil-content .section .education-remove i {
+    pointer-events: none;
+}
 /*PROFIL - EDUCATION - END*/
 
 /*PROFIL - CONTACT - START*/
