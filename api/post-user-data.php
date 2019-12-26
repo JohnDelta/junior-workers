@@ -27,6 +27,8 @@ include_once("config/database.php");
 include_once("objects/experience.php");
 include_once("objects/user.php");
 include_once("objects/skill.php");
+include_once("objects/education.php");
+include_once("objects/language.php");
  
 // required to decode jwt
 include_once 'config/core.php';
@@ -94,7 +96,7 @@ function postData($jwt_email, $data) {
             // get all experience and insert it
             // if the values are "" it means they've been removed
             $experience = new Experience($conn);
-            if($data->experience != "" && !empty($data->experience)) {
+            if($data->experience != "" || !empty($data->experience) || $data->experience != array()) {
                 $experience->id_user = $user->id_user;
                 foreach($data->experience as $line) {
                     if($line != "") {
@@ -111,7 +113,7 @@ function postData($jwt_email, $data) {
             // get all skill and insert it
             // if the values are "" it means they've been removed
             $skill = new Skill($conn);
-            if($data->skill != "" && !empty($data->skill)) {
+            if($data->skill != "" || !empty($data->skill) || $data->skill != array()) {
                 $skill->id_user = $user->id_user;
                 foreach($data->skill as $line) {
                     if($line != "") {
@@ -121,6 +123,38 @@ function postData($jwt_email, $data) {
                 $skill->insertAll();
             } else {
                 $skill->removeAll();
+            }
+
+            // get all education and insert it
+            // if the values are "" it means they've been removed
+            $education = new Education($conn);
+            if($data->education != "" || !empty($data->education) || $data->education != array()) {
+                $education->id_user = $user->id_user;
+                foreach($data->education as $line) {
+                    if($line != "") {
+                        array_push($education->id_education, $line->id_education);
+                        array_push($education->id_education_level, $line->id_education_level);
+                    }
+                }
+                $education->insertAll();
+            } else {
+                $education->removeAll();
+            }
+
+            // get all language and insert it
+            // if the values are "" it means they've been removed
+            $language = new Language($conn);
+            if($data->language != "" || !empty($data->language) || $data->language != array()) {
+                $language->id_user = $user->id_user;
+                foreach($data->language as $line) {
+                    if($line != "") {
+                        array_push($language->id_language, $line->id_language);
+                        array_push($language->id_language_level, $line->id_language_level);
+                    }
+                }
+                $language->insertAll();
+            } else {
+                $language->removeAll();
             }
 
             // set response code

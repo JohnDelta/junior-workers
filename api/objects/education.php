@@ -37,7 +37,7 @@ class Education {
 
         // sanitize each entry given
         $this->id_user = htmlspecialchars(strip_tags($this->id_user));
-        for($i = 0; $i < count($this->id_skill); $i++) {
+        for($i = 0; $i < count($this->id_education); $i++) {
             $this->id_education[$i] = htmlspecialchars(strip_tags($this->id_education[$i]));
             $this->id_education_level[$i] = htmlspecialchars(strip_tags($this->id_education_level[$i]));
 

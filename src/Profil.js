@@ -1,23 +1,29 @@
 import React from 'react';
 import './Profil.css';
 import Navbar from './Navbar';
+import  { Redirect } from 'react-router-dom';
 
 class Profil extends React.Component {
     constructor(props) {
         super();
         this.state = {
+            redirect: "",
             jwt: localStorage.getItem("jwt"),
             editFlag : false,
             dropListData: {
                 "profession": [],
                 "skill": [],
-                "education": []
+                "education": [],
+                "education_level": [],
+                "language": [],
+                "language_level": []
             },
             data : {
                 "user": [],
                 "experience": [],
                 "skill": [],
-                "education": []
+                "education": [],
+                "language": []
             }
         };
 
@@ -38,6 +44,12 @@ class Profil extends React.Component {
     }
 
     componentDidMount() {
+        if(this.state.jwt === null) {
+            var temp = <Redirect to="/" />;
+            this.setState({
+                redirect: temp
+            });
+        }
         this.getUserData();
         this.getDropListData();
     }
@@ -123,7 +135,12 @@ class Profil extends React.Component {
         } else if (dataName === "education") {
             temp["education"].push({
                 "id_education": this.state.dropListData.education[0].id_education, 
-                "id_education_skill": this.state.dropListData.education_level[0].id_education_level 
+                "id_education_level": this.state.dropListData.education_level[0].id_education_level 
+            });
+        } else if (dataName === "language") {
+            temp["language"].push({
+                "id_language": this.state.dropListData.language[0].id_language, 
+                "id_language_level": this.state.dropListData.language_level[0].id_language_level 
             });
         }
         this.setState({
@@ -153,7 +170,8 @@ class Profil extends React.Component {
                 "user": [],
                 "experience": [],
                 "skill": [],
-                "education": []
+                "education": [],
+                "language": []
             }
         });
         this.getUserData();
@@ -247,6 +265,7 @@ class Profil extends React.Component {
         var addExperienceButton = "";
         var addSkillButton = "";
         var addEducationButton = "";
+        var addLanguageButton = "";
 
         if(this.state.editFlag) {
             // make all input editable
@@ -271,6 +290,10 @@ class Profil extends React.Component {
             // display add Education option
             addEducationButton = <button className="add-btn" onClick={this.addUserData} name="education">
                                     <i className="fa fa-plus" />Add Education
+                                </button>;
+            // display add Language option
+            addLanguageButton = <button className="add-btn" onClick={this.addUserData} name="language">
+                                    <i className="fa fa-plus" />Add Language
                                 </button>;
         }
 
@@ -330,7 +353,7 @@ class Profil extends React.Component {
                 );
             }
         });
-        if(this.state.data["experience"] === []) experienceMap = "No experience so far";
+        if(this.state.data["experience"] === [] || this.state.data["experience"].length === 0) experienceMap = "No experience so far";
         
         // Map skill from json to div
         var skillMap = [];
@@ -375,7 +398,7 @@ class Profil extends React.Component {
                 // display remove education if you are on edit mode
                 var removeButton = "";
                 if(this.state.editFlag) {
-                    removeButton = <button className="skill-remove" id={"education__"+index+"__remove"} onClick={this.removeUserData}>
+                    removeButton = <button className="education-remove" id={"education__"+index+"__remove"} onClick={this.removeUserData}>
                         <i className="fa fa-times" />
                     </button>;
                 }
@@ -398,18 +421,18 @@ class Profil extends React.Component {
                     <div className="education" key={"education"+index}>
                         <div className="education-dot"></div>
                         <select 
-                            id={"education__"+index+"__id_education"}
-                            readOnly={readonly} 
-                            value={item.id_education}
-                            onChange={this.userDataChange} >
-                            {allEducationMap}
-                        </select>
-                        <select 
                             id={"education__"+index+"__id_education_level"}
                             readOnly={readonly} 
                             value={item.id_education_level}
                             onChange={this.userDataChange} >
                             {allEducationLevelsMap}
+                        </select>
+                        <select 
+                            id={"education__"+index+"__id_education"}
+                            readOnly={readonly} 
+                            value={item.id_education}
+                            onChange={this.userDataChange} >
+                            {allEducationMap}
                         </select>
                         {removeButton}
                     </div>
@@ -418,8 +441,60 @@ class Profil extends React.Component {
         });
         if(this.state.data["education"] === [] || this.state.data["education"].length === 0) educationMap = "No education so far";
 
+        // Map language from json to div
+        var languageMap = [];
+        this.state.data["language"].forEach((item, index) => {
+            if(item !== ""){
+                // display remove language if you are on edit mode
+                var removeButton = "";
+                if(this.state.editFlag) {
+                    removeButton = <button className="language-remove" id={"language__"+index+"__remove"} onClick={this.removeUserData}>
+                        <i className="fa fa-times" />
+                    </button>;
+                }
+                // map all language into option - select
+                var allLanguageMap = [];
+                this.state.dropListData["language"].forEach((pro_item, pro_index) => {
+                    allLanguageMap.push(
+                        <option value={pro_item.id_language} key={"language_option__"+index+"__"+pro_index}>{pro_item.title}</option>
+                    );
+                });
+                // map all language levels into option - select
+                var allLanguageLevelsMap = [];
+                this.state.dropListData["language_level"].forEach((pro_item, pro_index) => {
+                    allLanguageLevelsMap.push(
+                        <option value={pro_item.id_language_level} key={"language_level_option__"+index+"__"+pro_index}>{pro_item.title}</option>
+                    );
+                });
+                // push language div
+                languageMap.push(
+                    <div className="language" key={"language"+index}>
+                        <div className="language-dot"></div>
+                        <select 
+                            id={"language__"+index+"__id_language_level"}
+                            readOnly={readonly} 
+                            value={item.id_language_level}
+                            onChange={this.userDataChange} >
+                            {allLanguageLevelsMap}
+                        </select>
+                        <select 
+                            id={"language__"+index+"__id_language"}
+                            readOnly={readonly} 
+                            value={item.id_language}
+                            onChange={this.userDataChange} >
+                            {allLanguageMap}
+                        </select>
+                        {removeButton}
+                    </div>
+                );
+            }
+        });
+        if(this.state.data["language"] === [] || this.state.data["language"].length === 0) languageMap = "No language so far";
+
         return(
             <div className="Profil">
+                {this.state.redirect}
+
                 <img id="bg" className="background" src={require('./images/backgroundBig.jpg')} />
 
                 <div className="logo">
@@ -489,9 +564,16 @@ class Profil extends React.Component {
                             {educationMap}
                             {addEducationButton}
                         </div>
-                        <div className="title">Personal Contact</div>
+                        <div className="title">Language</div>
                         <div className="title-hr" />
                         <div className="section">
+                            {languageMap}
+                            {addLanguageButton}
+                        </div>
+                        <div className="title">Contact Info</div>
+                        <div className="title-hr" />
+                        <div className="section">
+                            Email : {this.state.data["user"]["email"]}
                         </div>
                         {changeButtons}
                     </form>

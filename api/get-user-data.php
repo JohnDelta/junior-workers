@@ -27,6 +27,8 @@ include_once("config/database.php");
 include_once("objects/experience.php");
 include_once("objects/user.php");
 include_once("objects/skill.php");
+include_once("objects/education.php");
+include_once("objects/language.php");
  
 // required to decode jwt
 include_once 'config/core.php';
@@ -118,6 +120,42 @@ function getData($jwt_email) {
             ));
         }
 
+        // initialize education object
+        $education = new Education($conn);
+
+        // extract parameters from the data
+        $education->id_user = $user->id_user;
+
+        // get all education parameters
+        $education->getAll();
+
+        // make education output
+        $educationData = array();
+        for($i = 0; $i < count($education->id_education); $i++) {
+            array_push($educationData, array(
+                "id_education" => $education->id_education[$i],
+                "id_education_level" => $education->id_education_level[$i]
+            ));
+        }
+
+        // initialize language object
+        $language = new Language($conn);
+
+        // extract parameters from the data
+        $language->id_user = $user->id_user;
+
+        // get all language parameters
+        $language->getAll();
+
+        // make education output
+        $languageData = array();
+        for($i = 0; $i < count($language->id_language); $i++) {
+            array_push($languageData, array(
+                "id_language" => $language->id_language[$i],
+                "id_language_level" => $language->id_language_level[$i]
+            ));
+        }
+
         // make users'info output
         $userData = array(
             "firstname" => $user->firstname,
@@ -135,7 +173,8 @@ function getData($jwt_email) {
             "user" => $userData,
             "experience" => $experienceData,
             "skill" => $skillData,
-            "education" => array()
+            "education" => $educationData,
+            "language" => $languageData
         ));
     } else {
         // set response code

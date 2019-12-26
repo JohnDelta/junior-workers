@@ -4,7 +4,7 @@
  * Manage user's language from here
  */
 
-class Education {
+class Language {
     private $conn;
     private $tableName = "user_has_language";
 

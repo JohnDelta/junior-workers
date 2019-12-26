@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  BrowserRouter as Router,
   Link
 } from "react-router-dom";
 import './Navbar.css';
@@ -9,6 +8,7 @@ class Navbar extends React.Component{
   constructor(props){
     super(props);
     this.toggleNavbar = this.toggleNavbar.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   toggleNavbar() {
@@ -25,10 +25,13 @@ class Navbar extends React.Component{
     navbar.classList.toggle("navbar-active");
   }
 
+  handleLogout() {
+    localStorage.clear();
+  }
+
   render() {
     var profilStyle = {};
     var homeStyle = {};
-    var commentsStyle = {};
     var exitStyle = {};
     if(this.props.selectedLink === "profil")
       profilStyle = {color: "#F25F5C"};
@@ -44,27 +47,21 @@ class Navbar extends React.Component{
         </div>
         <ul className="nav-links">
           <li className="nav-link">
-            <i className="fa fa-home" style={homeStyle} />
-            <Link className="text link-active" to="/" style={homeStyle}>
-              Home
+            <Link className="text" to="/" style={homeStyle}>
+              <i className="fa fa-home" style={homeStyle} />
+              <p>Home</p>
             </Link>
           </li>
           <li className="nav-link">
-            <i className="fa fa-user" style={profilStyle}/>
-            <Link className="text" to="/" style={profilStyle}>
-              Profil
-            </Link>
-          </li>
-          <li className="nav-link">
-            <i className="fa fa-comments"  style={commentsStyle} />
-            <Link className="text" to="/" style={commentsStyle} >
-              Messages
+            <Link className="text" to="/profil" style={profilStyle}>
+              <i className="fa fa-user" style={profilStyle}/>
+              <p>Profil</p>
             </Link>
           </li>
           <li className="nav-link nav-down">
-            <i className="fa fa-sign-out" style={exitStyle} />
-            <Link className="text" to="/" style={exitStyle} >
-              Exit
+            <Link onClick={this.handleLogout} className="text" to="/" style={exitStyle} >
+              <i className="fa fa-sign-out" style={exitStyle} />
+              <p>Exit</p>
             </Link>
           </li>
         </ul>
