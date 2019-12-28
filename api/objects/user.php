@@ -1,18 +1,7 @@
 <?php
 
 /**
- * User class
- * 
- * Arguments: Needs a connection to a database
- * Public Vars:
- *  -All user parameters
- *  -Name of table users from the given database
- * 
- * Functions:
- *  Create(): Given the connection and user arguments creates a user and insert
- *            it into the database
- *  emailExists(): Given an email as public var, check if the user exists in the db,
- *             if it does return all the other info about them too.
+ * Manage user's language from here
  */
 
 include_once("objects/experience.php");
@@ -29,6 +18,8 @@ class User {
     public $password;
     public $title;
     public $availability;
+    public $role;
+    public $bio;
 
     public function __construct($conn)
     {
@@ -38,8 +29,8 @@ class User {
     function create() {
         // create query
         $query = "INSERT INTO ".$this->tableName." 
-            (firstname, lastname, email, password) VALUES (
-                :firstname, :lastname, :email, :password
+            (firstname, lastname, email, password, role) VALUES (
+                :firstname, :lastname, :email, :password, :role
             )";
 
         // create prepare statement
@@ -50,13 +41,15 @@ class User {
         $this->lastname = htmlspecialchars(strip_tags($this->lastname));
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->password = htmlspecialchars(strip_tags($this->password));
+        $this->role = htmlspecialchars(strip_tags($this->role));
 
         // bind parameters to the prepare statement
-        $stmt->bindParam(':firstname', $this->firstname, PDO::PARAM_STR, 40);
-        $stmt->bindParam(':lastname', $this->lastname, PDO::PARAM_STR, 40);
-        $stmt->bindParam(':email', $this->email, PDO::PARAM_STR, 90);
+        $stmt->bindParam(':firstname', $this->firstname);
+        $stmt->bindParam(':lastname', $this->lastname);
+        $stmt->bindParam(':email', $this->email);
         $passwordHashed = password_hash($this->password, PASSWORD_BCRYPT);
-        $stmt->bindParam(':password', $passwordHashed, PDO::PARAM_STR, 70);
+        $stmt->bindParam(':password', $passwordHashed);
+        $stmt->bindParam(':role', $this->role);
 
         // execute query
         if($stmt->execute()) {
@@ -68,7 +61,7 @@ class User {
     // given the user's email, get all their data
     function getParameters() {
         // create query to get all attributes using the  email as key
-        $query = "SELECT firstname, lastname, id_user, password, title, availability FROM ".$this->tableName." WHERE email=:email";
+        $query = "SELECT firstname, lastname, id_user, password, title, availability, role, bio FROM ".$this->tableName." WHERE email=:email";
         
         // create statement from connection
         $stmt = $this->conn->prepare($query);
@@ -94,6 +87,8 @@ class User {
             $this->password = $row["password"];
             $this->availability = $row["availability"];
             $this->title = $row["title"];
+            $this->role = $row["role"];
+            $this->bio = $row["bio"];
             return true;
         }
         // else return false
@@ -104,7 +99,7 @@ class User {
     function alterAll() {
         // create query to alter all attributes using the email as key
         $query = "UPDATE ".$this->tableName
-            ." SET firstname=:firstname, lastname=:lastname, title=:title, availability=:availability"
+            ." SET firstname=:firstname, lastname=:lastname, title=:title, availability=:availability, bio=:bio"
             ." WHERE email=:email";
         
         // create prepare statement
@@ -116,6 +111,7 @@ class User {
         $this->availability = htmlspecialchars(strip_tags($this->availability));
         $this->title = htmlspecialchars(strip_tags($this->title));
         $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->bio = htmlspecialchars(strip_tags($this->bio));
 
         // bind parameters into the prepare statement
         $stmt->bindParam(":firstname", $this->firstname);
@@ -123,6 +119,7 @@ class User {
         $stmt->bindParam(":availability", $this->availability);
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":email", $this->email);
+        $stmt->bindParam(":bio", $this->bio);
 
         // execute query
         if($stmt->execute()){

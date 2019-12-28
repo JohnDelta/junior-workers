@@ -6,7 +6,7 @@ class Login extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            redirectToProfil: false,
+            redirect: "",
             loginError: "",
             toggleLoginFlag: false,
             email: "",
@@ -73,7 +73,14 @@ class Login extends React.Component {
             else if (response.status === 200) {
                 const json = await response.json();
                 localStorage.setItem("jwt", json["jwt"]);
-                this.setState({redirectToProfil : true});
+                var temp = "";
+                // navigate user to the proper profil according to their role
+                if(json["role"] === "candidate") {
+                    temp = <Redirect to="/candidate-profil" />;
+                } else if(json["role"] === "hirer") {
+                    temp = <Redirect to="/hirer-profil" />;
+                }
+                this.setState({redirect : temp});
             }
         } catch (error) {
             console.error('Error:', error);
@@ -83,18 +90,10 @@ class Login extends React.Component {
         }
     }
 
-    
-
     render() {
-        var redirect = "";
-        if(this.state.redirectToProfil === true) {
-            redirect = <Redirect to="/profil" />;
-            this.setState({redirectToProfil : false});
-        }
-
         return(
             <div className="login">
-                {redirect}
+                {this.state.redirect}
                 <div className="login-form">
                     <div className="login-message" style={{"color":"#D0321E"}}>{this.state.loginError}</div>
 

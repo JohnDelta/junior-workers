@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Get email and password from a json post call and login user
+ * Manage user's data from here
  */
-
 // required headers
 // LATER ON RELEASE CHANGE AGAIN THIS HEADER
 header("Access-Control-Allow-Origin: *");
@@ -66,7 +65,8 @@ if($user->getParameters() && password_verify($data->password, $user->password)) 
      $jwt = JWT::encode($token, $key);
      echo json_encode(
              array(
-                 "jwt" => $jwt
+                 "jwt" => $jwt,
+                 "role" => $user->role
              )
          );
 } else {

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import './App.css';
 import Home from './Home.js';
-import Profil from './Profil.js';
+import CandidateProfil from './CandidateProfil.js';
 
 class App extends React.Component{
   render() {
@@ -14,8 +14,8 @@ class App extends React.Component{
       <Router>
         <div className="App">
           <Switch>
-            <Route exact path="/profil">
-              <Profil />
+            <Route exact path="/candidate-profil">
+              <CandidateProfil />
             </Route>
             <Route path="/">
               <Home />

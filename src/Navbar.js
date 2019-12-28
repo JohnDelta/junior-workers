@@ -53,7 +53,7 @@ class Navbar extends React.Component{
             </Link>
           </li>
           <li className="nav-link">
-            <Link className="text" to="/profil" style={profilStyle}>
+            <Link className="text" to="/candidate-profil" style={profilStyle}>
               <i className="fa fa-user" style={profilStyle}/>
               <p>Profil</p>
             </Link>

@@ -3,7 +3,7 @@ import './Profil.css';
 import Navbar from './Navbar';
 import  { Redirect } from 'react-router-dom';
 
-class Profil extends React.Component {
+class CandidateProfil extends React.Component {
     constructor(props) {
         super();
         this.state = {
@@ -85,6 +85,8 @@ class Profil extends React.Component {
             temp["user"]["lastname"] = value;
         } else if(id === "title") {
             temp["user"]["title"] = value;
+        } else if(id === "bio") {
+            temp["temp"]["bio"] = value;
         }
 
         this.setState({
@@ -233,6 +235,13 @@ class Profil extends React.Component {
             else if (response.status == 200) {
                 const json = await response.json();
                 this.setState({data : json});
+
+                // if the returned data are for a hirer and not a candidate, open the hirer's profil
+                var temp = "";
+                if(this.state.data["user"]["role"] === "hirer") {
+                    temp = <Redirect to="/hirer-profil" />;
+                }
+                this.setState({redirect: temp});
             }
         } catch (error) {
             console.error('Error:', error);
@@ -569,9 +578,10 @@ class Profil extends React.Component {
                                 <textarea
                                     readOnly={this.state.readonly}
                                     className="text"
-                                    id="title2"
+                                    id="bio"
                                     onChange={this.userHeaderChange}
-                                    value={this.state.data["user"]["title"]}>
+                                    placeholder="Write something about yourself..."
+                                    value={this.state.data["user"]["bio"]}>
                                 </textarea>
                                 <video 
                                     className="video"
@@ -618,4 +628,4 @@ class Profil extends React.Component {
     }
 }
 
-export default Profil;
+export default CandidateProfil;

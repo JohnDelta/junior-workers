@@ -91,6 +91,7 @@ function postData($jwt_email, $data) {
         $user->lastname = $data->user->lastname;
         $user->title = $data->user->title;
         $user->availability = $data->user->availability;
+        $user->bio = $data->user->bio;
         if($user->alterAll()) {
 
             // get all experience and insert it
