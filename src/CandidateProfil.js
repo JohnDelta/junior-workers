@@ -26,7 +26,8 @@ class CandidateProfil extends React.Component {
                 "skill": [],
                 "education": [],
                 "language": []
-            }
+            },
+            imageFile: null
         };
 
         this.toggleEdit = this.toggleEdit.bind(this);
@@ -43,6 +44,8 @@ class CandidateProfil extends React.Component {
         this.addUserData = this.addUserData.bind(this);
 
         this.getDropListData = this.getDropListData.bind(this);
+
+        this.imageChange = this.imageChange.bind(this);
     }
 
     componentDidMount() {
@@ -61,15 +64,56 @@ class CandidateProfil extends React.Component {
         this.setState({
             editFlag : !this.state.editFlag
         });
+        var button = document.getElementById("edit-button");
         // if you close edit without saving first, reset changes
         if(this.state.editFlag) {
             this.getUserData();
+            // change edit button icon
+            button.classList.remove("fa-times");
+            button.classList.add("fa-edit");
+        } else {
+            button.classList.remove("fa-edit");
+            button.classList.add("fa-times");
         }
         // change lock of input fields
         this.setState({
             disabled: !this.state.disabled,
             readonly: !this.state.readonly
         });
+    }
+
+    async imageChange(e) {
+        e.preventDefault();
+        
+        this.setState({
+            imageFile: URL.createObjectURL(e.target.files[0])
+        });
+
+        const url = 'http://localhost:80//junior-workers/api/post-image.php';
+        //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+        var formData = new FormData();
+        formData.append("image", this.state.imageFile);
+        //formData.append("jwt", this.state.jwt);
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: formData,
+            });
+            if(response.status !== 200) {
+                console.error("Unable to post user's data")
+            }
+            else if (response.status == 200) {
+                const json = await response.json();
+                console.log("Data posted");
+                console.log(json);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
     // handle user data input change 
@@ -86,7 +130,7 @@ class CandidateProfil extends React.Component {
         } else if(id === "title") {
             temp["user"]["title"] = value;
         } else if(id === "bio") {
-            temp["temp"]["bio"] = value;
+            temp["user"]["bio"] = value;
         }
 
         this.setState({
@@ -311,9 +355,13 @@ class CandidateProfil extends React.Component {
                                 </button>;
             // display buttons to edit profil image
             editImageButtons = <div className="profil-image-buttons">
-                                    <button>Up</button>
-                                    <button>Rm</button>
-                                    <button>X</button>
+                                    <label htmlFor="image-file" title="upload new profil picture">
+                                        <i className="fa fa-upload" />
+                                    </label>
+                                    <input id="image-file" type="file" onChange={this.imageChange} />
+                                    <button title="remove saved profil picture">
+                                        <i className="fa fa-trash" />
+                                    </button>
                                 </div>;
         }
 
@@ -525,10 +573,10 @@ class CandidateProfil extends React.Component {
                 <Navbar selectedLink="profil" />
 
                 <div className="profil-container">
-                    <img className="profil-image" src={require('./images/profil-pic.png')} />
+                    <img className="profil-image" src={this.state.imageFile} />
                     <div className="profil-header">
                         <button className="profil-edit-btn" onClick={this.toggleEdit}>
-                            <i className="fa fa-edit" />
+                            <i className="fa fa-edit" id="edit-button"/>
                         </button>
                         <input 
                             type="text" 
@@ -585,7 +633,7 @@ class CandidateProfil extends React.Component {
                                 </textarea>
                                 <video 
                                     className="video"
-                                    controls="true">
+                                    controls={true}>
                                     Unable to play video. Please consider updating your browser.
                                 </video>
                             </div>
