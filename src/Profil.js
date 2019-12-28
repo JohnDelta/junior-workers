@@ -9,7 +9,9 @@ class Profil extends React.Component {
         this.state = {
             redirect: "",
             jwt: localStorage.getItem("jwt"),
-            editFlag : false,
+            editFlag: false,
+            disabled: true,
+            readonly: true,
             dropListData: {
                 "profession": [],
                 "skill": [],
@@ -63,6 +65,11 @@ class Profil extends React.Component {
         if(this.state.editFlag) {
             this.getUserData();
         }
+        // change lock of input fields
+        this.setState({
+            disabled: !this.state.disabled,
+            readonly: !this.state.readonly
+        });
     }
 
     // handle user data input change 
@@ -259,17 +266,15 @@ class Profil extends React.Component {
     render() {
 
         // On edit mode change
-        var readonly = true;
         var changeButtons = "";
         var availabilityButton = "";
         var addExperienceButton = "";
         var addSkillButton = "";
         var addEducationButton = "";
         var addLanguageButton = "";
+        var editImageButtons = "";
 
         if(this.state.editFlag) {
-            // make all input editable
-            readonly = false;
             // display save and exit changes button
             changeButtons = <div className="change-buttons">
                                 <button type="submit"><i className="fa fa-check" /></button>
@@ -295,6 +300,12 @@ class Profil extends React.Component {
             addLanguageButton = <button className="add-btn" onClick={this.addUserData} name="language">
                                     <i className="fa fa-plus" />Add Language
                                 </button>;
+            // display buttons to edit profil image
+            editImageButtons = <div className="profil-image-buttons">
+                                    <button>Up</button>
+                                    <button>Rm</button>
+                                    <button>X</button>
+                                </div>;
         }
 
         // display availability according to state
@@ -325,7 +336,7 @@ class Profil extends React.Component {
                         <p className="work-label">Worked as</p>
                         <select 
                             id={"experience__"+index+"__id_profession"}
-                            readOnly={readonly} 
+                            disabled={this.state.disabled} 
                             value={item.id_profession}
                             onChange={this.userDataChange} >
                             {professionMap}
@@ -333,7 +344,7 @@ class Profil extends React.Component {
                         <p className="work-label">At</p>
                         <input 
                             type="text" 
-                            readOnly={readonly} 
+                            readOnly={this.state.readonly} 
                             id={"experience__"+index+"__company"} 
                             onChange={this.userDataChange} 
                             defaultValue={item.company}
@@ -342,7 +353,7 @@ class Profil extends React.Component {
                         <p className="work-label">Between</p>
                         <input 
                             type="text" 
-                            readOnly={readonly} 
+                            readOnly={this.state.readonly} 
                             id={"experience__"+index+"__date"} 
                             onChange={this.userDataChange} 
                             defaultValue={item.date}
@@ -379,7 +390,7 @@ class Profil extends React.Component {
                         <div className="skill-dot"></div>
                         <select 
                             id={"skill__"+index+"__id_skill"}
-                            readOnly={readonly} 
+                            disabled={this.state.disabled} 
                             value={item.id_skill}
                             onChange={this.userDataChange} >
                             {skillsMap}
@@ -422,14 +433,14 @@ class Profil extends React.Component {
                         <div className="education-dot"></div>
                         <select 
                             id={"education__"+index+"__id_education_level"}
-                            readOnly={readonly} 
+                            disabled={this.state.disabled} 
                             value={item.id_education_level}
                             onChange={this.userDataChange} >
                             {allEducationLevelsMap}
                         </select>
                         <select 
                             id={"education__"+index+"__id_education"}
-                            readOnly={readonly} 
+                            disabled={this.state.disabled}
                             value={item.id_education}
                             onChange={this.userDataChange} >
                             {allEducationMap}
@@ -472,15 +483,15 @@ class Profil extends React.Component {
                         <div className="language-dot"></div>
                         <select 
                             id={"language__"+index+"__id_language_level"}
-                            readOnly={readonly} 
+                            disabled={this.state.disabled}
                             value={item.id_language_level}
                             onChange={this.userDataChange} >
                             {allLanguageLevelsMap}
                         </select>
                         <select 
-                            id={"language__"+index+"__id_language"}
-                            readOnly={readonly} 
+                            id={"language__"+index+"__id_language"} 
                             value={item.id_language}
+                            disabled={this.state.disabled}
                             onChange={this.userDataChange} >
                             {allLanguageMap}
                         </select>
@@ -514,7 +525,7 @@ class Profil extends React.Component {
                             type="text" 
                             className="profil-name firstname"
                             value={this.state.data["user"]["firstname"]}
-                            readOnly={readonly}
+                            readOnly={this.state.readonly}
                             placeholder="Firstname"
                             id="firstname"
                             onChange={this.userHeaderChange}
@@ -523,7 +534,7 @@ class Profil extends React.Component {
                             type="text" 
                             className="profil-name lastname"
                             value={this.state.data["user"]["lastname"]}
-                            readOnly={readonly}
+                            readOnly={this.state.readonly}
                             placeholder="Lastname"
                             id="lastname"
                             onChange={this.userHeaderChange}
@@ -532,11 +543,14 @@ class Profil extends React.Component {
                             type="text" 
                             className="profil-headline"
                             value={this.state.data["user"]["title"]}
-                            readOnly={readonly}
+                            readOnly={this.state.readonly}
                             placeholder="Profession title"
                             id="title"
                             onChange={this.userHeaderChange}
                         />
+                    </div>
+                    <div className="profil-header2">
+                        {editImageButtons}
                         <div className="profil-availability">
                             {availabilityText}{availabilityButton}
                         </div>
@@ -546,31 +560,51 @@ class Profil extends React.Component {
                         </button>
                     </div>
                     <form className="profil-content" id="profil-form" onSubmit={this.saveChanges}>
-                        <div className="title">Work Experience</div>
+                        <div className="title title-first">
+                            <p>About</p>
+                        </div>
+                        <div className="title-hr" />
+                        <div className="section">
+                            <div className="about">
+                                <textarea
+                                    readOnly={this.state.readonly}
+                                    className="text"
+                                    id="title2"
+                                    onChange={this.userHeaderChange}
+                                    value={this.state.data["user"]["title"]}>
+                                </textarea>
+                                <video 
+                                    className="video"
+                                    controls="true">
+                                    Unable to play video. Please consider updating your browser.
+                                </video>
+                            </div>
+                        </div>
+                        <div className="title"><p>Work Experience</p></div>
                         <div className="title-hr" />
                         <div className="section">
                             {experienceMap}
                             {addExperienceButton}
                         </div>
-                        <div className="title">Skills</div>
+                        <div className="title"><p>Skills</p></div>
                         <div className="title-hr" />
                         <div className="section">
                             {skillMap}
                             {addSkillButton}
                         </div>
-                        <div className="title">Education</div>
+                        <div className="title"><p>Education</p></div>
                         <div className="title-hr" />
                         <div className="section">
                             {educationMap}
                             {addEducationButton}
                         </div>
-                        <div className="title">Language</div>
+                        <div className="title"><p>Language</p></div>
                         <div className="title-hr" />
                         <div className="section">
                             {languageMap}
                             {addLanguageButton}
                         </div>
-                        <div className="title">Contact Info</div>
+                        <div className="title"><p>Contact Info</p></div>
                         <div className="title-hr" />
                         <div className="section">
                             Email : {this.state.data["user"]["email"]}
