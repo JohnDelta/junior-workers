@@ -84,23 +84,23 @@ class CandidateProfil extends React.Component {
 
     async imageChange(e) {
         e.preventDefault();
-        
-        this.setState({
-            imageFile: URL.createObjectURL(e.target.files[0])
-        });
+
+        var file = document.getElementById("image-file").files[0];
+        //file = URL.createObjectURL(file);
+        //var fileName = file.name;
+        //var fileExtention = fileName.split(".").pop().toLowerCase();
+        //var fileSize = file.size;
+        // check if image is correct
+
 
         const url = 'http://localhost:80//junior-workers/api/post-image.php';
         //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
         var formData = new FormData();
-        formData.append("image", this.state.imageFile);
+        formData.append("file", file);
         //formData.append("jwt", this.state.jwt);
         try {
             const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
                 body: formData,
             });
             if(response.status !== 200) {
@@ -358,7 +358,7 @@ class CandidateProfil extends React.Component {
                                     <label htmlFor="image-file" title="upload new profil picture">
                                         <i className="fa fa-upload" />
                                     </label>
-                                    <input id="image-file" type="file" onChange={this.imageChange} />
+                                    <input id="image-file" type="file" onChange={this.imageChange} name="image" />
                                     <button title="remove saved profil picture">
                                         <i className="fa fa-trash" />
                                     </button>

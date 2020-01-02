@@ -17,12 +17,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	exit(0);
 }
 
-$msg = "hah";
-    if ( 0 < $_FILES['image']["tmp_name"]) {
-        $msg = "mplampla";
-    }
+$msg = "something happended";
 
-    
-    echo json_encode(array("msg"=>$msg));
+
+if($_FILES["file"]["name"] != "") {
+	$test = explode(".", $_FILES["file"]["name"]);
+	$extension = end($test);
+	$name = rand(100, 999) . "." . $extension;
+	$location = "./uploads/" .$name;
+	move_uploaded_file($_FILES["file"]["tmp_name"], $location);
+	$msg = "img uploaded";
+}
+
+http_response_code(200);
+echo json_encode(array("msg"=>$msg));
 
 ?>
