@@ -20,6 +20,7 @@ class User {
     public $availability;
     public $role;
     public $bio;
+    public $image_path;
 
     public function __construct($conn)
     {
@@ -61,7 +62,7 @@ class User {
     // given the user's email, get all their data
     function getParameters() {
         // create query to get all attributes using the  email as key
-        $query = "SELECT firstname, lastname, id_user, password, title, availability, role, bio FROM ".$this->tableName." WHERE email=:email";
+        $query = "SELECT firstname, lastname, id_user, password, title, availability, role, bio, image_path FROM ".$this->tableName." WHERE email=:email";
         
         // create statement from connection
         $stmt = $this->conn->prepare($query);
@@ -89,6 +90,7 @@ class User {
             $this->title = $row["title"];
             $this->role = $row["role"];
             $this->bio = $row["bio"];
+            $this->image_path = $row["image_path"];
             return true;
         }
         // else return false
@@ -96,10 +98,11 @@ class User {
     }
 
     // given the user's email, alter their attributes
+    // *NOTE : image's path can be altered from post-image.php
     function alterAll() {
         // create query to alter all attributes using the email as key
         $query = "UPDATE ".$this->tableName
-            ." SET firstname=:firstname, lastname=:lastname, title=:title, availability=:availability, bio=:bio"
+            ." SET firstname=:firstname, lastname=:lastname, title=:title, availability=:availability, bio=:bio, image_path=:image_path"
             ." WHERE email=:email";
         
         // create prepare statement
@@ -112,6 +115,7 @@ class User {
         $this->title = htmlspecialchars(strip_tags($this->title));
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->bio = htmlspecialchars(strip_tags($this->bio));
+        $this->image_path = htmlspecialchars(strip_tags($this->image_path));
 
         // bind parameters into the prepare statement
         $stmt->bindParam(":firstname", $this->firstname);
@@ -120,6 +124,7 @@ class User {
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":bio", $this->bio);
+        $stmt->bindParam(":image_path", $this->image_path);
 
         // execute query
         if($stmt->execute()){

@@ -163,7 +163,8 @@ function getData($jwt_email) {
             "email" => $user->email,
             "availability" => $user->availability,
             "title" => $user->title,
-            "bio" => $user->bio
+            "bio" => $user->bio,
+            "image_path" => $user->image_path
         );
 
         // set response code

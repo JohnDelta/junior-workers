@@ -2,6 +2,7 @@ import React from 'react';
 import './Profil.css';
 import Navbar from './Navbar';
 import  { Redirect } from 'react-router-dom';
+import DisplayMessage from './DisplayMessage';
 
 class CandidateProfil extends React.Component {
     constructor(props) {
@@ -27,7 +28,8 @@ class CandidateProfil extends React.Component {
                 "education": [],
                 "language": []
             },
-            imageFile: null
+            displayMessage: "",
+            displayMessageFlag: false
         };
 
         this.toggleEdit = this.toggleEdit.bind(this);
@@ -86,34 +88,68 @@ class CandidateProfil extends React.Component {
         e.preventDefault();
 
         var file = document.getElementById("image-file").files[0];
-        //file = URL.createObjectURL(file);
-        //var fileName = file.name;
-        //var fileExtention = fileName.split(".").pop().toLowerCase();
-        //var fileSize = file.size;
-        // check if image is correct
+        var fileName = file.name;
+        var extensions = ["png", "jpg"];
+        var fileExtention = fileName.split(".").pop().toLowerCase();
+        var fileSize = file.size;
 
+        if(extensions.includes(fileExtention)) {
+           /*
+            NOTE : codes returned from the post-image.php
+            $SUCCESS_CODE = "0";
+            $ERROR_CODE = "1";
+            $ERROR_FORMAT_CODE = "2";
+            $ERROR_SIZE_CODE = "3";
+            */
 
-        const url = 'http://localhost:80//junior-workers/api/post-image.php';
-        //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
-        var formData = new FormData();
-        formData.append("file", file);
-        //formData.append("jwt", this.state.jwt);
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData,
-            });
-            if(response.status !== 200) {
-                console.error("Unable to post user's data")
-            }
-            else if (response.status == 200) {
+            // procced to upload image
+            const url = 'http://localhost:80//junior-workers/api/post-image.php';
+            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+            var formData = new FormData();
+            formData.append("image_file", file);
+            formData.append("jwt", this.state.jwt);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                });
                 const json = await response.json();
-                console.log("Data posted");
-                console.log(json);
+                if(response.status !== 200) {
+                    if(json["code"] === "1") {
+                        this.setState({
+                            displayMessage: "Unable to upload image",
+                        });
+                    } else if (json["code"] === "2") {
+                        this.setState({
+                            displayMessage: "Image not in proper format",
+                        });
+                    } else if (json["code"] === "3") {
+                        this.setState({
+                            displayMessage: "Image's size cannot be larger than 5mb",
+                        });
+                    }
+                }
+                else if (response.status == 200 && json["code"] == 0) {
+                    this.setState({
+                        displayMessage: "image changed"
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.setState({
+                    displayMessage: "Unable to upload image",
+                });
             }
-        } catch (error) {
-            console.error('Error:', error);
+        } else {
+            this.setState({
+                displayMessage: "File doesn't have valid image extension.",
+            });
         }
+
+        this.setState({
+            displayMessageFlag: !this.state.displayMessageFlag
+        });
     }
 
     // handle user data input change 
@@ -563,6 +599,8 @@ class CandidateProfil extends React.Component {
             <div className="Profil">
                 {this.state.redirect}
 
+                <DisplayMessage displayMessage={this.state.displayMessage} displayMessageFlag={this.state.displayMessageFlag} />
+
                 <img id="bg" className="background" src={require('./images/backgroundBig.jpg')} />
 
                 <div className="logo">
@@ -573,7 +611,7 @@ class CandidateProfil extends React.Component {
                 <Navbar selectedLink="profil" />
 
                 <div className="profil-container">
-                    <img className="profil-image" src={this.state.imageFile} />
+                    <img className="profil-image" src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["image_path"]} />
                     <div className="profil-header">
                         <button className="profil-edit-btn" onClick={this.toggleEdit}>
                             <i className="fa fa-edit" id="edit-button"/>
