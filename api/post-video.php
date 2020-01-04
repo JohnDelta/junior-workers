@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Read from post call an image file and a text file containing the jwt.
- * Test jwt if it comes from a valid user and change their image to the given one.
+ * Read from post call a video file and a text file containing the jwt.
+ * Test jwt if it comes from a valid user and change their video to the given one.
  */
 
 // required headers
@@ -57,26 +57,25 @@ if(($_POST["jwt"])) {
 
 		// check if user exist
 		if($user->getParameters()) {
-			// read image file
-			if(!empty($_FILES["image_file"]["name"])) {
+			// read video file
+			if(!empty($_FILES["video_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["image_file"]["size"] <= 5000) {
+				if($_FILES["video_file"]["size"] <= 50000) {
 
-					$test = explode(".", $_FILES["image_file"]["name"]);
+					$test = explode(".", $_FILES["video_file"]["name"]);
 					$extension = end($test);
 					$name = rand(100, 999) . "." . $extension;
 					$location = "./uploads/" .$name;
-					move_uploaded_file($_FILES["image_file"]["tmp_name"], $location);
-					$msg = "img uploaded";
+					move_uploaded_file($_FILES["video_file"]["tmp_name"], $location);
 
-					// here delete the previous image if its not the default
-					if($user->image_path != "default.png") {
-						unlink("./uploads/".$user->image_path);
+					// here delete the previous video if they have any
+					if(!empty($user->video_path)) {
+						unlink("./uploads/".$user->video_path);
 					}
 
-					// give user the new path to image
-					$user->image_path = $name;
+					// give user the new path to video
+					$user->video_path = $name;
 
 					if($user->alterAll()) {
 						// set response code

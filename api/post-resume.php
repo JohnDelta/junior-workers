@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Read from post call an image file and a text file containing the jwt.
- * Test jwt if it comes from a valid user and change their image to the given one.
+ * Read from post call resume file and a text file containing the jwt.
+ * Test jwt if it comes from a valid user and change their resume to the given one.
  */
 
 // required headers
@@ -57,26 +57,25 @@ if(($_POST["jwt"])) {
 
 		// check if user exist
 		if($user->getParameters()) {
-			// read image file
-			if(!empty($_FILES["image_file"]["name"])) {
+			// read video file
+			if(!empty($_FILES["resume_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["image_file"]["size"] <= 5000) {
+				if($_FILES["resume_file"]["size"] <= 10000) {
 
-					$test = explode(".", $_FILES["image_file"]["name"]);
+					$test = explode(".", $_FILES["resume_file"]["name"]);
 					$extension = end($test);
 					$name = rand(100, 999) . "." . $extension;
 					$location = "./uploads/" .$name;
-					move_uploaded_file($_FILES["image_file"]["tmp_name"], $location);
-					$msg = "img uploaded";
+					move_uploaded_file($_FILES["resume_file"]["tmp_name"], $location);
 
-					// here delete the previous image if its not the default
-					if($user->image_path != "default.png") {
-						unlink("./uploads/".$user->image_path);
+					// here delete the previous resume if they have any
+					if(!empty($user->resume_path)) {
+						unlink("./uploads/".$user->resume_path);
 					}
 
-					// give user the new path to image
-					$user->image_path = $name;
+					// give user the new path to resume
+					$user->resume_path = $name;
 
 					if($user->alterAll()) {
 						// set response code
@@ -103,7 +102,7 @@ if(($_POST["jwt"])) {
 				
 					// tell the user access denied  & show error message
 					echo json_encode(array(
-						"message" => "File cannot have size larger than 5MB",
+						"message" => "File cannot have size larger than 10MB",
 						"code"=>$ERROR_SIZE_CODE
 					));	
 				}

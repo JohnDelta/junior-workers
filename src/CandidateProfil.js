@@ -48,6 +48,13 @@ class CandidateProfil extends React.Component {
         this.getDropListData = this.getDropListData.bind(this);
 
         this.imageChange = this.imageChange.bind(this);
+        this.removeImage = this.removeImage.bind(this);
+
+        this.videoChange = this.videoChange.bind(this);
+        this.removeVideo = this.removeVideo.bind(this);
+
+        this.resumeChange = this.resumeChange.bind(this);
+        this.removeResume = this.removeResume.bind(this);
     }
 
     componentDidMount() {
@@ -68,8 +75,7 @@ class CandidateProfil extends React.Component {
         });
         var button = document.getElementById("edit-button");
         // if you close edit without saving first, reset changes
-        if(this.state.editFlag) {
-            this.getUserData();
+        if(button.classList.contains("fa-times")) {
             // change edit button icon
             button.classList.remove("fa-times");
             button.classList.add("fa-edit");
@@ -81,74 +87,6 @@ class CandidateProfil extends React.Component {
         this.setState({
             disabled: !this.state.disabled,
             readonly: !this.state.readonly
-        });
-    }
-
-    async imageChange(e) {
-        e.preventDefault();
-
-        var file = document.getElementById("image-file").files[0];
-        var fileName = file.name;
-        var extensions = ["png", "jpg"];
-        var fileExtention = fileName.split(".").pop().toLowerCase();
-        var fileSize = file.size;
-
-        if(extensions.includes(fileExtention)) {
-           /*
-            NOTE : codes returned from the post-image.php
-            $SUCCESS_CODE = "0";
-            $ERROR_CODE = "1";
-            $ERROR_FORMAT_CODE = "2";
-            $ERROR_SIZE_CODE = "3";
-            */
-
-            // procced to upload image
-            const url = 'http://localhost:80//junior-workers/api/post-image.php';
-            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
-            var formData = new FormData();
-            formData.append("image_file", file);
-            formData.append("jwt", this.state.jwt);
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                });
-                const json = await response.json();
-                if(response.status !== 200) {
-                    if(json["code"] === "1") {
-                        this.setState({
-                            displayMessage: "Unable to upload image",
-                        });
-                    } else if (json["code"] === "2") {
-                        this.setState({
-                            displayMessage: "Image not in proper format",
-                        });
-                    } else if (json["code"] === "3") {
-                        this.setState({
-                            displayMessage: "Image's size cannot be larger than 5mb",
-                        });
-                    }
-                }
-                else if (response.status == 200 && json["code"] == 0) {
-                    this.setState({
-                        displayMessage: "image changed"
-                    });
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                this.setState({
-                    displayMessage: "Unable to upload image",
-                });
-            }
-        } else {
-            this.setState({
-                displayMessage: "File doesn't have valid image extension.",
-            });
-        }
-
-        this.setState({
-            displayMessageFlag: !this.state.displayMessageFlag
         });
     }
 
@@ -267,14 +205,329 @@ class CandidateProfil extends React.Component {
         this.toggleEdit();
     }
 
+    async imageChange(e) {
+        e.preventDefault();
+
+        var file = document.getElementById("image-file").files[0];
+        var fileName = file.name;
+        var extensions = ["png", "jpg"];
+        var fileExtention = fileName.split(".").pop().toLowerCase();
+        var fileSize = file.size;
+
+        if(extensions.includes(fileExtention)) {
+           /*
+            NOTE : codes returned from the post-image.php
+            $SUCCESS_CODE = "0";
+            $ERROR_CODE = "1";
+            $ERROR_FORMAT_CODE = "2";
+            $ERROR_SIZE_CODE = "3";
+            */
+
+            // procced to upload image
+            const url = 'http://localhost:80//junior-workers/api/post-image.php';
+            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+            var formData = new FormData();
+            formData.append("image_file", file);
+            formData.append("jwt", this.state.jwt);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const json = await response.json();
+                if(response.status !== 200) {
+                    if(json["code"] === "1") {
+                        this.setState({
+                            displayMessage: "Unable to upload image",
+                        });
+                    } else if (json["code"] === "2") {
+                        this.setState({
+                            displayMessage: "Image not in proper format",
+                        });
+                    } else if (json["code"] === "3") {
+                        this.setState({
+                            displayMessage: "Image's size cannot be larger than 5mb",
+                        });
+                    }
+                }
+                else if (response.status == 200 && json["code"] == 0) {
+                    this.setState({
+                        displayMessage: "Profil image has been updated"
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.setState({
+                    displayMessage: "Unable to upload image",
+                });
+            }
+        } else {
+            this.setState({
+                displayMessage: "File doesn't have valid image extension.",
+            });
+        }
+
+        this.setState({
+            displayMessageFlag: !this.state.displayMessageFlag
+        });
+    }
+
+    // remove user's image
+    async removeImage() {
+
+        var url = 'http://localhost:80//junior-workers/api/remove-user-image.php';
+        var data = {"jwt": this.state.jwt};
+
+        try {
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if(response.status !== 200) {
+                console.error("Unable to post user's data");
+                this.setState({
+                    displayMessage: "Unable to remove image",
+                    displayMessageFlag: !this.state.displayMessageFlag
+                });
+            }
+            else if (response.status == 200) {
+                var json = await response.json();
+                //console.log("Data posted");
+                this.setState({
+                    displayMessage: "Profil image has been removed",
+                    displayMessageFlag: !this.state.displayMessageFlag
+                });
+                this.getUserData();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async videoChange(e) {
+        e.preventDefault();
+
+        var file = document.getElementById("video-file").files[0];
+        var fileName = file.name;
+        var extensions = ["png", "jpg"];
+        var fileExtention = fileName.split(".").pop().toLowerCase();
+        var fileSize = file.size;
+
+        if(extensions.includes(fileExtention)) {
+           /*
+            NOTE : codes returned from the post-video.php
+            $SUCCESS_CODE = "0";
+            $ERROR_CODE = "1";
+            $ERROR_FORMAT_CODE = "2";
+            $ERROR_SIZE_CODE = "3";
+            */
+
+            // procced to upload video
+            const url = 'http://localhost:80//junior-workers/api/post-video.php';
+            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+            var formData = new FormData();
+            formData.append("video_file", file);
+            formData.append("jwt", this.state.jwt);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const json = await response.json();
+                if(response.status !== 200) {
+                    if(json["code"] === "1") {
+                        this.setState({
+                            displayMessage: "Unable to upload video",
+                        });
+                    } else if (json["code"] === "2") {
+                        this.setState({
+                            displayMessage: "Video not in proper format",
+                        });
+                    } else if (json["code"] === "3") {
+                        this.setState({
+                            displayMessage: "Video's size cannot be larger than 50mb",
+                        });
+                    }
+                }
+                else if (response.status == 200 && json["code"] == 0) {
+                    this.setState({
+                        displayMessage: "Video has been Added"
+                    });
+                    this.getUserData();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.setState({
+                    displayMessage: "Unable to upload video",
+                });
+            }
+        } else {
+            this.setState({
+                displayMessage: "File doesn't have valid image extension.",
+            });
+        }
+
+        this.setState({
+            displayMessageFlag: !this.state.displayMessageFlag
+        });
+    }
+
+    // remove user's video
+    async removeVideo() {
+
+        var url = 'http://localhost:80//junior-workers/api/remove-user-video.php';
+        var data = {"jwt": this.state.jwt};
+
+        try {
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if(response.status !== 200) {
+                console.error("Unable to post user's data");
+                this.setState({
+                    displayMessage: "Unable to remove video",
+                    displayMessageFlag: !this.state.displayMessageFlag
+                });
+            }
+            else if (response.status == 200) {
+                var json = await response.json();
+                //console.log("Data posted");
+                this.setState({
+                    displayMessage: "Profil video has been removed",
+                    displayMessageFlag: !this.state.displayMessageFlag
+                });
+                this.getUserData();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    // add user's resume
+    async resumeChange(e) {
+        e.preventDefault();
+
+        var file = document.getElementById("resume-file").files[0];
+        var fileName = file.name;
+        var extensions = ["png", "jpg"];
+        var fileExtention = fileName.split(".").pop().toLowerCase();
+        var fileSize = file.size;
+
+        if(extensions.includes(fileExtention)) {
+           /*
+            NOTE : codes returned from the post-resume.php
+            $SUCCESS_CODE = "0";
+            $ERROR_CODE = "1";
+            $ERROR_FORMAT_CODE = "2";
+            $ERROR_SIZE_CODE = "3";
+            */
+
+            // procced to upload resume
+            const url = 'http://localhost:80//junior-workers/api/post-resume.php';
+            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+            var formData = new FormData();
+            formData.append("resume_file", file);
+            formData.append("jwt", this.state.jwt);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const json = await response.json();
+                if(response.status !== 200) {
+                    if(json["code"] === "1") {
+                        this.setState({
+                            displayMessage: "Unable to upload resume",
+                        });
+                    } else if (json["code"] === "2") {
+                        this.setState({
+                            displayMessage: "Resume not in proper format",
+                        });
+                    } else if (json["code"] === "3") {
+                        this.setState({
+                            displayMessage: "Resume's size cannot be larger than 10mb",
+                        });
+                    }
+                }
+                else if (response.status == 200 && json["code"] == 0) {
+                    this.setState({
+                        displayMessage: "Resume has been Added"
+                    });
+                    this.getUserData();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.setState({
+                    displayMessage: "Unable to upload resume",
+                });
+            }
+        } else {
+            this.setState({
+                displayMessage: "File doesn't have valid image extension.",
+            });
+        }
+
+        this.setState({
+            displayMessageFlag: !this.state.displayMessageFlag
+        });
+    }
+
+    // remove user's resume
+    async removeResume() {
+
+        var url = 'http://localhost:80//junior-workers/api/remove-user-resume.php';
+        var data = {"jwt": this.state.jwt};
+
+        try {
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if(response.status !== 200) {
+                console.error("Unable to post user's data");
+                this.setState({
+                    displayMessage: "Unable to remove resume",
+                    displayMessageFlag: !this.state.displayMessageFlag
+                });
+            }
+            else if (response.status == 200) {
+                var json = await response.json();
+                //console.log("Data posted");
+                this.setState({
+                    displayMessage: "Resume has been removed",
+                    displayMessageFlag: !this.state.displayMessageFlag
+                });
+                this.getUserData();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     // post all user's data changes to db
     async saveChanges(e) {
         e.preventDefault();
 
-        const url = 'http://localhost:80//junior-workers/api/post-user-data.php';
-        const data = {"jwt": this.state.jwt, "data": this.state.data};
+        var url = 'http://localhost:80//junior-workers/api/post-user-data.php';
+        var data = {"jwt": this.state.jwt, "data": this.state.data};
         try {
-            const response = await fetch(url, {
+            var response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -286,7 +539,7 @@ class CandidateProfil extends React.Component {
                 console.error("Unable to post user's data")
             }
             else if (response.status == 200) {
-                const json = await response.json();
+                var json = await response.json();
                 //console.log("Data posted");
                 this.getUserData();
                 this.toggleEdit();
@@ -298,10 +551,10 @@ class CandidateProfil extends React.Component {
 
     // Get all user's data using their jwt auth
     async getUserData() {
-        const url = 'http://localhost:80//junior-workers/api/get-user-data.php';
-        const data = {"jwt": this.state.jwt};
+        var url = 'http://localhost:80//junior-workers/api/get-user-data.php';
+        var data = {"jwt": this.state.jwt};
         try {
-            const response = await fetch(url, {
+            var response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -313,7 +566,7 @@ class CandidateProfil extends React.Component {
                 console.error("Unable to get user's data")
             }
             else if (response.status == 200) {
-                const json = await response.json();
+                var json = await response.json();
                 this.setState({data : json});
 
                 // if the returned data are for a hirer and not a candidate, open the hirer's profil
@@ -329,9 +582,9 @@ class CandidateProfil extends React.Component {
     }
 
     async getDropListData() {
-        const url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
+        var url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
         try {
-            const response = await fetch(url, {
+            var response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -342,7 +595,7 @@ class CandidateProfil extends React.Component {
                 console.error("Unable to get drop list data")
             }
             else if (response.status == 200) {
-                const json = await response.json();
+                var json = await response.json();
                 this.setState({
                     dropListData: json
                 });
@@ -362,6 +615,8 @@ class CandidateProfil extends React.Component {
         var addEducationButton = "";
         var addLanguageButton = "";
         var editImageButtons = "";
+        var editVideoButtons = "";
+        var editResumeButtons = "";
 
         if(this.state.editFlag) {
             // display save and exit changes button
@@ -395,15 +650,59 @@ class CandidateProfil extends React.Component {
                                         <i className="fa fa-upload" />
                                     </label>
                                     <input id="image-file" type="file" onChange={this.imageChange} name="image" />
-                                    <button title="remove saved profil picture">
+                                    <button title="remove saved profil picture" onClick={this.removeImage}>
+                                        <i className="fa fa-trash" />
+                                    </button>
+                                </div>;
+            // display buttons to edit video
+            editVideoButtons = <div className="video-buttons">
+                                    <label htmlFor="video-file" className="label" title="Upload new video">
+                                        <i className="fa fa-upload" />
+                                    </label>
+                                    <input id="video-file" type="file"  name="video" onChange={this.videoChange} />
+                                    <button title="Remove current video" onClick={this.removeVideo}>
+                                        <i className="fa fa-trash" />
+                                    </button>
+                                </div>;
+            // display buttons to edit resume
+            editResumeButtons = <div className="resume-edit-buttons">
+                                    <label htmlFor="resume-file" className="label" title="Upload new resume">
+                                        <i className="fa fa-upload" />
+                                    </label>
+                                    <input id="resume-file" type="file"  name="resume" onChange={this.resumeChange}/>
+                                    <button title="Remove current resume" onClick={this.removeResume} >
                                         <i className="fa fa-trash" />
                                     </button>
                                 </div>;
         }
 
+        // display video if the user has any
+        var videoMap = "";
+        if(this.state.data["user"]["video_path"] !== "" && this.state.data["user"]["video_path"] !== null) {
+            videoMap = <video 
+                            className="video"
+                            src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["video_path"]}
+                            controls={true}>
+                            Unable to play video. Please consider updating your browser.
+                        </video>;
+        } else if(this.state.editFlag) {
+            videoMap = "Upload your video here";
+        }
+
+        // display resume if the user has
+        var resumeMap = "";
+        if(this.state.data["user"]["resume_path"] !== "" && this.state.data["user"]["resume_path"] !== null) {
+            resumeMap = <button className="profil-resume-button">
+                            <i className="fa fa-arrow-down" />
+                            Resume
+                        </button>;
+        } else if(this.state.editFlag) {
+            resumeMap = "Upload your resume here";
+        }
+
         // display availability according to state
-        var availabilityText = <p>Not available to hire</p>;
-        if(this.state.data["user"]["availability"] === "1") availabilityText = <p>Available to hire</p>; 
+        var availabilityText = <p>Not available</p>;
+        if(this.state.data["user"]["availability"] === "1") availabilityText = <p>Available</p>; 
 
         // Map experience from json to div
         var experienceMap = [];
@@ -649,10 +948,10 @@ class CandidateProfil extends React.Component {
                         <div className="profil-availability">
                             {availabilityText}{availabilityButton}
                         </div>
-                        <button className="profil-resume">
-                            <i className="fa fa-arrow-down" />
-                            Resume
-                        </button>
+                        <div className="profil-resume">
+                            {resumeMap}
+                            {editResumeButtons}
+                        </div>
                     </div>
                     <form className="profil-content" id="profil-form" onSubmit={this.saveChanges}>
                         <div className="title title-first">
@@ -669,11 +968,8 @@ class CandidateProfil extends React.Component {
                                     placeholder="Write something about yourself..."
                                     value={this.state.data["user"]["bio"]}>
                                 </textarea>
-                                <video 
-                                    className="video"
-                                    controls={true}>
-                                    Unable to play video. Please consider updating your browser.
-                                </video>
+                                {videoMap}
+                                {editVideoButtons}
                             </div>
                         </div>
                         <div className="title"><p>Work Experience</p></div>
