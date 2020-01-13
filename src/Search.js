@@ -1,6 +1,7 @@
 import React from 'react';
 import './Search.css';
 import Navbar from './Navbar.js';
+import  { Redirect } from 'react-router-dom';
 
 class Search extends React.Component{
     constructor(props) {
@@ -34,12 +35,13 @@ class Search extends React.Component{
         this.getUserData = this.getUserData.bind(this);
         this.searchUsers = this.searchUsers.bind(this);
         this.getDropListData = this.getDropListData.bind(this);
-
+        this.viewProfil = this.viewProfil.bind(this);
     }
 
 
     // Check if the jwt of user is valid in order to display the navbar
     componentDidMount() {
+        localStorage.removeItem("email");
         if(this.state.jwt !== "" || this.state.jwt !== null) {
             this.getUserData();
             if(this.state.data["user"] !== "" || this.state.data["user"] !== null) {
@@ -153,6 +155,16 @@ class Search extends React.Component{
         }
     }
 
+    viewProfil(e) {
+        e.preventDefault();
+        var email = e.target.id.split("_")[1];
+        localStorage.setItem("email", email);
+        var tmp = <Redirect to="/candidate-profil" />;
+        this.setState({
+            redirect: tmp
+        });
+    }
+
 
     render() {
         var resultsMap = <div className="msg">No results found</div>;
@@ -166,7 +178,7 @@ class Search extends React.Component{
                             <div className="name">{item.firstname}</div>
                             <div className="lastname">{item.lastname}</div>
                             <div className="title">{item.title}</div>
-                            <button>
+                            <button id={"view-profil"+index+"_"+item.email} onClick={this.viewProfil}>
                                 <i className="fa fa-eye" />
                                 <div>View Profil</div>
                             </button>
@@ -178,6 +190,8 @@ class Search extends React.Component{
 
         return(
             <div className="Search">
+                {this.state.redirect}
+
                 {this.state.navbar}
 
                 <img id="bg" className="background" src={require('./images/backgroundBig.jpg')} />
@@ -191,9 +205,9 @@ class Search extends React.Component{
                     <div className="control">
                         <div className="search-field">
                             <i className="fa fa-search" />
-                            <input type="text" placeholder="Type..." id="seach-input" onChange={this.changeSearchInput} />
+                            <input type="text" placeholder="Type..." id="search-input" onChange={this.changeSearchInput} />
                             <hr />
-                            <button>
+                            <button onClick={this.searchUsers}>
                                 Search
                             </button>
                         </div>

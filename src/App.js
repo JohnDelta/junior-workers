@@ -7,6 +7,7 @@ import {
 import './App.css';
 import Home from './Home.js';
 import MyProfil from './MyProfil.js';
+import CandidateProfil from './CandidateProfil.js';
 import Search from './Search.js';
 
 class App extends React.Component{
@@ -20,6 +21,9 @@ class App extends React.Component{
             </Route>
             <Route exact path="/search">
               <Search />
+            </Route>
+            <Route exact path="/candidate-profil">
+              <CandidateProfil />
             </Route>
             <Route path="/">
               <Home />

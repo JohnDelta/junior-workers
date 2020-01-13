@@ -93,14 +93,6 @@ class Join extends React.Component {
                 const json = await response.json();
                 this.setState({
                     joinMessage : "User created",
-                    firstname: "",
-                    lastname: "",
-                    email: "",
-                    password: "",
-                    repassword: ""
-                });
-                this.setState({
-                    
                 });
             }
         } catch (error) {

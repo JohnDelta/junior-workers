@@ -58,6 +58,7 @@ class MyProfil extends React.Component {
     }
 
     componentDidMount() {
+        localStorage.removeItem("email");
         if(this.state.jwt === null) {
             var temp = <Redirect to="/" />;
             this.setState({
@@ -210,7 +211,7 @@ class MyProfil extends React.Component {
 
         var file = document.getElementById("image-file").files[0];
         var fileName = file.name;
-        var extensions = ["png", "jpg"];
+        var extensions = ["png", "jpg", "jpeg"];
         var fileExtention = fileName.split(".").pop().toLowerCase();
         var fileSize = file.size;
 
@@ -247,7 +248,7 @@ class MyProfil extends React.Component {
                         });
                     } else if (json["code"] === "3") {
                         this.setState({
-                            displayMessage: "Image's size cannot be larger than 5mb",
+                            displayMessage: "Image's size cannot be larger than 10mb",
                         });
                     }
                 }
@@ -255,6 +256,7 @@ class MyProfil extends React.Component {
                     this.setState({
                         displayMessage: "Profil image has been updated"
                     });
+                    this.getUserData();
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -271,6 +273,7 @@ class MyProfil extends React.Component {
         this.setState({
             displayMessageFlag: !this.state.displayMessageFlag
         });
+        
     }
 
     // remove user's image

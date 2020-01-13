@@ -61,7 +61,7 @@ if(($_POST["jwt"])) {
 			if(!empty($_FILES["image_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["image_file"]["size"] <= 5000) {
+				if($_FILES["image_file"]["size"] <= 10000) {
 
 					$test = explode(".", $_FILES["image_file"]["name"]);
 					$extension = end($test);
