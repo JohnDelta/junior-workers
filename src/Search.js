@@ -23,9 +23,11 @@ class Search extends React.Component{
                 "education": [],
                 "language": []
             },
-            navbar: ""
+            navbar: "",
+            searchType: "candidate",
         };
 
+        this.changeSearchType = this.changeSearchType.bind(this);
         this.getUserData = this.getUserData.bind(this);
         this.getDropListData = this.getDropListData.bind(this);
     }
@@ -95,6 +97,20 @@ class Search extends React.Component{
         }
     }
 
+    changeSearchType(e) {
+        e.preventDefault();
+        var candidate = document.getElementById("candidate-search");
+        var postJob = document.getElementById("job-post-search");
+
+        if(e.target.id === "candidate-search") {
+            candidate.classList.add("search-button-active");
+            postJob.classList.remove("search-button-active");
+        } else if (e.target.id === "job-post-search") {
+            candidate.classList.remove("search-button-active");
+            postJob.classList.add("search-button-active");
+        }
+    }
+
 
     render() {
         return(
@@ -119,16 +135,39 @@ class Search extends React.Component{
                             </button>
                         </div>
                         <div className="target-field">
-                            <button className="search-button-active">
+                            <button id="candidate-search" onClick={this.changeSearchType} className="search-button-active" >
                                 Candidate
                             </button>
-                            <button className="">
+                            <button id="job-post-search" onClick={this.changeSearchType} >
                                 Job post
                             </button>
                         </div>
                     </div>
                     <div className="results">
-
+                        <div className="result">
+                            <img src="" />
+                            <div className="labels">
+                                <div className="name">John</div>
+                                <div className="lastname">Deligiannis</div>
+                                <div className="title">Software Developer</div>
+                                <button>
+                                    <i className="fa fa-eye" />
+                                    <div>View Profil</div>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="result">
+                            <img src="" />
+                            <div className="labels">
+                                <div className="name">John</div>
+                                <div className="lastname">Deligiannis</div>
+                                <div className="title">Software Developer</div>
+                                <button>
+                                    <i className="fa fa-eye" />
+                                    <div>View Profil</div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
