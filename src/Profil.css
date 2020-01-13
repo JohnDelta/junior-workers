@@ -25,7 +25,7 @@
 .profil-image {
     grid-row: 1/2;
     grid-column: 1/2;
-    background-color: tomato;
+    background-color: #F25F5C;
     width: 92%;
     height: 95%;
     border: 8px solid #F25F5C;

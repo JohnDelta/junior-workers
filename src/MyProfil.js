@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import  { Redirect } from 'react-router-dom';
 import DisplayMessage from './DisplayMessage';
 
-class CandidateProfil extends React.Component {
+class MyProfil extends React.Component {
     constructor(props) {
         super();
         this.state = {
@@ -1010,4 +1010,4 @@ class CandidateProfil extends React.Component {
     }
 }
 
-export default CandidateProfil;
+export default MyProfil;
