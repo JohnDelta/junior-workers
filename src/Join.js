@@ -11,7 +11,8 @@ class Join extends React.Component {
             lastname: "",
             email: "",
             password: "",
-            repassword: ""
+            repassword: "",
+            role: "candidate"
           };
         this.toggleJoin = this.toggleJoin.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -57,6 +58,10 @@ class Join extends React.Component {
             this.setState({
                 repassword: e.target.value
             });
+        } else if (e.target.name === "role") {
+            this.setState({
+                role: e.target.value
+            });
         }
     }
 
@@ -65,7 +70,8 @@ class Join extends React.Component {
             "email": this.state.email,
             "password": this.state.password,
             "firstname": this.state.firstname,
-            "lastname": this.state.lastname
+            "lastname": this.state.lastname,
+            "role": this.state.role
         };
         var url = "http://localhost/junior-workers/api/create-user.php";
         try {
@@ -86,7 +92,15 @@ class Join extends React.Component {
             else if (response.status === 200) {
                 const json = await response.json();
                 this.setState({
-                    joinMessage : "User created"
+                    joinMessage : "User created",
+                    firstname: "",
+                    lastname: "",
+                    email: "",
+                    password: "",
+                    repassword: ""
+                });
+                this.setState({
+                    
                 });
             }
         } catch (error) {
@@ -104,20 +118,25 @@ class Join extends React.Component {
                     <div className="join-message">Account Creation</div>
                     <div className="join-message" style={{"color":"#D0321E", "fontSize":"26px"}}>{this.state.joinMessage}</div>
                     <div className="join-section">
-                    <div className="join-title-label">Account ID</div>
-                    <div className="join-label">Email</div>
-                    <input className="join-input-text" type="email" minLength="6" maxLength="30" placeholder="johnDelta" required name="email" onChange={this.handleChange} />
-                    <div className="join-label">Password</div>
-                    <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="password" onChange={this.handleChange} />
-                    <div className="join-label">Verify password</div>
-                    <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="repassword" onChange={this.handleChange} />
+                        <div className="join-title-label">Account ID</div>
+                        <div className="join-label">Email</div>
+                        <input className="join-input-text" type="email" minLength="6" maxLength="30" placeholder="johnDelta" required name="email" onChange={this.handleChange} />
+                        <div className="join-label">Password</div>
+                        <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="password" onChange={this.handleChange} />
+                        <div className="join-label">Verify password</div>
+                        <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="repassword" onChange={this.handleChange} />
+                        <div className="join-label">Role</div>
+                        <select className="join-role" defaultValue="candidate" name="role" onChange={this.handleChange}>
+                            <option value="candidate" >Candidate</option>
+                            <option value="hirer" >Hirer</option>
+                        </select>
                     </div>
                     <div className="join-section">
-                    <div className="join-title-label">Personal info</div>
-                    <div className="join-label">Name</div>
-                    <input className="join-input-text" type="text" minLength="6" maxLength="40" placeholder="John" required name="firstname" onChange={this.handleChange} />
-                    <div className="join-label">Lastname</div>
-                    <input className="join-input-text" type="text" minLength="6" maxLength="40" placeholder="Deligiannis" required name="lastname" onChange={this.handleChange} />
+                        <div className="join-title-label">Personal info</div>
+                        <div className="join-label">Name</div>
+                        <input className="join-input-text" type="text" minLength="6" maxLength="40" placeholder="John" required name="firstname" onChange={this.handleChange} />
+                        <div className="join-label">Lastname</div>
+                        <input className="join-input-text" type="text" minLength="6" maxLength="40" placeholder="Deligiannis" required name="lastname" onChange={this.handleChange} />
                     </div>
                     <button className="join-submit" onClick={this.handleSubmit} >Create account</button>
                 </div>

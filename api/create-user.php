@@ -43,6 +43,7 @@ $user->firstname = $data->firstname;
 $user->lastname = $data->lastname;
 $user->email = $data->email;
 $user->password = $data->password;
+$user->role = $data->role;
 
 // check if user exists
 if($user->getParameters()) {
@@ -55,6 +56,7 @@ if($user->getParameters()) {
     !empty($user->lastname) &&
     !empty($user->email) &&
     !empty($user->password) &&
+    !empty($user->role) &&
     $user->create()) {
         // set response code & return message
         http_response_code(200);

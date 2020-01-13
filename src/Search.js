@@ -25,11 +25,16 @@ class Search extends React.Component{
             },
             navbar: "",
             searchType: "candidate",
+            searchInput: "",
+            results: []
         };
 
         this.changeSearchType = this.changeSearchType.bind(this);
+        this.changeSearchInput = this.changeSearchInput.bind(this);
         this.getUserData = this.getUserData.bind(this);
+        this.searchUsers = this.searchUsers.bind(this);
         this.getDropListData = this.getDropListData.bind(this);
+
     }
 
 
@@ -45,6 +50,7 @@ class Search extends React.Component{
             }
         }
         this.getDropListData();
+        this.searchUsers();
     }
 
 
@@ -97,6 +103,42 @@ class Search extends React.Component{
         }
     }
 
+    // Get all users from search
+    async searchUsers() {
+        var url = 'http://localhost:80//junior-workers/api/search.php';
+        var data = {
+            "searchType": this.state.searchType,
+            "searchInput": this.state.searchInput
+        };
+        try {
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if(response.status !== 200) {
+                console.error("Unable to search")
+            }
+            else if (response.status == 200) {
+                var json = await response.json();
+                this.setState({"results" : json.results});
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    changeSearchInput(e) {
+        e.preventDefault();
+        var input = document.getElementById("search-input");
+        this.setState({
+            searchInput: input.value
+        });
+    }
+
     changeSearchType(e) {
         e.preventDefault();
         var candidate = document.getElementById("candidate-search");
@@ -113,6 +155,27 @@ class Search extends React.Component{
 
 
     render() {
+        var resultsMap = <div className="msg">No results found</div>;
+        if(this.state.results !== []) {
+            resultsMap = [];
+            this.state.results.forEach((item, index) => {
+                resultsMap.push(
+                    <div className="result" key={"result"+index}>
+                        <img src={"http://localhost/junior-workers/api/uploads/"+item.image_path} />
+                        <div className="labels">
+                            <div className="name">{item.firstname}</div>
+                            <div className="lastname">{item.lastname}</div>
+                            <div className="title">{item.title}</div>
+                            <button>
+                                <i className="fa fa-eye" />
+                                <div>View Profil</div>
+                            </button>
+                        </div>
+                    </div>
+                );
+            });    
+        }
+
         return(
             <div className="Search">
                 {this.state.navbar}
@@ -128,7 +191,7 @@ class Search extends React.Component{
                     <div className="control">
                         <div className="search-field">
                             <i className="fa fa-search" />
-                            <input type="text" placeholder="Type..." />
+                            <input type="text" placeholder="Type..." id="seach-input" onChange={this.changeSearchInput} />
                             <hr />
                             <button>
                                 Search
@@ -144,30 +207,7 @@ class Search extends React.Component{
                         </div>
                     </div>
                     <div className="results">
-                        <div className="result">
-                            <img src="" />
-                            <div className="labels">
-                                <div className="name">John</div>
-                                <div className="lastname">Deligiannis</div>
-                                <div className="title">Software Developer</div>
-                                <button>
-                                    <i className="fa fa-eye" />
-                                    <div>View Profil</div>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="result">
-                            <img src="" />
-                            <div className="labels">
-                                <div className="name">John</div>
-                                <div className="lastname">Deligiannis</div>
-                                <div className="title">Software Developer</div>
-                                <button>
-                                    <i className="fa fa-eye" />
-                                    <div>View Profil</div>
-                                </button>
-                            </div>
-                        </div>
+                        {resultsMap}
                     </div>
                 </div>
             </div>
