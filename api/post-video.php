@@ -61,7 +61,7 @@ if(($_POST["jwt"])) {
 			if(!empty($_FILES["video_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["video_file"]["size"] <= 50000) {
+				if($_FILES["video_file"]["size"] <= 500000) {
 
 					$test = explode(".", $_FILES["video_file"]["name"]);
 					$extension = end($test);
@@ -102,7 +102,7 @@ if(($_POST["jwt"])) {
 				
 					// tell the user access denied  & show error message
 					echo json_encode(array(
-						"message" => "File cannot have size larger than 5MB",
+						"message" => "File cannot have size larger than 50MB",
 						"code"=>$ERROR_SIZE_CODE
 					));	
 				}

@@ -432,9 +432,9 @@ class MyHirerProfil extends React.Component {
                 });
                 // push job_post div
                 jobPostMap.push(
-                    <div className="work" key={"job_post"+index}>
-                        <p className="work-label">Job title</p>
-                        <input 
+                    <div className="post" key={"job_post"+index}>
+                        <p className="post-label">Job title</p>
+                        <textarea
                             type="text" 
                             readOnly={this.state.readonly} 
                             id={"job_post__"+index+"__title"} 
@@ -442,7 +442,7 @@ class MyHirerProfil extends React.Component {
                             defaultValue={item.title}
                             placeholder="Job title"
                             required={true} />
-                        <p className="work-label">Looking for</p>
+                        <p className="post-label">Looking for</p>
                         <select 
                             id={"job_post__"+index+"__id_profession"}
                             disabled={this.state.disabled} 
@@ -450,13 +450,13 @@ class MyHirerProfil extends React.Component {
                             onChange={this.userDataChange} >
                             {professionMap}
                         </select>
-                        <p className="work-label">Job Description</p>
+                        <p className="post-label">Job Description</p>
                         <textarea 
                             readOnly={this.state.readonly} 
                             id={"job_post__"+index+"__description"} 
                             onChange={this.userDataChange} 
                             defaultValue={item.description}
-                            placeholder=""
+                            placeholder="Describe the position for the job here"
                             required={true} />
                         {removeButton}
                     </div>

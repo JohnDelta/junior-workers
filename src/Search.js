@@ -22,7 +22,8 @@ class Search extends React.Component{
                 "experience": [],
                 "skill": [],
                 "education": [],
-                "language": []
+                "language": [],
+                "job_post": []
             },
             navbar: "",
             searchType: "candidate",
@@ -147,9 +148,15 @@ class Search extends React.Component{
         if(e.target.id === "candidate-search") {
             candidate.classList.add("search-button-active");
             postJob.classList.remove("search-button-active");
+            this.setState({
+                searchType: "candidate"
+            });
         } else if (e.target.id === "job-post-search") {
             candidate.classList.remove("search-button-active");
             postJob.classList.add("search-button-active");
+            this.setState({
+                searchType: "hirer"
+            });
         }
     }
 

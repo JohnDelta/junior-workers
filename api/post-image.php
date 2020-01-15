@@ -61,7 +61,7 @@ if(($_POST["jwt"])) {
 			if(!empty($_FILES["image_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["image_file"]["size"] <= 10000) {
+				if($_FILES["image_file"]["size"] <= 100000) {
 
 					$test = explode(".", $_FILES["image_file"]["name"]);
 					$extension = end($test);
@@ -103,7 +103,7 @@ if(($_POST["jwt"])) {
 				
 					// tell the user access denied  & show error message
 					echo json_encode(array(
-						"message" => "File cannot have size larger than 5MB",
+						"message" => "File cannot have size larger than 10MB",
 						"code"=>$ERROR_SIZE_CODE
 					));	
 				}

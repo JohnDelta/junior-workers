@@ -61,7 +61,7 @@ if(($_POST["jwt"])) {
 			if(!empty($_FILES["resume_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["resume_file"]["size"] <= 10000) {
+				if($_FILES["resume_file"]["size"] <= 100000) {
 
 					$test = explode(".", $_FILES["resume_file"]["name"]);
 					$extension = end($test);
