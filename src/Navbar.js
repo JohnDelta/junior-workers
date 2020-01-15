@@ -6,7 +6,7 @@ import './Navbar.css';
 
 class Navbar extends React.Component{
   constructor(props){
-    super(props);
+    super();
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
   }
@@ -53,7 +53,7 @@ class Navbar extends React.Component{
             </Link>
           </li>
           <li className="nav-link">
-            <Link className="text" to="/my-profil" style={profilStyle}>
+            <Link className="text" to={"/my-"+this.props.role+"-profil"} style={profilStyle}>
               <i className="fa fa-user" style={profilStyle}/>
               <p>Profil</p>
             </Link>

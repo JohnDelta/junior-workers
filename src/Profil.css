@@ -31,6 +31,7 @@
     border: 8px solid #F25F5C;
     border-radius: 10px;
     border-bottom-right-radius: 0px;
+    background-size: cover;
 }
 .profil-header {
     grid-row: 1/2;
@@ -488,11 +489,28 @@
     border-bottom: 2px solid #247BA0;
     background-color: transparent;
     outline: none;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
     padding: 2px;
 }
 .profil-content .section .work input[type="text"]:read-only {
     border: none;
+}
+.profil-content .section .work textarea {
+    grid-column: 2/3;
+    border: none;
+    border-left: 2px solid #247BA0;
+    border-bottom: 2px solid #247BA0;
+    background-color: transparent;
+    outline: none;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    padding: 2px;
+    min-width: 200px;
+    min-height: 20px;
+}
+.profil-content .section .work textarea:read-only {
+    border-left: 1px solid #247BA0;
+    border-bottom: 1px solid #247BA0;
 }
 .profil-content .section .work-remove {
     margin-left: 10px;

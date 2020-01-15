@@ -76,9 +76,9 @@ class Login extends React.Component {
                 var temp = "";
                 // navigate user to the proper profil according to their role
                 if(json["role"] === "candidate") {
-                    temp = <Redirect to="/my-profil" />;
+                    temp = <Redirect to="/my-candidate-profil" />;
                 } else if(json["role"] === "hirer") {
-                    temp = <Redirect to="/hirer-profil" />;
+                    temp = <Redirect to="/my-hirer-profil" />;
                 }
                 this.setState({redirect : temp});
             }

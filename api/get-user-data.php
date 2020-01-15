@@ -29,6 +29,7 @@ include_once("objects/user.php");
 include_once("objects/skill.php");
 include_once("objects/education.php");
 include_once("objects/language.php");
+include_once("objects/jobPost.php");
  
 // required to decode jwt
 include_once 'config/core.php';
@@ -84,101 +85,146 @@ function getData($jwt_email) {
 
     // check if the user is valid and get all their other attributes
     if($user->getParameters()) {
-        // initialize experience object
-        $experience = new Experience($conn);
 
-        // extract parameters from the data
-        $experience->id_user = $user->id_user;
+        // return the proper data according to user role (candidate or hirer)
+        if($user->role == "candidate") {
+            // initialize experience object
+            $experience = new Experience($conn);
 
-        // get all experience parameters
-        $experience->getAll();
+            // extract parameters from the data
+            $experience->id_user = $user->id_user;
 
-        // make experience output
-        $experienceData = array();
-        for($i = 0; $i < count($experience->id_profession); $i++) {
-            array_push($experienceData, array(
-                "id_profession" => $experience->id_profession[$i],
-                "company" => $experience->company[$i],
-                "date" => $experience->date[$i]
+            // get all experience parameters
+            $experience->getAll();
+
+            // make experience output
+            $experienceData = array();
+            for($i = 0; $i < count($experience->id_profession); $i++) {
+                array_push($experienceData, array(
+                    "id_profession" => $experience->id_profession[$i],
+                    "company" => $experience->company[$i],
+                    "date" => $experience->date[$i]
+                ));
+            }
+
+            // initialize skill object
+            $skill = new Skill($conn);
+
+            // extract parameters from the data
+            $skill->id_user = $user->id_user;
+
+            // get all skill parameters
+            $skill->getAll();
+
+            // make skill output
+            $skillData = array();
+            for($i = 0; $i < count($skill->id_skill); $i++) {
+                array_push($skillData, array(
+                    "id_skill" => $skill->id_skill[$i]
+                ));
+            }
+
+            // initialize education object
+            $education = new Education($conn);
+
+            // extract parameters from the data
+            $education->id_user = $user->id_user;
+
+            // get all education parameters
+            $education->getAll();
+
+            // make education output
+            $educationData = array();
+            for($i = 0; $i < count($education->id_education); $i++) {
+                array_push($educationData, array(
+                    "id_education" => $education->id_education[$i],
+                    "id_education_level" => $education->id_education_level[$i]
+                ));
+            }
+
+            // initialize language object
+            $language = new Language($conn);
+
+            // extract parameters from the data
+            $language->id_user = $user->id_user;
+
+            // get all language parameters
+            $language->getAll();
+
+            // make education output
+            $languageData = array();
+            for($i = 0; $i < count($language->id_language); $i++) {
+                array_push($languageData, array(
+                    "id_language" => $language->id_language[$i],
+                    "id_language_level" => $language->id_language_level[$i]
+                ));
+            }
+
+            // make users'info output
+            $userData = array(
+                "firstname" => $user->firstname,
+                "lastname" => $user->lastname,
+                "email" => $user->email,
+                "availability" => $user->availability,
+                "title" => $user->title,
+                "bio" => $user->bio,
+                "image_path" => $user->image_path,
+                "video_path" => $user->video_path,
+                "role" => $user->role
+            );
+
+            // set response code
+            http_response_code(200);
+        
+            // send json
+            echo json_encode(array(
+                "user" => $userData,
+                "experience" => $experienceData,
+                "skill" => $skillData,
+                "education" => $educationData,
+                "language" => $languageData
+            ));
+        } else if($user->role == "hirer") {
+            // make users'info output
+            $userData = array(
+                "firstname" => $user->firstname,
+                "lastname" => $user->lastname,
+                "email" => $user->email,
+                "availability" => $user->availability,
+                "title" => $user->title,
+                "bio" => $user->bio,
+                "image_path" => $user->image_path,
+                "role" => $user->role
+            );
+
+            // initialize jobPost object
+            $jobPost = new JobPost($conn);
+
+            // extract parameters from the data
+            $jobPost->id_user = $user->id_user;
+
+            // get all jobPost parameters
+            $jobPost->getAll();
+
+            // make jobPost output
+            $jobPostData = array();
+            for($i = 0; $i < count($jobPost->id_profession); $i++) {
+                array_push($jobPostData, array(
+                    "id_profession" => $jobPost->id_profession[$i],
+                    "title" => $jobPost->title[$i],
+                    "description" => $jobPost->description[$i]
+                ));
+            }
+
+            // set response code
+            http_response_code(200);
+        
+            // send json
+            echo json_encode(array(
+                "user" => $userData,
+                "job_post" => $jobPostData
             ));
         }
-
-        // initialize skill object
-        $skill = new Skill($conn);
-
-        // extract parameters from the data
-        $skill->id_user = $user->id_user;
-
-        // get all skill parameters
-        $skill->getAll();
-
-        // make skill output
-        $skillData = array();
-        for($i = 0; $i < count($skill->id_skill); $i++) {
-            array_push($skillData, array(
-                "id_skill" => $skill->id_skill[$i]
-            ));
-        }
-
-        // initialize education object
-        $education = new Education($conn);
-
-        // extract parameters from the data
-        $education->id_user = $user->id_user;
-
-        // get all education parameters
-        $education->getAll();
-
-        // make education output
-        $educationData = array();
-        for($i = 0; $i < count($education->id_education); $i++) {
-            array_push($educationData, array(
-                "id_education" => $education->id_education[$i],
-                "id_education_level" => $education->id_education_level[$i]
-            ));
-        }
-
-        // initialize language object
-        $language = new Language($conn);
-
-        // extract parameters from the data
-        $language->id_user = $user->id_user;
-
-        // get all language parameters
-        $language->getAll();
-
-        // make education output
-        $languageData = array();
-        for($i = 0; $i < count($language->id_language); $i++) {
-            array_push($languageData, array(
-                "id_language" => $language->id_language[$i],
-                "id_language_level" => $language->id_language_level[$i]
-            ));
-        }
-
-        // make users'info output
-        $userData = array(
-            "firstname" => $user->firstname,
-            "lastname" => $user->lastname,
-            "email" => $user->email,
-            "availability" => $user->availability,
-            "title" => $user->title,
-            "bio" => $user->bio,
-            "image_path" => $user->image_path,
-            "video_path" => $user->video_path
-        );
-
-        // set response code
-        http_response_code(200);
-    
-        // send json
-        echo json_encode(array(
-            "user" => $userData,
-            "experience" => $experienceData,
-            "skill" => $skillData,
-            "education" => $educationData,
-            "language" => $languageData
-        ));
     } else {
         // set response code
         http_response_code(400);

@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import  { Redirect } from 'react-router-dom';
 import DisplayMessage from './DisplayMessage';
 
-class MyProfil extends React.Component {
+class MyCandidateProfil extends React.Component {
     constructor(props) {
         super();
         this.state = {
@@ -575,7 +575,7 @@ class MyProfil extends React.Component {
                 // if the returned data are for a hirer and not a candidate, open the hirer's profil
                 var temp = "";
                 if(this.state.data["user"]["role"] === "hirer") {
-                    temp = <Redirect to="/hirer-profil" />;
+                    temp = <Redirect to="/my-hirer-profil" />;
                 }
                 this.setState({redirect: temp});
             }
@@ -910,7 +910,7 @@ class MyProfil extends React.Component {
                     <div className="title2">Workers</div>
                 </div>
 
-                <Navbar selectedLink="profil" />
+                <Navbar selectedLink="profil" role={this.state.data["user"]["role"]} />
 
                 <div className="profil-container">
                     <img className="profil-image" src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["image_path"]} />
@@ -1013,4 +1013,4 @@ class MyProfil extends React.Component {
     }
 }
 
-export default MyProfil;
+export default MyCandidateProfil;

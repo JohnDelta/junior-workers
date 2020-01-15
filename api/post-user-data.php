@@ -29,6 +29,7 @@ include_once("objects/user.php");
 include_once("objects/skill.php");
 include_once("objects/education.php");
 include_once("objects/language.php");
+include_once("objects/jobPost.php");
  
 // required to decode jwt
 include_once 'config/core.php';
@@ -94,68 +95,88 @@ function postData($jwt_email, $data) {
         $user->bio = $data->user->bio;
         if($user->alterAll()) {
 
-            // get all experience and insert it
-            // if the values are "" it means they've been removed
-            $experience = new Experience($conn);
-            if($data->experience != "" || !empty($data->experience) || $data->experience != array()) {
-                $experience->id_user = $user->id_user;
-                foreach($data->experience as $line) {
-                    if($line != "") {
-                        array_push($experience->id_profession, $line->id_profession);
-                        array_push($experience->company, $line->company);
-                        array_push($experience->date, $line->date);
+            // according to the user's role alter the proper data
+            if($user->role == "candidate") {
+                // get all experience and insert it
+                // if the values are "" it means they've been removed
+                $experience = new Experience($conn);
+                if($data->experience != "" || !empty($data->experience) || $data->experience != array()) {
+                    $experience->id_user = $user->id_user;
+                    foreach($data->experience as $line) {
+                        if($line != "") {
+                            array_push($experience->id_profession, $line->id_profession);
+                            array_push($experience->company, $line->company);
+                            array_push($experience->date, $line->date);
+                        }
                     }
+                    $experience->insertAll();
+                } else {
+                    $experience->removeAll();
                 }
-                $experience->insertAll();
-            } else {
-                $experience->removeAll();
-            }
 
-            // get all skill and insert it
-            // if the values are "" it means they've been removed
-            $skill = new Skill($conn);
-            if($data->skill != "" || !empty($data->skill) || $data->skill != array()) {
-                $skill->id_user = $user->id_user;
-                foreach($data->skill as $line) {
-                    if($line != "") {
-                        array_push($skill->id_skill, $line->id_skill);
+                // get all skill and insert it
+                // if the values are "" it means they've been removed
+                $skill = new Skill($conn);
+                if($data->skill != "" || !empty($data->skill) || $data->skill != array()) {
+                    $skill->id_user = $user->id_user;
+                    foreach($data->skill as $line) {
+                        if($line != "") {
+                            array_push($skill->id_skill, $line->id_skill);
+                        }
                     }
+                    $skill->insertAll();
+                } else {
+                    $skill->removeAll();
                 }
-                $skill->insertAll();
-            } else {
-                $skill->removeAll();
-            }
 
-            // get all education and insert it
-            // if the values are "" it means they've been removed
-            $education = new Education($conn);
-            if($data->education != "" || !empty($data->education) || $data->education != array()) {
-                $education->id_user = $user->id_user;
-                foreach($data->education as $line) {
-                    if($line != "") {
-                        array_push($education->id_education, $line->id_education);
-                        array_push($education->id_education_level, $line->id_education_level);
+                // get all education and insert it
+                // if the values are "" it means they've been removed
+                $education = new Education($conn);
+                if($data->education != "" || !empty($data->education) || $data->education != array()) {
+                    $education->id_user = $user->id_user;
+                    foreach($data->education as $line) {
+                        if($line != "") {
+                            array_push($education->id_education, $line->id_education);
+                            array_push($education->id_education_level, $line->id_education_level);
+                        }
                     }
+                    $education->insertAll();
+                } else {
+                    $education->removeAll();
                 }
-                $education->insertAll();
-            } else {
-                $education->removeAll();
-            }
 
-            // get all language and insert it
-            // if the values are "" it means they've been removed
-            $language = new Language($conn);
-            if($data->language != "" || !empty($data->language) || $data->language != array()) {
-                $language->id_user = $user->id_user;
-                foreach($data->language as $line) {
-                    if($line != "") {
-                        array_push($language->id_language, $line->id_language);
-                        array_push($language->id_language_level, $line->id_language_level);
+                // get all language and insert it
+                // if the values are "" it means they've been removed
+                $language = new Language($conn);
+                if($data->language != "" || !empty($data->language) || $data->language != array()) {
+                    $language->id_user = $user->id_user;
+                    foreach($data->language as $line) {
+                        if($line != "") {
+                            array_push($language->id_language, $line->id_language);
+                            array_push($language->id_language_level, $line->id_language_level);
+                        }
                     }
+                    $language->insertAll();
+                } else {
+                    $language->removeAll();
                 }
-                $language->insertAll();
-            } else {
-                $language->removeAll();
+            } else if($user->role == "hirer") {
+                // get all jobposts and insert it
+                // if the values are "" it means they've been removed
+                $job_post = new JobPost($conn);
+                if($data->job_post != "" || !empty($data->job_post) || $data->job_post != array()) {
+                    $job_post->id_user = $user->id_user;
+                    foreach($data->job_post as $line) {
+                        if($line != "") {
+                            array_push($job_post->id_profession, $line->id_profession);
+                            array_push($job_post->title, $line->title);
+                            array_push($job_post->description, $line->description);
+                        }
+                    }
+                    $job_post->insertAll();
+                } else {
+                    $job_post->removeAll();
+                }
             }
 
             // set response code

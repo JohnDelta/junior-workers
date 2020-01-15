@@ -44,12 +44,6 @@ class Search extends React.Component{
         localStorage.removeItem("email");
         if(this.state.jwt !== "" || this.state.jwt !== null) {
             this.getUserData();
-            if(this.state.data["user"] !== "" || this.state.data["user"] !== null) {
-                var tmp = <Navbar selectedLink="search" />
-                this.setState({
-                    navbar: tmp
-                });
-            }
         }
         this.getDropListData();
         this.searchUsers();
@@ -75,6 +69,10 @@ class Search extends React.Component{
             else if (response.status == 200) {
                 var json = await response.json();
                 this.setState({data : json});
+                var tmp = <Navbar selectedLink="search" role={this.state.data["user"]["role"]} />
+                this.setState({
+                    navbar: tmp
+                });
             }
         } catch (error) {
             console.error('Error:', error);

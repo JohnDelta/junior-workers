@@ -142,6 +142,7 @@
     overflow-x: hidden;
     overflow-y: hidden;
     justify-content: center;
+    background-size: cover;
 }
 .result .labels {
     grid-row: 2/3;

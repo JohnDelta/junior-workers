@@ -17,6 +17,7 @@ class Join extends React.Component {
         this.toggleJoin = this.toggleJoin.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.resetAllInput = this.resetAllInput.bind(this);
     }
 
     componentDidUpdate() {
@@ -38,34 +39,37 @@ class Join extends React.Component {
     }
 
     handleChange(e) {
-        if(e.target.name === "firstname") {
+        e.preventDefault();
+        var id = e.target.id;
+        if(id === "join_firstname") {
             this.setState({
                 firstname: e.target.value
             });
-        } else if (e.target.name === "lastname") {
+        } else if (id === "join_lastname") {
             this.setState({
                 lastname: e.target.value
             });
-        } else if (e.target.name === "email") {
+        } else if (id === "join_email") {
             this.setState({
                 email: e.target.value
             });
-        } else if (e.target.name === "password") {
+        } else if (id === "join_password") {
             this.setState({
                 password: e.target.value
             });
-        } else if (e.target.name === "repassword") {
+        } else if (id === "join_repassword") {
             this.setState({
                 repassword: e.target.value
             });
-        } else if (e.target.name === "role") {
+        } else if (id === "join_role") {
             this.setState({
                 role: e.target.value
             });
         }
     }
 
-    async handleSubmit() {
+    async handleSubmit(e) {
+        e.preventDefault();
         var data = {
             "email": this.state.email,
             "password": this.state.password,
@@ -94,6 +98,7 @@ class Join extends React.Component {
                 this.setState({
                     joinMessage : "User created",
                 });
+                this.resetAllInput();
             }
         } catch (error) {
             console.error('Error:', error);
@@ -103,22 +108,30 @@ class Join extends React.Component {
         }
     }
 
+    resetAllInput() {
+        document.getElementById("join_firstname").value = "";
+        document.getElementById("join_lastname").value = "";
+        document.getElementById("join_email").value = "";
+        document.getElementById("join_password").value = "";
+        document.getElementById("join_repassword").value = "";
+    }
+
     render() {
         return(
             <div className="join">
-                <div className="join-form">
+                <form className="join-form" onSubmit={this.handleSubmit}>
                     <div className="join-message">Account Creation</div>
                     <div className="join-message" style={{"color":"#D0321E", "fontSize":"26px"}}>{this.state.joinMessage}</div>
                     <div className="join-section">
                         <div className="join-title-label">Account ID</div>
                         <div className="join-label">Email</div>
-                        <input className="join-input-text" type="email" minLength="6" maxLength="30" placeholder="johnDelta" required name="email" onChange={this.handleChange} />
+                        <input className="join-input-text" type="email" minLength="6" maxLength="30" placeholder="johnDelta" required name="email" id="join_email" onChange={this.handleChange} />
                         <div className="join-label">Password</div>
-                        <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="password" onChange={this.handleChange} />
+                        <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="password" id="join_password" onChange={this.handleChange} />
                         <div className="join-label">Verify password</div>
-                        <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="repassword" onChange={this.handleChange} />
+                        <input className="join-input-text" type="password" minLength="6" maxLength="30" placeholder="John123DEL" required name="repassword" id="join_repassword" onChange={this.handleChange} />
                         <div className="join-label">Role</div>
-                        <select className="join-role" defaultValue="candidate" name="role" onChange={this.handleChange}>
+                        <select className="join-role" defaultValue="candidate" name="role" id="join_role" onChange={this.handleChange}>
                             <option value="candidate" >Candidate</option>
                             <option value="hirer" >Hirer</option>
                         </select>
@@ -126,12 +139,12 @@ class Join extends React.Component {
                     <div className="join-section">
                         <div className="join-title-label">Personal info</div>
                         <div className="join-label">Name</div>
-                        <input className="join-input-text" type="text" minLength="6" maxLength="40" placeholder="John" required name="firstname" onChange={this.handleChange} />
+                        <input className="join-input-text" type="text" minLength="2" maxLength="40" placeholder="John" required name="firstname" id="join_firstname" onChange={this.handleChange} />
                         <div className="join-label">Lastname</div>
-                        <input className="join-input-text" type="text" minLength="6" maxLength="40" placeholder="Deligiannis" required name="lastname" onChange={this.handleChange} />
+                        <input className="join-input-text" type="text" minLength="2" maxLength="40" placeholder="Deligiannis" required name="lastname" id="join_lastname" onChange={this.handleChange} />
                     </div>
-                    <button className="join-submit" onClick={this.handleSubmit} >Create account</button>
-                </div>
+                    <button className="join-submit" type="submit" >Create account</button>
+                </form>
             </div>
         );
     }

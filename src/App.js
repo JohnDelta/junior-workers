@@ -6,7 +6,8 @@ import {
 } from "react-router-dom";
 import './App.css';
 import Home from './Home.js';
-import MyProfil from './MyProfil.js';
+import MyCandidateProfil from './MyCandidateProfil.js';
+import MyHirerProfil from './MyHirerProfil.js';
 import CandidateProfil from './CandidateProfil.js';
 import Search from './Search.js';
 
@@ -16,8 +17,11 @@ class App extends React.Component{
       <Router>
         <div className="App">
           <Switch>
-            <Route exact path="/my-profil">
-              <MyProfil />
+            <Route exact path="/my-candidate-profil">
+              <MyCandidateProfil />
+            </Route>
+            <Route exact path="/my-hirer-profil">
+              <MyHirerProfil />
             </Route>
             <Route exact path="/search">
               <Search />
