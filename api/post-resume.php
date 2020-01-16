@@ -65,7 +65,7 @@ if(($_POST["jwt"])) {
 
 					$test = explode(".", $_FILES["resume_file"]["name"]);
 					$extension = end($test);
-					$name = rand(100, 999) . "." . $extension;
+					$name = rand(100, 999999999) . "." . $extension;
 					$location = "./uploads/" .$name;
 					move_uploaded_file($_FILES["resume_file"]["tmp_name"], $location);
 

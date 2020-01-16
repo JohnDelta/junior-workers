@@ -9,6 +9,7 @@ import Home from './Home.js';
 import MyCandidateProfil from './MyCandidateProfil.js';
 import MyHirerProfil from './MyHirerProfil.js';
 import CandidateProfil from './CandidateProfil.js';
+import HirerProfil from './HirerProfil.js';
 import Search from './Search.js';
 
 class App extends React.Component{
@@ -28,6 +29,9 @@ class App extends React.Component{
             </Route>
             <Route exact path="/candidate-profil">
               <CandidateProfil />
+            </Route>
+            <Route exact path="/hirer-profil">
+              <HirerProfil />
             </Route>
             <Route path="/">
               <Home />

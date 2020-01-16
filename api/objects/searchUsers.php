@@ -27,7 +27,7 @@ class SearchUsers {
         // results for candidate
         if($this->searchType == "candidate") {
             // create query
-            $query = "SELECT DISTINCT user.firstname, user.lastname, user.email, user.title, user.image_path 
+            $query = "SELECT DISTINCT user.firstname, user.lastname, user.email, user.title, user.image_path, user.role 
             FROM user, education, language, skill, user_has_language, user_has_education, user_has_skill,
                 experience, profession, education_level, language_level
             WHERE 
@@ -65,13 +65,14 @@ class SearchUsers {
                     "lastname" => $row["lastname"],
                     "title" => $row["title"],
                     "email" => $row["email"],
-                    "image_path" => $row["image_path"]
+                    "image_path" => $row["image_path"],
+                    "role" => $row["role"]
                 ));
             }
         } else if($this->searchType == "hirer") {
             // create query
             $query = "SELECT DISTINCT user.firstname, user.lastname, user.email, user.title, user.image_path,
-                job_post.title, job_post.description, job_post.id_profession  
+                job_post.title AS job_post_title, job_post.description, job_post.id_profession, user.role 
             FROM user, job_post, profession
             WHERE 
                 user.id_user = job_post.id_user AND
@@ -98,9 +99,10 @@ class SearchUsers {
                     "title" => $row["title"],
                     "email" => $row["email"],
                     "image_path" => $row["image_path"],
-                    "title" => $row["title"],
+                    "job_title" => $row["job_post_title"],
                     "description" => $row["description"],
                     "id_profession" => $row["id_profession"],
+                    "role" => $row["role"]
                 ));
             }
         }

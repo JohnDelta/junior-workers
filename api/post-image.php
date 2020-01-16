@@ -65,7 +65,7 @@ if(($_POST["jwt"])) {
 
 					$test = explode(".", $_FILES["image_file"]["name"]);
 					$extension = end($test);
-					$name = rand(100, 999) . "." . $extension;
+					$name = rand(100, 999999999) . "." . $extension;
 					$location = "./uploads/" .$name;
 					move_uploaded_file($_FILES["image_file"]["tmp_name"], $location);
 					$msg = "img uploaded";

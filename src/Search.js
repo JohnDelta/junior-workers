@@ -28,7 +28,12 @@ class Search extends React.Component{
             navbar: "",
             searchType: "candidate",
             searchInput: "",
-            results: []
+            results: [
+                {
+                    "role":"candidate"
+                }
+            ],
+            load: "candidate"
         };
 
         this.changeSearchType = this.changeSearchType.bind(this);
@@ -74,6 +79,7 @@ class Search extends React.Component{
                 this.setState({
                     navbar: tmp
                 });
+                localStorage.setItem("role", this.state.data["user"]["role"]);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -125,7 +131,10 @@ class Search extends React.Component{
             }
             else if (response.status == 200) {
                 var json = await response.json();
-                this.setState({"results" : json.results});
+                this.setState({
+                        "results" : json.results,
+                        "load": this.state.searchType
+                    });
             }
         } catch (error) {
             console.error('Error:', error);
@@ -144,7 +153,7 @@ class Search extends React.Component{
         e.preventDefault();
         var candidate = document.getElementById("candidate-search");
         var postJob = document.getElementById("job-post-search");
-
+        
         if(e.target.id === "candidate-search") {
             candidate.classList.add("search-button-active");
             postJob.classList.remove("search-button-active");
@@ -163,8 +172,14 @@ class Search extends React.Component{
     viewProfil(e) {
         e.preventDefault();
         var email = e.target.id.split("_")[1];
+        var role = e.target.id.split("_")[2];
         localStorage.setItem("email", email);
-        var tmp = <Redirect to="/candidate-profil" />;
+        var tmp;
+        if(role === "candidate") {
+            tmp = <Redirect to="/candidate-profil" />;
+        }else if (role === "hirer") {
+            tmp = <Redirect to="/hirer-profil" />;
+        }
         this.setState({
             redirect: tmp
         });
@@ -174,23 +189,67 @@ class Search extends React.Component{
     render() {
         var resultsMap = <div className="msg">No results found</div>;
         if(this.state.results !== []) {
-            resultsMap = [];
-            this.state.results.forEach((item, index) => {
-                resultsMap.push(
-                    <div className="result" key={"result"+index}>
-                        <img src={"http://localhost/junior-workers/api/uploads/"+item.image_path} />
-                        <div className="labels">
-                            <div className="name">{item.firstname}</div>
-                            <div className="lastname">{item.lastname}</div>
-                            <div className="title">{item.title}</div>
-                            <button id={"view-profil"+index+"_"+item.email} onClick={this.viewProfil}>
-                                <i className="fa fa-eye" />
-                                <div>View Profil</div>
-                            </button>
+            if(this.state.load === "candidate") {
+                resultsMap = [];
+                this.state.results.forEach((item, index) => {
+                    resultsMap.push(
+                        <div className="result" key={"result"+index}>
+                            <img src={"http://localhost/junior-workers/api/uploads/"+item.image_path} />
+                            <div className="labels">
+                                <div className="name">{item.firstname}</div>
+                                <div className="lastname">{item.lastname}</div>
+                                <div className="title">{item.title}</div>
+                                <button id={"view-profil"+index+"_"+item.email+"_"+item.role} onClick={this.viewProfil}>
+                                    <i className="fa fa-eye" />
+                                    <div>View profil</div>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                );
-            });    
+                    );
+                });  
+            }
+            else if(this.state.load === "hirer") {
+                resultsMap = [];
+                this.state.results.forEach((item, index) => {
+                    // map all professions into option - select
+                    var professionMap = [];
+                    this.state.dropListData["profession"].forEach((pro_item, pro_index) => {
+                        professionMap.push(
+                            <option value={pro_item.id_profession} key={"profession_option__"+index+"__"+pro_index}>{pro_item.title}</option>
+                        );
+                    });
+                    resultsMap.push(
+                        <div className="result" key={"result"+index}>
+                            <img src={"http://localhost/junior-workers/api/uploads/"+item.image_path} />
+                            <div className="labels">
+                                <div className="name">{item.firstname}</div>
+                                <div className="lastname">{item.lastname}</div>
+                                <div className="title">{item.title}</div>
+                                <button id={"view-profil"+index+"_"+item.email+"_"+item.role} onClick={this.viewProfil}>
+                                    <i className="fa fa-eye" />
+                                    <div>View profil</div>
+                                </button>
+                            </div>
+                            <div className="job">
+                                <div className="title">
+                                    {item.job_title}
+                                </div>
+                                <div className="description">
+                                    {item.description}
+                                </div>
+                                <div className="looking">
+                                    <div className="label">Looking for a</div>
+                                    <select 
+                                        disabled={true} 
+                                        value={item.id_profession} >
+                                        {professionMap}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                });
+            }
         }
 
         return(

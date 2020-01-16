@@ -29,6 +29,7 @@ include_once("objects/user.php");
 include_once("objects/skill.php");
 include_once("objects/education.php");
 include_once("objects/language.php");
+include_once("objects/jobPost.php");
  
 // required to decode jwt
 include_once 'config/core.php';
@@ -158,6 +159,25 @@ function getData($jwt_email, $view_email) {
                 ));
             }
 
+            // initialize job post object
+            $jobPost = new JobPost($conn);
+
+            // extract parameters from the data
+            $jobPost->id_user = $viewUser->id_user;
+
+            // get all job_post parameters
+            $jobPost->getAll();
+
+            // make jobPost output
+            $jobPostData = array();
+            for($i = 0; $i < count($jobPost->id_profession); $i++) {
+                array_push($jobPostData, array(
+                    "id_profession" => $jobPost->id_profession[$i],
+                    "title" => $jobPost->title[$i],
+                    "description" => $jobPost->description[$i]
+                ));
+            }
+
             // make users'info output
             $userData = array(
                 "firstname" => $viewUser->firstname,
@@ -167,7 +187,8 @@ function getData($jwt_email, $view_email) {
                 "title" => $viewUser->title,
                 "bio" => $viewUser->bio,
                 "image_path" => $viewUser->image_path,
-                "video_path" => $viewUser->video_path
+                "video_path" => $viewUser->video_path,
+                "role" => $viewUser->role
             );
 
             // set response code
@@ -179,7 +200,8 @@ function getData($jwt_email, $view_email) {
                 "experience" => $experienceData,
                 "skill" => $skillData,
                 "education" => $educationData,
-                "language" => $languageData
+                "language" => $languageData,
+                "job_post" => $jobPostData
             ));
         }
     }

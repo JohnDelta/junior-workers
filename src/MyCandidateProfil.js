@@ -423,7 +423,7 @@ class MyCandidateProfil extends React.Component {
 
         var file = document.getElementById("resume-file").files[0];
         var fileName = file.name;
-        var extensions = ["png", "jpg"];
+        var extensions = ["pdf"];
         var fileExtention = fileName.split(".").pop().toLowerCase();
         var fileSize = file.size;
 

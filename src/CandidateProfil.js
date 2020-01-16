@@ -9,6 +9,7 @@ class CandidateProfil extends React.Component {
         this.state = {
             redirect: "",
             email: localStorage.getItem("email"),
+            role: localStorage.getItem("role"),
             jwt: localStorage.getItem("jwt"),
             disabled: true,
             readonly: true,
@@ -17,7 +18,8 @@ class CandidateProfil extends React.Component {
                 "experience": [],
                 "skill": [],
                 "education": [],
-                "language": []
+                "language": [],
+                "job_post": []
             },
             dropListData: {
                 "profession": [],
@@ -26,7 +28,8 @@ class CandidateProfil extends React.Component {
                 "education_level": [],
                 "language": [],
                 "language_level": []
-            }
+            },
+            navbar: ""
         };
         this.getUserData = this.getUserData.bind(this);
         this.getDropListData = this.getDropListData.bind(this);
@@ -40,6 +43,7 @@ class CandidateProfil extends React.Component {
                 redirect: temp
             });
             localStorage.removeItem("email");
+            localStorage.removeItem("role");
         }
         this.getUserData();
         this.getDropListData();
@@ -87,19 +91,17 @@ class CandidateProfil extends React.Component {
             });
             if(response.status !== 200) {
                 console.error("Unable to get user's data");
-                temp = <Redirect to="/search" />;
+                var temp = <Redirect to="/search" />;
                 this.setState({redirect: temp});
             }
             else if (response.status == 200) {
                 var json = await response.json();
                 this.setState({data : json});
 
-                // if the returned data are for a hirer and not a candidate, open the hirer's profil
-                var temp = "";
-                if(this.state.data["user"]["role"] === "hirer") {
-                    temp = <Redirect to="/hirer-profil" />;
-                }
-                this.setState({redirect: temp});
+                var tmp = <Navbar selectedLink="nothing" role={this.state.role} />
+                this.setState({
+                    navbar: tmp
+                });
             }
         } catch (error) {
             console.error('Error:', error);
@@ -322,7 +324,7 @@ class CandidateProfil extends React.Component {
                     <div className="title2">Workers</div>
                 </div>
 
-                <Navbar selectedLink="none" />
+                {this.state.navbar}
 
                 <div className="profil-container">
                     <img className="profil-image" src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["image_path"]} />
