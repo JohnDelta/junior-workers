@@ -190,7 +190,7 @@ class MyHirerProfil extends React.Component {
         var fileName = file.name;
         var extensions = ["png", "jpg", "jpeg"];
         var fileExtention = fileName.split(".").pop().toLowerCase();
-        var fileSize = file.size;
+        //var fileSize = file.size;
 
         if(extensions.includes(fileExtention)) {
            /*
@@ -229,7 +229,7 @@ class MyHirerProfil extends React.Component {
                         });
                     }
                 }
-                else if (response.status == 200 && json["code"] == 0) {
+                else if (response.status === 200 && json["code"] === "0") {
                     this.setState({
                         displayMessage: "Profil image has been updated"
                     });
@@ -275,8 +275,8 @@ class MyHirerProfil extends React.Component {
                     displayMessageFlag: !this.state.displayMessageFlag
                 });
             }
-            else if (response.status == 200) {
-                var json = await response.json();
+            else if (response.status === 200) {
+                //var json = await response.json();
                 //console.log("Data posted");
                 this.setState({
                     displayMessage: "Profil image has been removed",
@@ -307,8 +307,8 @@ class MyHirerProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to post user's data")
             }
-            else if (response.status == 200) {
-                var json = await response.json();
+            else if (response.status === 200) {
+                //var json = await response.json();
                 //console.log("Data posted");
                 this.getUserData();
                 this.toggleEdit();
@@ -334,7 +334,7 @@ class MyHirerProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to get user's data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({data : json});
 
@@ -363,7 +363,7 @@ class MyHirerProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to get drop list data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({
                     dropListData: json

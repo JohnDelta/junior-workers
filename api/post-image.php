@@ -5,6 +5,9 @@
  * 
  * Read from a form post call an image file and a text file containing the jwt.
  * Test jwt if it comes from a valid user and change their image to the given one.
+ * 
+ * NOTE: change PHP.ini file at "upload_max_filesize" to accept files 10MB or less.
+ * 		 change PHP.ini file at "post_max_size" to accept post files 10MB or less.
  */
 
 // required headers
@@ -74,7 +77,9 @@ if(($_POST["jwt"])) {
 
 					// here delete the previous image if its not the default
 					if($user->image_path != "default.png") {
-						unlink("./uploads/".$user->image_path);
+						if(file_exists("./uploads/".$user->image_path)) {
+							unlink("./uploads/".$user->image_path);
+						}
 					}
 
 					// give user the new path to image

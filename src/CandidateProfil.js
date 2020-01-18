@@ -34,6 +34,7 @@ class CandidateProfil extends React.Component {
         this.getUserData = this.getUserData.bind(this);
         this.getDropListData = this.getDropListData.bind(this);
         this.redirectBack = this.redirectBack.bind(this);
+        this.downloadResume = this.downloadResume.bind(this);
     }
 
     componentDidMount() {
@@ -62,7 +63,7 @@ class CandidateProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to get drop list data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({
                     dropListData: json
@@ -94,7 +95,7 @@ class CandidateProfil extends React.Component {
                 var temp = <Redirect to="/search" />;
                 this.setState({redirect: temp});
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({data : json});
 
@@ -106,6 +107,47 @@ class CandidateProfil extends React.Component {
         } catch (error) {
             console.error('Error:', error);
         }
+    }
+
+    async downloadResume() {
+        /*
+        NOTE : codes returned from the get-user-resume.php
+        $SUCCESS_CODE = "0";
+        $ERROR_CODE = "1";
+        $FILE_CANNOT_FOUND_CODE = "2";
+        */
+
+        // procced to upload resume
+        const url = 'http://localhost:80//junior-workers/api/get-user-resume.php';
+        // const data = {
+        //     "jwt": this.state.jwt,
+        //     "email": this.state["data"]["user"]["email"]
+        // };
+        var formData = new FormData();
+        formData.append("email", this.state.email);
+        formData.append("jwt", this.state.jwt);
+
+        fetch(url, {
+                method: 'POST',
+                body: formData,
+            })
+			.then(response => {
+                if(response.status === 200) {
+                    response.blob().then(blob => {
+                        let url = window.URL.createObjectURL(blob);
+                        let a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'resume.pdf';
+                        a.click();
+                    });
+                    //window.location.href = response.url;
+                } else {
+                    this.setState({
+                        displayMessage: "Unable to download resume",
+                        displayMessageFlag: !this.state.displayMessageFlag
+                    });
+                }
+		});
     }
 
     redirectBack() {
@@ -120,6 +162,7 @@ class CandidateProfil extends React.Component {
         if(this.state.data["user"]["video_path"] !== "" && this.state.data["user"]["video_path"] !== null) {
             videoMap = <video 
                             className="video"
+                            type="video/mp4"
                             src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["video_path"]}
                             controls={true}>
                             Unable to play video. Please consider updating your browser.
@@ -129,7 +172,7 @@ class CandidateProfil extends React.Component {
         // display resume if the user has
         var resumeMap = "";
         if(this.state.data["user"]["resume_path"] !== "" && this.state.data["user"]["resume_path"] !== null) {
-            resumeMap = <button className="profil-resume-button">
+            resumeMap = <button className="profil-resume-button" onClick={this.downloadResume} >
                             <i className="fa fa-arrow-down" />
                             Resume
                         </button>;

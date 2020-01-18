@@ -5,6 +5,9 @@
  * 
  * Read from a form post call an reume file and a text file containing the jwt.
  * Test jwt if it comes from a valid user and change their reume to the given one.
+ * 
+ * NOTE: change PHP.ini file at "upload_max_filesize" to accept files 10MB or less.
+ * 		 change PHP.ini file at "post_max_size" to accept post files 10MB or less.
  */
 
 // required headers
@@ -73,7 +76,9 @@ if(($_POST["jwt"])) {
 
 					// here delete the previous resume if they have any
 					if(!empty($user->resume_path)) {
-						unlink("./uploads/".$user->resume_path);
+						if(file_exists("./uploads/".$user->resume_path)) {
+							unlink("./uploads/".$user->resume_path);
+						}
 					}
 
 					// give user the new path to resume

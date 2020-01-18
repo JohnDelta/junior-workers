@@ -76,7 +76,7 @@ class HirerProfil extends React.Component {
                 var temp = <Redirect to="/search" />;
                 this.setState({redirect: temp});
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({data : json});
 
@@ -103,7 +103,7 @@ class HirerProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to get drop list data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({
                     dropListData: json

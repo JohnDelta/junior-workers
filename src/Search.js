@@ -72,7 +72,7 @@ class Search extends React.Component{
             if(response.status !== 200) {
                 console.error("Unable to get user's data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({data : json});
                 var tmp = <Navbar selectedLink="search" role={this.state.data["user"]["role"]} />
@@ -99,7 +99,7 @@ class Search extends React.Component{
             if(response.status !== 200) {
                 console.error("Unable to get drop list data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({
                     dropListData: json
@@ -129,7 +129,7 @@ class Search extends React.Component{
             if(response.status !== 200) {
                 console.error("Unable to search")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({
                         "results" : json.results,

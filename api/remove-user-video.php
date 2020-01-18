@@ -84,9 +84,11 @@ function removeVideo($jwt_email) {
     if($user->getParameters()) {
         
         // alter user's data with the initial
-        if(!empty($user->video_path)) {
+        if(!empty($user->video_path) || $user->video_path != "") {
             //remove previous image
-            unlink("./uploads/".$user->video_path);
+            if(file_exists("./uploads/".$user->video_path)) {
+                unlink("./uploads/".$user->video_path);
+            }
 
             //add initial video
             $user->video_path = "";

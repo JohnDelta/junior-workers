@@ -204,7 +204,8 @@
 }
 .profil-resume-button {
     font-size: 15px;
-    padding: 6px;
+    border-radius: 20px;
+    padding: 8px;
     color: #ffffff;
     background-color: #F25F5C;
     border: none;

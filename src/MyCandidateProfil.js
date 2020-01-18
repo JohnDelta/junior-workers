@@ -215,7 +215,7 @@ class MyCandidateProfil extends React.Component {
         var fileName = file.name;
         var extensions = ["png", "jpg", "jpeg"];
         var fileExtention = fileName.split(".").pop().toLowerCase();
-        var fileSize = file.size;
+        //var fileSize = file.size;
 
         if(extensions.includes(fileExtention)) {
            /*
@@ -242,19 +242,19 @@ class MyCandidateProfil extends React.Component {
                 if(response.status !== 200) {
                     if(json["code"] === "1") {
                         this.setState({
-                            displayMessage: "Unable to upload image",
+                            displayMessage: "Unable to upload image"
                         });
                     } else if (json["code"] === "2") {
                         this.setState({
-                            displayMessage: "Image not in proper format",
+                            displayMessage: "Image not in proper format"
                         });
                     } else if (json["code"] === "3") {
                         this.setState({
-                            displayMessage: "Image's size cannot be larger than 10mb",
+                            displayMessage: "Image's size cannot be larger than 10mb"
                         });
                     }
                 }
-                else if (response.status == 200 && json["code"] == 0) {
+                else if (response.status === 200 && json["code"] === "0") {
                     this.setState({
                         displayMessage: "Profil image has been updated"
                     });
@@ -263,19 +263,17 @@ class MyCandidateProfil extends React.Component {
             } catch (error) {
                 console.error('Error:', error);
                 this.setState({
-                    displayMessage: "Unable to upload image",
+                    displayMessage: "Unable to upload image"
                 });
             }
         } else {
             this.setState({
-                displayMessage: "File doesn't have valid image extension.",
+                displayMessage: "File doesn't have valid image extension."
             });
         }
-
         this.setState({
             displayMessageFlag: !this.state.displayMessageFlag
         });
-        
     }
 
     // remove user's image
@@ -300,8 +298,8 @@ class MyCandidateProfil extends React.Component {
                     displayMessageFlag: !this.state.displayMessageFlag
                 });
             }
-            else if (response.status == 200) {
-                var json = await response.json();
+            else if (response.status === 200) {
+                //var json = await response.json();
                 //console.log("Data posted");
                 this.setState({
                     displayMessage: "Profil image has been removed",
@@ -319,9 +317,9 @@ class MyCandidateProfil extends React.Component {
 
         var file = document.getElementById("video-file").files[0];
         var fileName = file.name;
-        var extensions = ["png", "jpg"];
+        var extensions = ["mp4"];
         var fileExtention = fileName.split(".").pop().toLowerCase();
-        var fileSize = file.size;
+        //var fileSize = file.size;
 
         if(extensions.includes(fileExtention)) {
            /*
@@ -345,22 +343,19 @@ class MyCandidateProfil extends React.Component {
                     body: formData,
                 });
                 const json = await response.json();
-                if(response.status !== 200) {
-                    if(json["code"] === "1") {
-                        this.setState({
-                            displayMessage: "Unable to upload video",
-                        });
-                    } else if (json["code"] === "2") {
-                        this.setState({
-                            displayMessage: "Video not in proper format",
-                        });
-                    } else if (json["code"] === "3") {
-                        this.setState({
-                            displayMessage: "Video's size cannot be larger than 50mb",
-                        });
-                    }
-                }
-                else if (response.status == 200 && json["code"] == 0) {
+                if(json["code"] === "1") {
+                    this.setState({
+                        displayMessage: "Unable to upload video",
+                    });
+                } else if (json["code"] === "2") {
+                    this.setState({
+                        displayMessage: "Video not in proper format (MP4)",
+                    });
+                } else if (json["code"] === "3") {
+                    this.setState({
+                        displayMessage: "Video's size cannot be larger than 50mb",
+                    });
+                } else if (json["code"] === "0") {
                     this.setState({
                         displayMessage: "Video has been Added"
                     });
@@ -374,7 +369,7 @@ class MyCandidateProfil extends React.Component {
             }
         } else {
             this.setState({
-                displayMessage: "File doesn't have valid image extension.",
+                displayMessage: "File doesn't have valid image extension (MP4).",
             });
         }
 
@@ -384,7 +379,8 @@ class MyCandidateProfil extends React.Component {
     }
 
     // remove user's video
-    async removeVideo() {
+    async removeVideo(e) {
+        e.preventDefault();
 
         var url = 'http://localhost:80//junior-workers/api/remove-user-video.php';
         var data = {"jwt": this.state.jwt};
@@ -398,6 +394,7 @@ class MyCandidateProfil extends React.Component {
                 },
                 body: JSON.stringify(data),
             });
+            //const json = await response.json();
             if(response.status !== 200) {
                 console.error("Unable to post user's data");
                 this.setState({
@@ -405,15 +402,15 @@ class MyCandidateProfil extends React.Component {
                     displayMessageFlag: !this.state.displayMessageFlag
                 });
             }
-            else if (response.status == 200) {
-                var json = await response.json();
+            else if (response.status === 200) {
+                //var json = await response.json();
                 //console.log("Data posted");
                 this.setState({
                     displayMessage: "Profil video has been removed",
                     displayMessageFlag: !this.state.displayMessageFlag
                 });
-                this.getUserData();
             }
+            this.getUserData();
         } catch (error) {
             console.error('Error:', error);
         }
@@ -427,7 +424,7 @@ class MyCandidateProfil extends React.Component {
         var fileName = file.name;
         var extensions = ["pdf"];
         var fileExtention = fileName.split(".").pop().toLowerCase();
-        var fileSize = file.size;
+        //var fileSize = file.size;
 
         if(extensions.includes(fileExtention)) {
            /*
@@ -451,22 +448,19 @@ class MyCandidateProfil extends React.Component {
                     body: formData,
                 });
                 const json = await response.json();
-                if(response.status !== 200) {
-                    if(json["code"] === "1") {
-                        this.setState({
-                            displayMessage: "Unable to upload resume",
-                        });
-                    } else if (json["code"] === "2") {
-                        this.setState({
-                            displayMessage: "Resume not in proper format",
-                        });
-                    } else if (json["code"] === "3") {
-                        this.setState({
-                            displayMessage: "Resume's size cannot be larger than 10mb",
-                        });
-                    }
-                }
-                else if (response.status == 200 && json["code"] == 0) {
+                if(json["code"] === "1") {
+                    this.setState({
+                        displayMessage: "Unable to upload resume",
+                    });
+                } else if (json["code"] === "2") {
+                    this.setState({
+                        displayMessage: "Resume not in proper format",
+                    });
+                } else if (json["code"] === "3") {
+                    this.setState({
+                        displayMessage: "Resume's size cannot be larger than 10mb",
+                    });
+                } else if(json["code"] === "0") {
                     this.setState({
                         displayMessage: "Resume has been Added"
                     });
@@ -511,8 +505,8 @@ class MyCandidateProfil extends React.Component {
                     displayMessageFlag: !this.state.displayMessageFlag
                 });
             }
-            else if (response.status == 200) {
-                var json = await response.json();
+            else if (response.status === 200) {
+                //var json = await response.json();
                 //console.log("Data posted");
                 this.setState({
                     displayMessage: "Resume has been removed",
@@ -543,8 +537,8 @@ class MyCandidateProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to post user's data")
             }
-            else if (response.status == 200) {
-                var json = await response.json();
+            else if (response.status === 200) {
+                //var json = await response.json();
                 //console.log("Data posted");
                 this.getUserData();
                 this.toggleEdit();
@@ -570,7 +564,7 @@ class MyCandidateProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to get user's data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({data : json});
 
@@ -599,7 +593,7 @@ class MyCandidateProfil extends React.Component {
             if(response.status !== 200) {
                 console.error("Unable to get drop list data")
             }
-            else if (response.status == 200) {
+            else if (response.status === 200) {
                 var json = await response.json();
                 this.setState({
                     dropListData: json
@@ -642,6 +636,11 @@ class MyCandidateProfil extends React.Component {
                         a.click();
                     });
                     //window.location.href = response.url;
+                } else {
+                    this.setState({
+                        displayMessage: "Unable to download resume",
+                        displayMessageFlag: !this.state.displayMessageFlag
+                    });
                 }
 		});
     }
@@ -700,7 +699,7 @@ class MyCandidateProfil extends React.Component {
                                     <label htmlFor="video-file" className="label" title="Upload new video">
                                         <i className="fa fa-upload" />
                                     </label>
-                                    <input id="video-file" type="file"  name="video" onChange={this.videoChange} />
+                                    <input id="video-file" type="file"  name="video-file" onChange={this.videoChange} />
                                     <button title="Remove current video" onClick={this.removeVideo}>
                                         <i className="fa fa-trash" />
                                     </button>
@@ -722,12 +721,11 @@ class MyCandidateProfil extends React.Component {
         if(this.state.data["user"]["video_path"] !== "" && this.state.data["user"]["video_path"] !== null) {
             videoMap = <video 
                             className="video"
+                            type="video/mp4"
                             src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["video_path"]}
                             controls={true}>
                             Unable to play video. Please consider updating your browser.
                         </video>;
-        } else if(this.state.editFlag) {
-            videoMap = "Upload your video here";
         }
 
         // display resume if the user has

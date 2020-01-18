@@ -84,9 +84,11 @@ function removeResume($jwt_email) {
     if($user->getParameters()) {
         
         // alter user's data with the initial
-        if(!empty($user->resume_path)) {
+        if(!empty($user->resume_path) || $user->resume_path != "") {
             //remove previous resume
-            unlink("./uploads/".$user->resume_path);
+            if(file_exists("./uploads/".$user->resume_path)) {
+                unlink("./uploads/".$user->resume_path);
+            }
 
             //add initial resume
             $user->resume_path = "";

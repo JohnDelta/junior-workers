@@ -86,7 +86,9 @@ function removeImage($jwt_email) {
         // alter user's data with the initial
         if($user->image_path != "default.png") {
             //remove previous image
-            unlink("./uploads/".$user->image_path);
+            if(file_exists("./uploads/".$user->image_path)) {
+                unlink("./uploads/".$user->image_path);
+            }
 
             //add initial image
             $user->image_path = "default.png";

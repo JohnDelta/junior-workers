@@ -52,19 +52,16 @@ class Home extends React.Component{
     });
     // change text of join button
     let joinButton = document.querySelector(".join-button");
-    let joinCircle = document.querySelector(".join-circle");
     if(this.state.joinButtonText === "Join our community") {
       this.setState({
         joinButtonText: "X"
       });
       joinButton.classList.add("join-button-active");
-      joinCircle.classList.add("join-circle-active");
     } else {
       this.setState({
         joinButtonText: "Join our community"
       });
       joinButton.classList.remove("join-button-active");
-      joinCircle.classList.remove("join-circle-active");
     }
   }
 
@@ -82,7 +79,6 @@ class Home extends React.Component{
         <button className="join-button" onClick={this.onClickJoinHandle} value="join">
           {this.state.joinButtonText}
         </button>
-        <div className="join-circle" />
         <Join toggleJoinFlag={this.state.toggleJoinFlag} />
         
 
@@ -120,7 +116,7 @@ class Home extends React.Component{
         </div>
 
         <div className="footer">
-          Designed and Coded by
+          <div>Designed and Coded by</div>
           <a 
 						href="https://github.com/JohnDelta"
 						target="_blank" 
