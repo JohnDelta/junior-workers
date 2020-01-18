@@ -43,23 +43,21 @@ class HirerProfil extends React.Component {
     }
 
     componentDidMount() {
-        if(this.state.jwt === null) {
+        if(this.state.email === "" || this.state.email === null) {
             var temp = <Redirect to="/" />;
             this.setState({
                 redirect: temp
             });
-            localStorage.removeItem("email");
-            localStorage.removeItem("role");
+        } else {
+            this.getDropListData();
+            this.getUserData();
         }
-        this.getUserData();
-        this.getDropListData();
     }
 
     // Get all user's data using their email
     async getUserData() {
         var url = 'http://localhost:80//junior-workers/api/get-view-user-data.php';
         var data = {
-            "jwt": this.state.jwt,
             "email": this.state.email
         };
         try {
@@ -80,10 +78,13 @@ class HirerProfil extends React.Component {
                 var json = await response.json();
                 this.setState({data : json});
 
-                var tmp = <Navbar selectedLink="nothing" role={this.state.role} />
-                this.setState({
-                    navbar: tmp
-                });
+                // if the user is logged in show the navbar too.
+                if(this.state.jwt !== null && this.state.jwt !== "") {
+                    var tmp = <Navbar selectedLink="nothing" role={this.state.role} />
+                    this.setState({
+                        navbar: tmp
+                    });
+                }
             }
         } catch (error) {
             console.error('Error:', error);

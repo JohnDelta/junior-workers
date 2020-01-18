@@ -8,8 +8,8 @@ class CandidateProfil extends React.Component {
         super();
         this.state = {
             redirect: "",
-            email: localStorage.getItem("email"),
-            role: localStorage.getItem("role"),
+            email: localStorage.getItem("email"), // email to get data from
+            role: localStorage.getItem("role"), // role of user to setup navbar
             jwt: localStorage.getItem("jwt"),
             disabled: true,
             readonly: true,
@@ -38,16 +38,15 @@ class CandidateProfil extends React.Component {
     }
 
     componentDidMount() {
-        if(this.state.jwt === null) {
+        if(this.state.email === "" || this.state.email === null) {
             var temp = <Redirect to="/" />;
             this.setState({
                 redirect: temp
             });
-            localStorage.removeItem("email");
-            localStorage.removeItem("role");
+        } else {
+            this.getDropListData();
+            this.getUserData();
         }
-        this.getUserData();
-        this.getDropListData();
     }
 
     async getDropListData() {
@@ -78,7 +77,6 @@ class CandidateProfil extends React.Component {
     async getUserData() {
         var url = 'http://localhost:80//junior-workers/api/get-view-user-data.php';
         var data = {
-            "jwt": this.state.jwt,
             "email": this.state.email
         };
         try {
@@ -99,10 +97,13 @@ class CandidateProfil extends React.Component {
                 var json = await response.json();
                 this.setState({data : json});
 
-                var tmp = <Navbar selectedLink="nothing" role={this.state.role} />
-                this.setState({
-                    navbar: tmp
-                });
+                // if the user is logged in show the navbar too.
+                if(this.state.jwt !== null && this.state.jwt !== "") {
+                    var tmp = <Navbar selectedLink="nothing" role={this.state.role} />
+                    this.setState({
+                        navbar: tmp
+                    });
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -125,7 +126,6 @@ class CandidateProfil extends React.Component {
         // };
         var formData = new FormData();
         formData.append("email", this.state.email);
-        formData.append("jwt", this.state.jwt);
 
         fetch(url, {
                 method: 'POST',

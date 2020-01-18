@@ -3,11 +3,7 @@
 /**
  * Description
  * 
- * Takes as json call arguments the jwt of the caller user to test if they're valid,
- * and an email from an existing user to download their resume if they have.
- * 
- * 
- * 
+ * Takes as json call argument the email from an existing user to download their resume if they have.
  */
 
 // required headers
@@ -44,67 +40,45 @@ $ERROR_CODE = "1";
 $FILE_CANNOT_FOUND_CODE = "2";
 
 
-if($_POST["jwt"] && $_POST["email"]) {
-    $jwt = $_POST["jwt"];
+if($_POST["email"]) {
     $resumesEmail = $_POST["email"];
 
 	try {
-        // decode jwt
-        $decoded = JWT::decode($jwt, $key, array('HS256'));
-        $callersEmail = $decoded->data->email;
-        
 		// get database connection
 		$database = new Database();
 		$conn = $database->getConnection();
-	
-		// initialize caller user
-		$callerUser = new User($conn);
-		$callerUser->email = $callersEmail;
-
-		// check if caller user exist
-		if($callerUser->getParameters()) {
             
-            // initialize email's resume user
-            $resumeUser = new User($conn);
-            $resumeUser->email = $resumesEmail;
+        // initialize email's resume user
+        $resumeUser = new User($conn);
+        $resumeUser->email = $resumesEmail;
 
-            // check if email from user to get resume exists
-            if($resumeUser->getParameters()) {
-                $filepath = "./uploads/" .$resumeUser->resume_path;
+        // check if email from user to get resume exists
+        if($resumeUser->getParameters()) {
+            $filepath = "./uploads/" .$resumeUser->resume_path;
 
-                // Process download resume
-                if(!empty($resumeUser->resume_path) && file_exists($filepath)) {
+            // Process download resume
+            if(!empty($resumeUser->resume_path) && file_exists($filepath)) {
 
-                    header('Content-Description: File Transfer');
-                    header('Content-Type: application/octet-stream');
-                    header('Content-Disposition: attachment; filename="'.basename($filepath).'"');
-                    header('Expires: 0');
-                    header('Cache-Control: must-revalidate');
-                    header('Pragma: public');
-                    header('Content-Length: ' . filesize($filepath));
-                    flush(); // Flush system output buffer
-                    readfile($filepath);
-                    die();
-                } else {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="'.basename($filepath).'"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($filepath));
+                flush(); // Flush system output buffer
+                readfile($filepath);
+                die();
+            } else {
 
-                    http_response_code(404);
-                    echo json_encode(array(
-                        "message" => "File cannot found",
-                        "code"=>$FILE_CANNOT_FOUND_CODE
-                    ));	
-                    die();
-                }
+                http_response_code(404);
+                echo json_encode(array(
+                    "message" => "File cannot found",
+                    "code"=>$FILE_CANNOT_FOUND_CODE
+                ));	
+                die();
             }
-		} else {
-			// set response code
-			http_response_code(401);
-		
-			// tell the user access denied  & show error message
-			echo json_encode(array(
-				"message" => "Access denied. Cannot get caller user parameters.",
-				"code"=>$ERROR_CODE
-			));	
-		}
+        }
     }
     catch (Exception $e){
         // set response code

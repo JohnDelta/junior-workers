@@ -42,6 +42,7 @@ class Search extends React.Component{
         this.searchUsers = this.searchUsers.bind(this);
         this.getDropListData = this.getDropListData.bind(this);
         this.viewProfil = this.viewProfil.bind(this);
+        this.goToMain = this.goToMain.bind(this);
     }
 
 
@@ -53,6 +54,11 @@ class Search extends React.Component{
         }
         this.getDropListData();
         this.searchUsers();
+        if(localStorage.getItem("searchInput") !== "") {
+            this.setState({
+                searchInput: localStorage.getItem("searchInput")
+            });
+        }
     }
 
 
@@ -185,6 +191,13 @@ class Search extends React.Component{
         });
     }
 
+    goToMain() {
+        var tmp = <Redirect to="/" />;
+        this.setState({
+            redirect: tmp
+        });
+    }
+
 
     render() {
         var resultsMap = <div className="msg">No results found</div>;
@@ -252,6 +265,13 @@ class Search extends React.Component{
             }
         }
 
+        var returnButton = "";
+        if(this.state.jwt === "" || this.state.jwt === null) {
+            returnButton = <button className="return-button" onClick={this.goToMain}>
+                                <i className="fa fa-arrow-left" />
+                            </button>;
+        }
+
         return(
             <div className="Search">
                 {this.state.redirect}
@@ -264,6 +284,8 @@ class Search extends React.Component{
                     <div className="title1" style={{color: "#232323", backgroundColor:"#F25F5C"}}>Junior</div>
                     <div className="title2">Workers</div>
                 </div>
+
+                {returnButton}
 
                 <div className="search-container">
                     <div className="control">

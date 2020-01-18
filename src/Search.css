@@ -316,3 +316,20 @@
     }
 }
 /* RESULT JOB END */
+
+.return-button {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 80px;
+    height: 50px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+.return-button i {
+    pointer-events: none;
+    color: #F25F5C;
+    font-size: 3em;
+    overflow: hidden;
+}

@@ -15,6 +15,7 @@
     color: #ffffff;
     transition-duration: 0.3s;
     outline: none;
+    overflow: hidden;
 }
 .join-button:hover {
     transform: scale(1.1);

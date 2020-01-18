@@ -2,6 +2,7 @@ import React from 'react';
 import './Home.css';
 import Login from './Login.js';
 import Join from './Join.js';
+import  { Redirect } from 'react-router-dom';
 
 class Home extends React.Component{
   constructor() {
@@ -11,10 +12,14 @@ class Home extends React.Component{
       loginButtonText: "Login",
       toggleJoinFlag: false,
       joinButtonText: "Join our community",
-      joinError : ""
+      joinError : "",
+      redirect: "",
+      searchInput: ""
     };
     this.onClickLoginHandle = this.onClickLoginHandle.bind(this);
     this.onClickJoinHandle = this.onClickJoinHandle.bind(this);
+    this.search = this.search.bind(this);
+    this.searchChange = this.searchChange.bind(this);
   }
 
   onClickLoginHandle() {
@@ -65,9 +70,27 @@ class Home extends React.Component{
     }
   }
 
+  searchChange(e) {
+    e.preventDefault();
+    var input = document.getElementById("search-input").value;
+    this.setState({
+      searchInput: input
+    });
+  }
+
+  search(e) {
+    e.preventDefault();
+    localStorage.setItem("searchInput", this.state.searchInput);
+    var temp = <Redirect to="/search" />;
+    this.setState({
+        redirect: temp
+    });
+  }
+
   render() {
     return(
       <div className="Home">
+        {this.state.redirect}
         <img id="bg" className="background" src={require('./images/backgroundBig.jpg')} />
         
         <div className="logo">
@@ -92,7 +115,12 @@ class Home extends React.Component{
             <span>Your professional</span>
             <span>career starts</span>
             <span>here</span>
-            <input className="search-bar" type="text" placeholder="type something..." />
+            <div className="main-search">
+              <input type="text" placeholder="ex. Web Developer" id="search-input" onChange={this.searchChange} />
+              <button onClick={this.search}>
+                <i className="fa fa-search" />
+              </button>
+            </div>
           </h1>
           <img className="image" src={require(`./images/main_image.png`)} />
         </div>
