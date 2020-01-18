@@ -1,8 +1,13 @@
 <?php
 
 /**
- * Read from post call a video file and a text file containing the jwt.
- * Test jwt if it comes from a valid user and change their video to the given one.
+ * Description
+ * 
+ * Takes as json call arguments the jwt of the caller user to test if they're valid,
+ * and an email from an existing user to download their resume if they have.
+ * 
+ * 
+ * 
  */
 
 // required headers
@@ -36,56 +41,67 @@ use \Firebase\JWT\JWT;
 // set-up returned codes
 $SUCCESS_CODE = "0";
 $ERROR_CODE = "1";
-$CANNOT_FOUND_CODE = "2";
+$FILE_CANNOT_FOUND_CODE = "2";
 
-// read jwt and check if its from valid user
+
 if($_POST["jwt"] && $_POST["email"]) {
     $jwt = $_POST["jwt"];
-    $email = $_POST["email"];
+    $resumesEmail = $_POST["email"];
 
 	try {
         // decode jwt
         $decoded = JWT::decode($jwt, $key, array('HS256'));
-		
+        $callersEmail = $decoded->data->email;
+        
 		// get database connection
 		$database = new Database();
 		$conn = $database->getConnection();
 	
-		// initialize user
-		$user = new User($conn);
-		$user->email = $email;
+		// initialize caller user
+		$callerUser = new User($conn);
+		$callerUser->email = $callersEmail;
 
-		// check if user exist
-		if($user->getParameters()) {
-            $filepath = "./uploads/" .$user->resume_path;
-            // Process download resume
-            if(file_exists($filepath)) {
-                header('Content-Description: File Transfer');
-                header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename="'.basename($filepath).'"');
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate');
-                header('Pragma: public');
-                header('Content-Length: ' . filesize($filepath));
-                flush(); // Flush system output buffer
-                readfile($filepath);
-                die();
-            } else {
-                http_response_code(404);
-                echo json_encode(array(
-                    "message" => "File cannot found",
-                    "code"=>$CANNOT_FOUND_CODE
-                ));	
-                die();
+		// check if caller user exist
+		if($callerUser->getParameters()) {
+            
+            // initialize email's resume user
+            $resumeUser = new User($conn);
+            $resumeUser->email = $resumesEmail;
+
+            // check if email from user to get resume exists
+            if($resumeUser->getParameters()) {
+                $filepath = "./uploads/" .$resumeUser->resume_path;
+
+                // Process download resume
+                if(!empty($resumeUser->resume_path) && file_exists($filepath)) {
+
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename="'.basename($filepath).'"');
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' . filesize($filepath));
+                    flush(); // Flush system output buffer
+                    readfile($filepath);
+                    die();
+                } else {
+
+                    http_response_code(404);
+                    echo json_encode(array(
+                        "message" => "File cannot found",
+                        "code"=>$FILE_CANNOT_FOUND_CODE
+                    ));	
+                    die();
+                }
             }
-
 		} else {
 			// set response code
 			http_response_code(401);
 		
 			// tell the user access denied  & show error message
 			echo json_encode(array(
-				"message" => "Access denied. Cannot get user parameters",
+				"message" => "Access denied. Cannot get caller user parameters.",
 				"code"=>$ERROR_CODE
 			));	
 		}
@@ -96,7 +112,7 @@ if($_POST["jwt"] && $_POST["email"]) {
     
         // tell the user access denied  & show error message
         echo json_encode(array(
-            "message" => "Access denied.",
+            "message" => "Access denied. JWT not valid.",
             "error" => $e->getMessage(),
 			"code"=>$ERROR_CODE
         ));
@@ -107,7 +123,7 @@ if($_POST["jwt"] && $_POST["email"]) {
 			
 	// tell the user access denied  & show error message
 	echo json_encode(array(
-		"message" => "JWT doesnt exist.",
+		"message" => "JWT or email doesnt exist.",
 		"code"=>$ERROR_CODE
 	));	
 }

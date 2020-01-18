@@ -1,7 +1,11 @@
 <?php
 
 /**
- * Manage user's data from here
+ * Description
+ * 
+ * Read email and password of a user in json from a post call.
+ * Search if email exists and if the hashed password matches the given one
+ * generate user's JWT and send it back as json.
  */
 // required headers
 // LATER ON RELEASE CHANGE AGAIN THIS HEADER

@@ -55,6 +55,8 @@ class MyCandidateProfil extends React.Component {
 
         this.resumeChange = this.resumeChange.bind(this);
         this.removeResume = this.removeResume.bind(this);
+
+        this.downloadResume = this.downloadResume.bind(this);
     }
 
     componentDidMount() {
@@ -608,6 +610,42 @@ class MyCandidateProfil extends React.Component {
         }
     }
 
+    async downloadResume() {
+        /*
+        NOTE : codes returned from the get-user-resume.php
+        $SUCCESS_CODE = "0";
+        $ERROR_CODE = "1";
+        $FILE_CANNOT_FOUND_CODE = "2";
+        */
+
+        // procced to upload resume
+        const url = 'http://localhost:80//junior-workers/api/get-user-resume.php';
+        // const data = {
+        //     "jwt": this.state.jwt,
+        //     "email": this.state["data"]["user"]["email"]
+        // };
+        var formData = new FormData();
+        formData.append("email", this.state["data"]["user"]["email"]);
+        formData.append("jwt", this.state.jwt);
+
+        fetch(url, {
+                method: 'POST',
+                body: formData,
+            })
+			.then(response => {
+                if(response.status === 200) {
+                    response.blob().then(blob => {
+                        let url = window.URL.createObjectURL(blob);
+                        let a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'resume.pdf';
+                        a.click();
+                    });
+                    //window.location.href = response.url;
+                }
+		});
+    }
+
     render() {
 
         // On edit mode change
@@ -695,12 +733,12 @@ class MyCandidateProfil extends React.Component {
         // display resume if the user has
         var resumeMap = "";
         if(this.state.data["user"]["resume_path"] !== "" && this.state.data["user"]["resume_path"] !== null) {
-            resumeMap = <button className="profil-resume-button">
+            resumeMap = <button className="profil-resume-button" onClick={this.downloadResume}>
                             <i className="fa fa-arrow-down" />
                             Resume
                         </button>;
         } else if(this.state.editFlag) {
-            resumeMap = "Upload your resume here";
+            resumeMap = <div style={{color: "#ffffff"}}>Upload your resume here</div>;
         }
 
         // display availability according to state

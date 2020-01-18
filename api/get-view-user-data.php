@@ -1,7 +1,9 @@
 <?php
 
 /**
- * given as parameters the jwt and email it checks if the jwt comes from a valid user
+ * Description
+ * 
+ * Given as parameters the jwt and an email from a json post call it checks if the jwt comes from a valid user
  * and if it does it looks for the user with the given email and returns their data.
  */
 
@@ -188,6 +190,7 @@ function getData($jwt_email, $view_email) {
                 "bio" => $viewUser->bio,
                 "image_path" => $viewUser->image_path,
                 "video_path" => $viewUser->video_path,
+                "resume_path" => $viewUser->resume_path,
                 "role" => $viewUser->role
             );
 

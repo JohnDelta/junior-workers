@@ -3,6 +3,8 @@
 /**
  * Manage user's search from here
  * 
+ * Description
+ * 
  * takes as argument the search input from user and the 
  * search type (role : candidate or hirer) and returns all
  * users that match the search.

@@ -1,8 +1,10 @@
 <?php
 
 /**
- * given the role type of the search (candidate, job post) and search input
- * return all info of users which match the search
+ * Description
+ * 
+ * Given the role type of the search (candidate, job post) and search input in a json post call
+ * return all info of users which match the search in json
  */
 
 // required headers

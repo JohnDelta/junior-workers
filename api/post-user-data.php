@@ -1,7 +1,9 @@
 <?php
 
 /**
- * given the jwt and user data as parameters, if the jwt is valid
+ * Description
+ * 
+ * Given the jwt and all user data as parameters of a post json call, if the jwt is valid
  *  alter all user's data with the new ones
  */
 

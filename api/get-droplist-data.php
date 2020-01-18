@@ -1,6 +1,6 @@
 <?php
 
-// Return all education - skill - profession data to fill the selects
+// Return all education - skill - profession data to fill the selects in json
 
 // required headers
 // LATER ON RELEASE CHANGE AGAIN THIS HEADER

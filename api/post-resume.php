@@ -1,8 +1,10 @@
 <?php
 
 /**
- * Read from post call resume file and a text file containing the jwt.
- * Test jwt if it comes from a valid user and change their resume to the given one.
+ * Description
+ * 
+ * Read from a form post call an reume file and a text file containing the jwt.
+ * Test jwt if it comes from a valid user and change their reume to the given one.
  */
 
 // required headers
@@ -61,7 +63,7 @@ if(($_POST["jwt"])) {
 			if(!empty($_FILES["resume_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["resume_file"]["size"] <= 100000) {
+				if($_FILES["resume_file"]["size"] <= 10000000) {
 
 					$test = explode(".", $_FILES["resume_file"]["name"]);
 					$extension = end($test);

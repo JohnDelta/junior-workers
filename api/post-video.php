@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Read from post call a video file and a text file containing the jwt.
+ * Description
+ * 
+ * Read from a form post call an video file and a text file containing the jwt.
  * Test jwt if it comes from a valid user and change their video to the given one.
  */
 
@@ -61,7 +63,7 @@ if(($_POST["jwt"])) {
 			if(!empty($_FILES["video_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["video_file"]["size"] <= 500000) {
+				if($_FILES["video_file"]["size"] <= 50000000) {
 
 					$test = explode(".", $_FILES["video_file"]["name"]);
 					$extension = end($test);

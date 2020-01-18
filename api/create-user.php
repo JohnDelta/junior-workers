@@ -1,9 +1,13 @@
 <?php
 
 /**
- * create-user takes json data from a post ajax call
- * which contain all arguments of a user and creates it.
- * After that sends back feedback.
+ * Description
+ * 
+ * create-user takes json data from a post call
+ * which contains all basic arguments of a user and creates them.
+ * 
+ * Basic arguments are :
+ *  Firstname, Lastname, Email, Password, Role
 */
 
 // required headers

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * given the jwt as parameter it extracts the id_user from it and
+* Description
+ * 
+ * given the jwt as parameter from a json post call it extracts the email from it and
  *  removes user's resume if they have.
  */
 

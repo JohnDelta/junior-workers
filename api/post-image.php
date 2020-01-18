@@ -1,7 +1,9 @@
 <?php
 
 /**
- * Read from post call an image file and a text file containing the jwt.
+ * Description
+ * 
+ * Read from a form post call an image file and a text file containing the jwt.
  * Test jwt if it comes from a valid user and change their image to the given one.
  */
 
@@ -61,7 +63,7 @@ if(($_POST["jwt"])) {
 			if(!empty($_FILES["image_file"]["name"])) {
 
 				// if the file has the correct size
-				if($_FILES["image_file"]["size"] <= 100000) {
+				if($_FILES["image_file"]["size"] <= 10000000) {
 
 					$test = explode(".", $_FILES["image_file"]["name"]);
 					$extension = end($test);

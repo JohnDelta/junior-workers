@@ -1,8 +1,10 @@
 <?php
 
 /**
- * given the jwt as parameter it extracts the id_user from it and
- *  sends back all experience the user has.
+ * Description
+ * 
+ * given the jwt as parameter from a json post call it extracts the email from it and
+ *  sends back all data the user (owner of the email) has.
  */
 
 // required headers
@@ -170,7 +172,8 @@ function getData($jwt_email) {
                 "bio" => $user->bio,
                 "image_path" => $user->image_path,
                 "video_path" => $user->video_path,
-                "role" => $user->role
+                "role" => $user->role,
+                "resume_path" => $user->resume_path
             );
 
             // set response code
