@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2020 at 12:15 AM
+-- Generation Time: Jan 20, 2020 at 04:50 PM
 -- Server version: 8.0.13
 -- PHP Version: 7.3.1
 
@@ -222,7 +222,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id_user`, `email`, `password`, `firstname`, `lastname`, `availability`, `title`, `bio`, `role`, `image_path`, `video_path`, `resume_path`) VALUES
 (15, 'billy@hotmail.com', '$2y$10$Gg2T6KkZwrMS5covK2D6t.A8QR4e5powBxdGNrV4c3qRNEDJ.ysja', 'Bruce', 'Lee', 1, 'The fastest kick in westeros', 'You know who i am...', 'candidate', '638531787.jpg', '', ''),
-(16, 'john.deligiannis1@gmail.com', '$2y$10$UBfWUl/tK83aROClYZ5fLO5wplKXYsL1j88kSParqid83k2qFlkDm', 'John', 'Deligiannis', 1, 'Software Engineer', 'Something about yourself!!', 'candidate', '230519756.jpg', '77398741.mp4', '533229931.pdf'),
+(16, 'john.deligiannis1@gmail.com', '$2y$10$UBfWUl/tK83aROClYZ5fLO5wplKXYsL1j88kSParqid83k2qFlkDm', 'John', 'Deligiannis', 1, 'Software Engineer', 'Something about yourself!!', 'candidate', '230519756.jpg', '', '533229931.pdf'),
 (17, 'joker@gmail.com', '$2y$10$TFFJ84h7aHmINNAqyUSxxejQByYARVMH27TdiBMsXYnOXmdnmd91q', 'George', 'Lucas', 1, 'CodeBe Industries', 'This is the company description', 'hirer', '68526414.jpg', '', ''),
 (18, 'test1@gmail.com', '$2y$10$nzugOvYWRQHk/B80muzy0OoAH3WnNkMbHlLUxi1D1JpBHC5WPUVO2', 'Jason', 'Paul', 1, 'Biomedical Engineer', 'Something about my self...', 'candidate', '692125406.png', '', ''),
 (19, 'test2@gmail.com', '$2y$10$ATwPQUrCEIW3QYjqJPqRyO6esYEKBihR5e4m4ZYccrEyO1I3vUhjW', 'Aaron', 'Lestrade', 1, 'Civil Engineer', 'Don\'t know..', 'candidate', '654692870.jpg', '', ''),
