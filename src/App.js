@@ -18,19 +18,19 @@ class App extends React.Component{
       <Router>
         <div className="App">
           <Switch>
-            <Route exact path="/my-candidate-profil">
+            <Route path="/my-candidate-profil">
               <MyCandidateProfil />
             </Route>
-            <Route exact path="/my-hirer-profil">
+            <Route path="/my-hirer-profil">
               <MyHirerProfil />
             </Route>
-            <Route exact path="/search">
+            <Route path="/search">
               <Search />
             </Route>
-            <Route exact path="/candidate-profil">
+            <Route path="/candidate-profil">
               <CandidateProfil />
             </Route>
-            <Route exact path="/hirer-profil">
+            <Route path="/hirer-profil">
               <HirerProfil />
             </Route>
             <Route path="/">
