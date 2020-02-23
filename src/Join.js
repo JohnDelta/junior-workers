@@ -1,18 +1,21 @@
 import React from 'react';
 import './Join.css';
+import DisplayMessage from './DisplayMessage';
 
 class Join extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            joinMessage: "",
             toggleJoinFlag: false,
             firstname: "",
             lastname: "",
             email: "",
             password: "",
             repassword: "",
-            role: "candidate"
+            role: "candidate",
+            displayMessageClass: "",
+            displayMessage: "",
+            displayMessageFlag: false
           };
         this.toggleJoin = this.toggleJoin.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -32,9 +35,15 @@ class Join extends React.Component {
     toggleJoin() {
         let joinForm = document.querySelector(".join");
         if(joinForm.style.display === "flex") {
-        joinForm.style.display = "none";
+            joinForm.style.display = "none";
+            this.setState({
+                displayMessageClass: ""
+            });
         } else {
-        joinForm.style.display = "flex";
+            joinForm.style.display = "flex";
+            this.setState({
+                displayMessageClass: <DisplayMessage displayMessage={this.state.displayMessage} displayMessageFlag={this.state.displayMessageFlag} />
+            });
         }
     }
 
@@ -70,41 +79,53 @@ class Join extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault();
-        var data = {
-            "email": this.state.email,
-            "password": this.state.password,
-            "firstname": this.state.firstname,
-            "lastname": this.state.lastname,
-            "role": this.state.role
-        };
-        var url = "http://localhost/junior-workers/api/create-user.php";
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            
-            if(response.status !== 200) {
-                this.setState({
-                    joinMessage : "Email exists"
-                });
-            }
-            else if (response.status === 200) {
-                const json = await response.json();
-                this.setState({
-                    joinMessage : "User created",
-                });
-                this.resetAllInput();
-            }
-        } catch (error) {
-            console.error('Error:', error);
+
+        if(this.state.password !== this.state.repassword) {
             this.setState({
-                joinMessage : "Unable to create user"
+                displayMessageFlag: !this.state.displayMessageFlag,
+                displayMessageClass: <DisplayMessage displayMessage="Password doesn't match the verified password" displayMessageFlag={!this.state.displayMessageFlag} />
             });
+        } else {
+            var data = {
+                "email": this.state.email,
+                "password": this.state.password,
+                "firstname": this.state.firstname,
+                "lastname": this.state.lastname,
+                "role": this.state.role
+            };
+    
+            var url = "http://localhost/junior-workers/api/create-user.php";
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                
+                if(response.status !== 200) {
+                    this.setState({
+                        displayMessageFlag: !this.state.displayMessageFlag,
+                        displayMessageClass: <DisplayMessage displayMessage="Email exists" displayMessageFlag={!this.state.displayMessageFlag} />
+                    });
+                }
+                else if (response.status === 200) {
+                    const json = await response.json();
+                    this.setState({
+                        displayMessageFlag: !this.state.displayMessageFlag,
+                        displayMessageClass: <DisplayMessage displayMessage="User created" displayMessageFlag={!this.state.displayMessageFlag} />
+                    });
+                    this.resetAllInput();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.setState({
+                    displayMessageFlag: !this.state.displayMessageFlag,
+                    displayMessageClass: <DisplayMessage displayMessage="Unable to create user" displayMessageFlag={!this.state.displayMessageFlag} />
+                });
+            }   
         }
     }
 
@@ -119,6 +140,10 @@ class Join extends React.Component {
     render() {
         return(
             <div className="join">
+                
+                {/** use DisplayMessage with updating variable because it's been used by Login class as well and it creates conflicts */}
+                {this.state.displayMessageClass}
+                
                 <form className="join-form" onSubmit={this.handleSubmit}>
                     <div className="join-message">Account Creation</div>
                     <div className="join-message" style={{"color":"#D0321E", "fontSize":"26px"}}>{this.state.joinMessage}</div>

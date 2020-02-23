@@ -27,7 +27,7 @@
         height: 100vh;
     }
 }
-@media screen and (min-width: 1150px) {
+@media screen and (min-width: 1300px) {
     .background {
         width: 100vw;
         height: auto;
@@ -147,6 +147,7 @@
     font-size: 16px;
     min-width: 250px;
     outline: none;
+    overflow: hidden;
 }
 .main-search button {
     border: none;

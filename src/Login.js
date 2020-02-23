@@ -1,16 +1,19 @@
 import React from 'react';
 import './Login.css';
 import  { Redirect } from 'react-router-dom';
+import DisplayMessage from './DisplayMessage';
 
 class Login extends React.Component {
     constructor(props) {
         super();
         this.state = {
             redirect: "",
-            loginError: "",
             toggleLoginFlag: false,
             email: "",
-            password: ""
+            password: "",
+            displayMessageClass: "",
+            displayMessage: "",
+            displayMessageFlag: false
           };
         this.toggleLogin = this.toggleLogin.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -31,9 +34,15 @@ class Login extends React.Component {
     toggleLogin() {
         let loginForm = document.querySelector(".login");
         if(loginForm.style.display === "flex") {
-        loginForm.style.display = "none";
+            loginForm.style.display = "none";
+            this.setState({
+                displayMessageClass: ""
+            });
         } else {
-        loginForm.style.display = "flex";
+            loginForm.style.display = "flex";
+            this.setState({
+                displayMessageClass: <DisplayMessage displayMessage={this.state.displayMessage} displayMessageFlag={this.state.displayMessageFlag} />
+            });
         }
     }
 
@@ -67,7 +76,8 @@ class Login extends React.Component {
             
             if(response.status !== 200) {
                 this.setState({
-                    loginError : "Unable to login"
+                    displayMessageFlag: !this.state.displayMessageFlag,
+                    displayMessageClass: <DisplayMessage displayMessage="Unable to login" displayMessageFlag={!this.state.displayMessageFlag} />
                 });
             }
             else if (response.status === 200) {
@@ -85,7 +95,8 @@ class Login extends React.Component {
         } catch (error) {
             console.error('Error:', error);
             this.setState({
-                loginError : "Unable to login"
+                displayMessageFlag: !this.state.displayMessageFlag,
+                displayMessageClass: <DisplayMessage displayMessage="Unable to login" displayMessageFlag={!this.state.displayMessageFlag} />
             });
         }
     }
@@ -94,6 +105,10 @@ class Login extends React.Component {
         return(
             <div className="login">
                 {this.state.redirect}
+
+                {/** use DisplayMessage with updating variable because it's been used by Join class as well and it creates conflicts */}
+                {this.state.displayMessageClass}
+
                 <div className="login-form">
                     <div className="login-message" style={{"color":"#D0321E"}}>{this.state.loginError}</div>
 
