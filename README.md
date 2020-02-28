@@ -48,4 +48,6 @@ source path\to\script\junior_workers.sql;
 npm start
 ```
 
+### Run built version of react app
+The 2nd brach(gh-pages) contains the built version of the react app. In order to run it it's necessary to upload it on a web server. If you try to run it in localhost it won't work.
 
