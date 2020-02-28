@@ -21,13 +21,13 @@ npm install
 
   Open MySQL and create a new database
 ```bash
-CREATE DATABASE junior_workers
+CREATE DATABASE junior_workers;
 ```
 
   Enter the database and run the 'junior_workers.sql' script from project's files
 ```bash
 use junior_workers;
---- run script
+source path\to\script\junior_workers.sql;
 ```
 
   Copy the 'api' folder from project's files to server's localhost files (ex. xampp/htdocs/junior-workers) folder and start the server. Note that some example users and their images are already uploaded in api's folder in 'uploads' folder.
@@ -36,6 +36,5 @@ use junior_workers;
 ```bash
 npm start
 ```
-
 
 
