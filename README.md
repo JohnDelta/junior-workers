@@ -11,6 +11,7 @@ Junior Workers is a concept project of a professional networking web app platfor
   - Js (ES6)
   - React framework (+ react-route-dom lib)
 - Back-End (api)
+  - Authentication JWT
   - PHP
   - MySQL
 
