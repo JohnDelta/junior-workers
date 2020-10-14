@@ -94,7 +94,7 @@ class Join extends React.Component {
                 "role": this.state.role
             };
     
-            var url = "http://localhost/junior-workers/api/create-user.php";
+            var url = "http://localhost:8080/api/user/create";
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -112,7 +112,6 @@ class Join extends React.Component {
                     });
                 }
                 else if (response.status === 200) {
-                    const json = await response.json();
                     this.setState({
                         displayMessageFlag: !this.state.displayMessageFlag,
                         displayMessageClass: <DisplayMessage displayMessage="User created" displayMessageFlag={!this.state.displayMessageFlag} />

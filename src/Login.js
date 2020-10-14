@@ -61,7 +61,7 @@ class Login extends React.Component {
 
     // Handle Submit of login form
     async handleSubmit(e) {
-        const url = 'http://localhost/junior-workers/api/login.php';
+        const url = 'http://localhost:8080/api/user/login';
         const data = {"email":this.state.email, "password":this.state.password};
 
         try {
@@ -81,16 +81,20 @@ class Login extends React.Component {
                 });
             }
             else if (response.status === 200) {
-                const json = await response.json();
-                localStorage.setItem("jwt", json["jwt"]);
-                var temp = "";
-                // navigate user to the proper profil according to their role
-                if(json["role"] === "candidate") {
-                    temp = <Redirect to='/my-candidate-profil' />;
-                } else if(json["role"] === "hirer") {
-                    temp = <Redirect to='/my-hirer-profil' />;
-                }
-                this.setState({redirect : temp});
+                const json = await response.json().then((res)=>{
+                    localStorage.setItem("jwt", res["jwt"]);
+                    localStorage.setItem("email", res["email"]);
+                    localStorage.setItem("role", res["role"]);
+
+                    var temp = "";
+                    // navigate user to the proper profil according to their role
+                    if(res["role"] === "candidate") {
+                        temp = <Redirect to='/my-candidate-profil' />;
+                    } else if(res["role"] === "hirer") {
+                        temp = <Redirect to='/my-hirer-profil' />;
+                    }
+                    this.setState({redirect : temp});
+                });
             }
         } catch (error) {
             console.error('Error:', error);

@@ -10,6 +10,7 @@ class MyCandidateProfil extends React.Component {
         this.state = {
             redirect: "",
             jwt: localStorage.getItem("jwt"),
+            email: localStorage.getItem("email"),
             editFlag: false,
             disabled: true,
             readonly: true,
@@ -60,7 +61,6 @@ class MyCandidateProfil extends React.Component {
     }
 
     componentDidMount() {
-        localStorage.removeItem("email");
         if(this.state.jwt === null) {
             var temp = <Redirect to="/" />;
             this.setState({
@@ -118,15 +118,15 @@ class MyCandidateProfil extends React.Component {
     // handle the change state of availability
     availabilityChange() {
         var temp;
-        if(this.state.data["user"]["availability"] === "1") {
+        if(Number(this.state.data["user"]["availability"]) === 1) {
             temp = this.state.data;
-            temp["user"]["availability"] = "0";
+            temp["user"]["availability"] = 0;
             this.setState({
                 data: temp
             });
         } else {
             temp = this.state.data;
-            temp["user"]["availability"] = "1";
+            temp["user"]["availability"] = 1;
             this.setState({
                 data: temp
             });
@@ -144,7 +144,11 @@ class MyCandidateProfil extends React.Component {
         var index = attr[1];
         var name = attr[2];
         var temp = this.state.data;
-        temp[dataName][index][name] = value;
+        if(e.target.value.selected.value) {
+            temp[dataName][index][name][name+"_level"] = Number(value);
+        } else {
+            temp[dataName][index][name] = Number(value);
+        }
         this.setState({
             data: temp
         });
@@ -157,20 +161,23 @@ class MyCandidateProfil extends React.Component {
         var dataName = e.target.name;
         if(dataName === "experience") {
             temp["experience"].push({
-                "id_profession": this.state.dropListData.profession[0].id_profession, "company": "", "date": ""
+                "id_profession": Number(this.state.dropListData.profession[0].id_profession), "company": "", "date": ""
             });
         } else if (dataName === "skill") {
             temp["skill"].push({
-                "id_skill": this.state.dropListData.skill[0].id_skill});
+                "id_skill": Number(this.state.dropListData.skill[0].id_skill)
+            });
         } else if (dataName === "education") {
             temp["education"].push({
-                "id_education": this.state.dropListData.education[0].id_education, 
-                "id_education_level": this.state.dropListData.education_level[0].id_education_level 
+                "id_education": Number(this.state.dropListData.education[0].id_education),
+                "education_level": {
+                    "id_education_level": Number(this.state.dropListData.education_level[0].id_education_level)
+                } 
             });
         } else if (dataName === "language") {
             temp["language"].push({
-                "id_language": this.state.dropListData.language[0].id_language, 
-                "id_language_level": this.state.dropListData.language_level[0].id_language_level 
+                "id_language": Number(this.state.dropListData.language[0].id_language),
+                "id_language_level": Number(this.state.dropListData.language_level[0].id_language_level) 
             });
         }
         this.setState({
@@ -186,8 +193,11 @@ class MyCandidateProfil extends React.Component {
         var attr = e.target.id.split("__");
         var dataName = attr[0];
         var index = attr[1];
+        
         var temp = this.state.data;
         temp[dataName][index] = "";
+        temp[dataName] = temp[dataName].filter((item)=>{return item !== ""});
+
         this.setState({
             data: temp
         });
@@ -522,9 +532,15 @@ class MyCandidateProfil extends React.Component {
     // post all user's data changes to db
     async saveChanges(e) {
         e.preventDefault();
-
-        var url = 'http://localhost:80//junior-workers/api/post-user-data.php';
-        var data = {"jwt": this.state.jwt, "data": this.state.data};
+        var url = 'http://localhost:8080/api/user/update';
+        let body = {
+            "jwt": this.state.jwt,
+            "user": this.state.data.user,
+            "language": this.state.data.language,
+            "education": this.state.data.education,
+            "skill": this.state.data.skill,
+            "experience": this.state.data.experience
+        };
         try {
             var response = await fetch(url, {
                 method: 'POST',
@@ -532,14 +548,12 @@ class MyCandidateProfil extends React.Component {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(body),
             });
             if(response.status !== 200) {
                 console.error("Unable to post user's data")
             }
             else if (response.status === 200) {
-                //var json = await response.json();
-                //console.log("Data posted");
                 this.getUserData();
                 this.toggleEdit();
             }
@@ -550,8 +564,11 @@ class MyCandidateProfil extends React.Component {
 
     // Get all user's data using their jwt auth
     async getUserData() {
-        var url = 'http://localhost:80//junior-workers/api/get-user-data.php';
-        var data = {"jwt": this.state.jwt};
+        var url = 'http://localhost:8080/api/user/get';
+        var data = {
+            "jwt": this.state.jwt,
+            "email": this.state.email
+        };
         try {
             var response = await fetch(url, {
                 method: 'POST',
@@ -562,18 +579,12 @@ class MyCandidateProfil extends React.Component {
                 body: JSON.stringify(data),
             });
             if(response.status !== 200) {
-                console.error("Unable to get user's data")
+                console.error("Unable to get user's data");
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({data : json});
-
-                // if the returned data are for a hirer and not a candidate, open the hirer's profil
-                var temp = "";
-                if(this.state.data["user"]["role"] === "hirer") {
-                    temp = <Redirect to="/my-hirer-profil" />;
-                }
-                this.setState({redirect: temp});
+                var json = await response.json().then((res)=>{
+                    this.setState({data : res});
+                });
             }
         } catch (error) {
             console.error('Error:', error);
@@ -581,7 +592,7 @@ class MyCandidateProfil extends React.Component {
     }
 
     async getDropListData() {
-        var url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
+        var url = 'http://localhost:8080/api/model/get/all';
         try {
             var response = await fetch(url, {
                 method: 'GET',
@@ -591,12 +602,13 @@ class MyCandidateProfil extends React.Component {
                 }
             });
             if(response.status !== 200) {
-                console.error("Unable to get drop list data")
+                console.error("Unable to get drop list data");
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({
-                    dropListData: json
+                var json = await response.json().then((res)=>{
+                    this.setState({
+                        dropListData: res
+                    });
                 });
             }
         } catch (error) {
@@ -741,7 +753,7 @@ class MyCandidateProfil extends React.Component {
 
         // display availability according to state
         var availabilityText = <p>Not available</p>;
-        if(this.state.data["user"]["availability"] === "1") availabilityText = <p>Available</p>; 
+        if(Number(this.state.data["user"]["availability"]) === 1) availabilityText = <p>Available</p>; 
 
         // Map experience from json to div
         var experienceMap = [];

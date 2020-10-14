@@ -10,6 +10,7 @@ class MyHirerProfil extends React.Component {
         this.state = {
             redirect: "",
             jwt: localStorage.getItem("jwt"),
+            email: localStorage.getItem("email"),
             editFlag: false,
             disabled: true,
             readonly: true,
@@ -49,7 +50,6 @@ class MyHirerProfil extends React.Component {
     }
 
     componentDidMount() {
-        localStorage.removeItem("email");
         if(this.state.jwt === null) {
             var temp = <Redirect to="/" />;
             this.setState({
@@ -107,15 +107,15 @@ class MyHirerProfil extends React.Component {
     // handle the change state of availability
     availabilityChange() {
         var temp;
-        if(this.state.data["user"]["availability"] === "1") {
+        if(Number(this.state.data["user"]["availability"]) === 1) {
             temp = this.state.data;
-            temp["user"]["availability"] = "0";
+            temp["user"]["availability"] = 0;
             this.setState({
                 data: temp
             });
         } else {
             temp = this.state.data;
-            temp["user"]["availability"] = "1";
+            temp["user"]["availability"] = 1;
             this.setState({
                 data: temp
             });
@@ -133,7 +133,7 @@ class MyHirerProfil extends React.Component {
         var index = attr[1];
         var name = attr[2];
         var temp = this.state.data;
-        temp[dataName][index][name] = value;
+        temp[dataName][index][name] = Number(value);
         this.setState({
             data: temp
         });
@@ -146,7 +146,7 @@ class MyHirerProfil extends React.Component {
         var dataName = e.target.name;
         if(dataName === "job_post") {
             temp["job_post"].push({
-                "id_profession": this.state.dropListData.profession[0].id_profession,
+                "id_profession": Number(this.state.dropListData.profession[0].id_profession),
                 "title": "",
                 "description": ""
             });
@@ -164,8 +164,11 @@ class MyHirerProfil extends React.Component {
         var attr = e.target.id.split("__");
         var dataName = attr[0];
         var index = attr[1];
+        
         var temp = this.state.data;
         temp[dataName][index] = "";
+        temp[dataName] = temp[dataName].filter((item)=>{return item !== ""});
+
         this.setState({
             data: temp
         });
@@ -292,9 +295,12 @@ class MyHirerProfil extends React.Component {
     // post all user's data changes to db
     async saveChanges(e) {
         e.preventDefault();
-
-        var url = 'http://localhost:80//junior-workers/api/post-user-data.php';
-        var data = {"jwt": this.state.jwt, "data": this.state.data};
+        var url = 'http://localhost:8080/api/user/update';
+        var data = {
+            "jwt": this.state.jwt,
+            "user": this.state.data.user,
+            "job_post": this.state.data.job_post
+        };
         try {
             var response = await fetch(url, {
                 method: 'POST',
@@ -308,8 +314,6 @@ class MyHirerProfil extends React.Component {
                 console.error("Unable to post user's data")
             }
             else if (response.status === 200) {
-                //var json = await response.json();
-                //console.log("Data posted");
                 this.getUserData();
                 this.toggleEdit();
             }
@@ -320,8 +324,11 @@ class MyHirerProfil extends React.Component {
 
     // Get all user's data using their jwt auth
     async getUserData() {
-        var url = 'http://localhost:80//junior-workers/api/get-user-data.php';
-        var data = {"jwt": this.state.jwt};
+        var url = 'http://localhost:8080/api/user/get';
+        var data = {
+            "jwt": this.state.jwt,
+            "email": this.state.email
+        };
         try {
             var response = await fetch(url, {
                 method: 'POST',
@@ -335,15 +342,9 @@ class MyHirerProfil extends React.Component {
                 console.error("Unable to get user's data")
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({data : json});
-
-                // if the returned data are for a hirer and not a candidate, open the hirer's profil
-                var temp = "";
-                if(this.state.data["user"]["role"] === "candidate") {
-                    temp = <Redirect to="/my-candidate-profil" />;
-                }
-                this.setState({redirect: temp});
+                var json = await response.json().then((res)=> {
+                    this.setState({data : json});
+                });
             }
         } catch (error) {
             console.error('Error:', error);
@@ -351,7 +352,7 @@ class MyHirerProfil extends React.Component {
     }
 
     async getDropListData() {
-        var url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
+        var url = 'http://localhost:8080/api/model/get/all';
         try {
             var response = await fetch(url, {
                 method: 'GET',
@@ -361,12 +362,13 @@ class MyHirerProfil extends React.Component {
                 }
             });
             if(response.status !== 200) {
-                console.error("Unable to get drop list data")
+                console.error("Unable to get drop list data");
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({
-                    dropListData: json
+                var json = await response.json().then((res)=>{
+                    this.setState({
+                        dropListData: res
+                    });
                 });
             }
         } catch (error) {
