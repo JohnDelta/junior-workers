@@ -136,19 +136,32 @@ class MyCandidateProfil extends React.Component {
     // handle user's data input change
     // each Data component is distinguished by an id with the form : nameOfData__indexInJson__nameOfItem
     // ex. skill__0__title means the data item skill with index 0 and name title called the function 
+
+    // for components with other object inside we have id with 4 keys. nameOfData_objectKey_IndexInJson_nameOfItem
     userDataChange(e) {
         e.preventDefault();
         var value = e.target.value;
         var attr = e.target.id.split("__");
-        var dataName = attr[0];
-        var index = attr[1];
-        var name = attr[2];
-        var temp = this.state.data;
-        if(e.target.value.selected.value) {
-            temp[dataName][index][name][name+"_level"] = Number(value);
+
+        if(attr.length > 3) {
+            var dataName = attr[0];
+            var keyName = attr[1];
+            var index = attr[2];
+            var name = attr[3];
+            var temp = this.state.data;
+            temp[dataName][index][keyName][name] = Number(value);
         } else {
-            temp[dataName][index][name] = Number(value);
+            var dataName = attr[0];
+            var index = attr[1];
+            var name = attr[2];
+            var temp = this.state.data;
+            if(["company", "date"].includes(name)) {
+                temp[dataName][index][name] = value;
+            } else {
+                temp[dataName][index][name] = Number(value);
+            }
         }
+        
         this.setState({
             data: temp
         });
@@ -161,7 +174,11 @@ class MyCandidateProfil extends React.Component {
         var dataName = e.target.name;
         if(dataName === "experience") {
             temp["experience"].push({
-                "id_profession": Number(this.state.dropListData.profession[0].id_profession), "company": "", "date": ""
+                "profession": {
+                    "id_profession": Number(this.state.dropListData.profession[0].id_profession)
+                },
+                "company": "",
+                "date": ""
             });
         } else if (dataName === "skill") {
             temp["skill"].push({
@@ -177,7 +194,9 @@ class MyCandidateProfil extends React.Component {
         } else if (dataName === "language") {
             temp["language"].push({
                 "id_language": Number(this.state.dropListData.language[0].id_language),
-                "id_language_level": Number(this.state.dropListData.language_level[0].id_language_level) 
+                "language_level": {
+                    "id_language_level": Number(this.state.dropListData.language_level[0].id_language_level)
+                } 
             });
         }
         this.setState({
@@ -778,9 +797,9 @@ class MyCandidateProfil extends React.Component {
                     <div className="work" key={"experience"+index}>
                         <p className="work-label">Worked as</p>
                         <select 
-                            id={"experience__"+index+"__id_profession"}
+                            id={"experience__profession__"+index+"__id_profession"}
                             disabled={this.state.disabled} 
-                            value={item.id_profession}
+                            value={item.profession.id_profession}
                             onChange={this.userDataChange} >
                             {professionMap}
                         </select>
@@ -875,9 +894,9 @@ class MyCandidateProfil extends React.Component {
                     <div className="education" key={"education"+index}>
                         <div className="education-dot"></div>
                         <select 
-                            id={"education__"+index+"__id_education_level"}
+                            id={"education__education_level__"+index+"__id_education_level"}
                             disabled={this.state.disabled} 
-                            value={item.id_education_level}
+                            value={item.education_level.id_education_level}
                             onChange={this.userDataChange} >
                             {allEducationLevelsMap}
                         </select>
@@ -925,9 +944,9 @@ class MyCandidateProfil extends React.Component {
                     <div className="language" key={"language"+index}>
                         <div className="language-dot"></div>
                         <select 
-                            id={"language__"+index+"__id_language_level"}
+                            id={"language__language_level__"+index+"__id_language_level"}
                             disabled={this.state.disabled}
-                            value={item.id_language_level}
+                            value={item.language_level.id_language_level}
                             onChange={this.userDataChange} >
                             {allLanguageLevelsMap}
                         </select>

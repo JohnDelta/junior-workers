@@ -125,15 +125,28 @@ class MyHirerProfil extends React.Component {
     // handle user's data input change
     // each Data component is distinguished by an id with the form : nameOfData__indexInJson__nameOfItem
     // ex. skill__0__title means the data item skill with index 0 and name title called the function 
+
+    // for components with other object inside we have id with 4 keys. nameOfData_objectKey_IndexInJson_nameOfItem
     userDataChange(e) {
         e.preventDefault();
         var value = e.target.value;
         var attr = e.target.id.split("__");
-        var dataName = attr[0];
-        var index = attr[1];
-        var name = attr[2];
-        var temp = this.state.data;
-        temp[dataName][index][name] = Number(value);
+
+        if(attr.length > 3) {
+            var dataName = attr[0];
+            var keyName = attr[1];
+            var index = attr[2];
+            var name = attr[3];
+            var temp = this.state.data;
+            temp[dataName][index][keyName][name] = Number(value);
+        } else {
+            var dataName = attr[0];
+            var index = attr[1];
+            var name = attr[2];
+            var temp = this.state.data;
+            temp[dataName][index][name] = Number(value);
+        }
+        
         this.setState({
             data: temp
         });
@@ -146,7 +159,9 @@ class MyHirerProfil extends React.Component {
         var dataName = e.target.name;
         if(dataName === "job_post") {
             temp["job_post"].push({
-                "id_profession": Number(this.state.dropListData.profession[0].id_profession),
+                "profession": {
+                    "id_profession": Number(this.state.dropListData.profession[0].id_profession)
+                },
                 "title": "",
                 "description": ""
             });
@@ -446,9 +461,9 @@ class MyHirerProfil extends React.Component {
                             required={true} />
                         <p className="post-label">Looking for</p>
                         <select 
-                            id={"job_post__"+index+"__id_profession"}
+                            id={"job_post__profession__"+index+"__id_profession"}
                             disabled={this.state.disabled} 
-                            value={item.id_profession}
+                            value={item.profession.id_profession}
                             onChange={this.userDataChange} >
                             {professionMap}
                         </select>

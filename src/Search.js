@@ -9,6 +9,7 @@ class Search extends React.Component{
         this.state = {
             redirect: "",
             jwt: localStorage.getItem("jwt"),
+            email: localStorage.getItem("email"),
             dropListData: {
                 "profession": [],
                 "skill": [],
@@ -28,11 +29,7 @@ class Search extends React.Component{
             navbar: "",
             searchType: "candidate",
             searchInput: "",
-            results: [
-                {
-                    "role":"candidate"
-                }
-            ],
+            results: [],
             load: "candidate"
         };
 
@@ -48,7 +45,6 @@ class Search extends React.Component{
 
     // Check if the jwt of user is valid in order to display the navbar
     componentDidMount() {
-        localStorage.removeItem("email");
         if(this.state.jwt !== "" || this.state.jwt !== null) {
             this.getUserData();
         }
@@ -61,11 +57,38 @@ class Search extends React.Component{
         }
     }
 
+    async getDropListData() {
+        var url = 'http://localhost:8080/api/model/get/all';
+        try {
+            var response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            });
+            if(response.status !== 200) {
+                console.error("Unable to get drop list data");
+            }
+            else if (response.status === 200) {
+                var json = await response.json().then((res)=>{
+                    this.setState({
+                        dropListData: res
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     // Get all user's data using their jwt auth
     async getUserData() {
-        var url = 'http://localhost:80//junior-workers/api/get-user-data.php';
-        var data = {"jwt": this.state.jwt};
+        var url = 'http://localhost:8080/api/user/get';
+        var data = {
+            "jwt": this.state.jwt,
+            "email": this.state.email
+        };
         try {
             var response = await fetch(url, {
                 method: 'POST',
@@ -76,39 +99,14 @@ class Search extends React.Component{
                 body: JSON.stringify(data),
             });
             if(response.status !== 200) {
-                console.error("Unable to get user's data")
+                console.error("Unable to get user's data");
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({data : json});
-                var tmp = <Navbar selectedLink="search" role={this.state.data["user"]["role"]} />
-                this.setState({
-                    navbar: tmp
-                });
-                localStorage.setItem("role", this.state.data["user"]["role"]);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    async getDropListData() {
-        var url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
-        try {
-            var response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            });
-            if(response.status !== 200) {
-                console.error("Unable to get drop list data")
-            }
-            else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({
-                    dropListData: json
+                var json = await response.json().then((res)=>{
+                    this.setState({
+                        data : res,
+                        navbar: <Navbar selectedLink="search" role={res.user.role} />
+                    });
                 });
             }
         } catch (error) {
@@ -136,11 +134,12 @@ class Search extends React.Component{
                 console.error("Unable to search")
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({
-                        "results" : json.results,
+                var json = await response.json().then((res)=>{
+                    this.setState({
+                        "results" : [],
                         "load": this.state.searchType
                     });
+                });
             }
         } catch (error) {
             console.error('Error:', error);

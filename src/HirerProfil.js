@@ -54,10 +54,36 @@ class HirerProfil extends React.Component {
         }
     }
 
-    // Get all user's data using their email
+    async getDropListData() {
+        var url = 'http://localhost:8080/api/model/get/all';
+        try {
+            var response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            });
+            if(response.status !== 200) {
+                console.error("Unable to get drop list data");
+            }
+            else if (response.status === 200) {
+                var json = await response.json().then((res)=>{
+                    this.setState({
+                        dropListData: res
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    // Get all user's data using their jwt auth
     async getUserData() {
-        var url = 'http://localhost:80//junior-workers/api/get-view-user-data.php';
+        var url = 'http://localhost:8080/api/user/get';
         var data = {
+            "jwt": this.state.jwt,
             "email": this.state.email
         };
         try {
@@ -71,43 +97,10 @@ class HirerProfil extends React.Component {
             });
             if(response.status !== 200) {
                 console.error("Unable to get user's data");
-                var temp = <Redirect to="/search" />;
-                this.setState({redirect: temp});
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({data : json});
-
-                // if the user is logged in show the navbar too.
-                if(this.state.jwt !== null && this.state.jwt !== "") {
-                    var tmp = <Navbar selectedLink="nothing" role={this.state.role} />
-                    this.setState({
-                        navbar: tmp
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    async getDropListData() {
-        var url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
-        try {
-            var response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            });
-            if(response.status !== 200) {
-                console.error("Unable to get drop list data")
-            }
-            else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({
-                    dropListData: json
+                var json = await response.json().then((res)=>{
+                    this.setState({data : res});
                 });
             }
         } catch (error) {
@@ -152,7 +145,7 @@ class HirerProfil extends React.Component {
                         <select 
                             id={"job_post__"+index+"__id_profession"}
                             disabled={this.state.disabled} 
-                            value={item.id_profession} >
+                            value={item.profession.id_profession} >
                             {professionMap}
                         </select>
                         <p className="post-label">Job Description</p>

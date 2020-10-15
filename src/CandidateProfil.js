@@ -8,8 +8,8 @@ class CandidateProfil extends React.Component {
         super();
         this.state = {
             redirect: "",
-            email: localStorage.getItem("email"), // email to get data from
-            role: localStorage.getItem("role"), // role of user to setup navbar
+            email: localStorage.getItem("email"),
+            role: localStorage.getItem("role"),
             jwt: localStorage.getItem("jwt"),
             disabled: true,
             readonly: true,
@@ -50,7 +50,7 @@ class CandidateProfil extends React.Component {
     }
 
     async getDropListData() {
-        var url = 'http://localhost:80//junior-workers/api/get-droplist-data.php';
+        var url = 'http://localhost:8080/api/model/get/all';
         try {
             var response = await fetch(url, {
                 method: 'GET',
@@ -60,12 +60,13 @@ class CandidateProfil extends React.Component {
                 }
             });
             if(response.status !== 200) {
-                console.error("Unable to get drop list data")
+                console.error("Unable to get drop list data");
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({
-                    dropListData: json
+                var json = await response.json().then((res)=>{
+                    this.setState({
+                        dropListData: res
+                    });
                 });
             }
         } catch (error) {
@@ -73,10 +74,11 @@ class CandidateProfil extends React.Component {
         }
     }
 
-    // Get all user's data using their email
+    // Get all user's data using their jwt auth
     async getUserData() {
-        var url = 'http://localhost:80//junior-workers/api/get-view-user-data.php';
+        var url = 'http://localhost:8080/api/user/get';
         var data = {
+            "jwt": this.state.jwt,
             "email": this.state.email
         };
         try {
@@ -90,20 +92,11 @@ class CandidateProfil extends React.Component {
             });
             if(response.status !== 200) {
                 console.error("Unable to get user's data");
-                var temp = <Redirect to="/search" />;
-                this.setState({redirect: temp});
             }
             else if (response.status === 200) {
-                var json = await response.json();
-                this.setState({data : json});
-
-                // if the user is logged in show the navbar too.
-                if(this.state.jwt !== null && this.state.jwt !== "") {
-                    var tmp = <Navbar selectedLink="nothing" role={this.state.role} />
-                    this.setState({
-                        navbar: tmp
-                    });
-                }
+                var json = await response.json().then((res)=>{
+                    this.setState({data : res});
+                });
             }
         } catch (error) {
             console.error('Error:', error);
@@ -207,7 +200,7 @@ class CandidateProfil extends React.Component {
                         <select 
                             id={"experience__"+index+"__id_profession"}
                             disabled={this.state.disabled} 
-                            value={item.id_profession} >
+                            value={item.profession.id_profession} >
                             {professionMap}
                         </select>
                         <p className="work-label">At</p>
@@ -292,7 +285,7 @@ class CandidateProfil extends React.Component {
                         <select 
                             id={"education__"+index+"__id_education_level"}
                             disabled={this.state.disabled} 
-                            value={item.id_education_level} >
+                            value={item.education_level.id_education_level} >
                             {allEducationLevelsMap}
                         </select>
                         <select 
@@ -340,7 +333,7 @@ class CandidateProfil extends React.Component {
                         <select 
                             id={"language__"+index+"__id_language_level"}
                             disabled={this.state.disabled}
-                            value={item.id_language_level} >
+                            value={item.language_level.id_language_level} >
                             {allLanguageLevelsMap}
                         </select>
                         <select 
