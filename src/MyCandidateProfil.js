@@ -599,6 +599,12 @@ class MyCandidateProfil extends React.Component {
             });
             if(response.status !== 200) {
                 console.error("Unable to get user's data");
+                localStorage.removeItem("jwt");
+                localStorage.removeItem("email");
+                this.setState({
+                    jwt: "",
+                    email: ""
+                });
             }
             else if (response.status === 200) {
                 var json = await response.json().then((res)=>{

@@ -18,19 +18,10 @@ class Search extends React.Component{
                 "language": [],
                 "language_level": []
             },
-            data : {
-                "user": [],
-                "experience": [],
-                "skill": [],
-                "education": [],
-                "language": [],
-                "job_post": []
-            },
             navbar: "",
             searchType: "candidate",
             searchInput: "",
             results: [],
-            load: "candidate"
         };
 
         this.changeSearchType = this.changeSearchType.bind(this);
@@ -45,16 +36,16 @@ class Search extends React.Component{
 
     // Check if the jwt of user is valid in order to display the navbar
     componentDidMount() {
-        if(this.state.jwt !== "" || this.state.jwt !== null) {
+        if(this.state.jwt !== "" && this.state.jwt !== null) {
             this.getUserData();
         }
         this.getDropListData();
-        this.searchUsers();
         if(localStorage.getItem("searchInput") !== "") {
             this.setState({
                 searchInput: localStorage.getItem("searchInput")
             });
         }
+        this.searchUsers();
     }
 
     async getDropListData() {
@@ -100,6 +91,12 @@ class Search extends React.Component{
             });
             if(response.status !== 200) {
                 console.error("Unable to get user's data");
+                localStorage.removeItem("jwt");
+                localStorage.removeItem("email");
+                this.setState({
+                    jwt: "",
+                    email: ""
+                });
             }
             else if (response.status === 200) {
                 var json = await response.json().then((res)=>{
@@ -116,28 +113,22 @@ class Search extends React.Component{
 
     // Get all users from search
     async searchUsers() {
-        var url = 'http://localhost:80//junior-workers/api/search.php';
-        var data = {
-            "searchType": this.state.searchType,
-            "searchInput": this.state.searchInput
-        };
+        var url = 'http://localhost:8080/api/search/all?role='+this.state.searchType+'&key='+this.state.searchInput;
         try {
             var response = await fetch(url, {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+                }
             });
             if(response.status !== 200) {
-                console.error("Unable to search")
+                console.error("Unable to search");
             }
             else if (response.status === 200) {
-                var json = await response.json().then((res)=>{
+                await response.json().then((res)=>{
                     this.setState({
-                        "results" : [],
-                        "load": this.state.searchType
+                        results: res.results
                     });
                 });
             }
@@ -164,12 +155,16 @@ class Search extends React.Component{
             postJob.classList.remove("search-button-active");
             this.setState({
                 searchType: "candidate"
+            }, ()=>{
+                this.searchUsers();
             });
         } else if (e.target.id === "job-post-search") {
             candidate.classList.remove("search-button-active");
             postJob.classList.add("search-button-active");
             this.setState({
                 searchType: "hirer"
+            }, ()=>{
+                this.searchUsers();
             });
         }
     }
@@ -178,7 +173,7 @@ class Search extends React.Component{
         e.preventDefault();
         var email = e.target.id.split("_")[1];
         var role = e.target.id.split("_")[2];
-        localStorage.setItem("email", email);
+        localStorage.setItem("emailViewOnly", email);
         var tmp;
         if(role === "candidate") {
             tmp = <Redirect to="/candidate-profil" />;
@@ -200,8 +195,8 @@ class Search extends React.Component{
 
     render() {
         var resultsMap = <div className="msg">No results found</div>;
-        if(this.state.results !== []) {
-            if(this.state.load === "candidate") {
+        if(this.state.results.length > 0) {
+            if(this.state.results[0].role === "candidate") {
                 resultsMap = [];
                 this.state.results.forEach((item, index) => {
                     resultsMap.push(
@@ -220,7 +215,7 @@ class Search extends React.Component{
                     );
                 });  
             }
-            else if(this.state.load === "hirer") {
+            else if(this.state.results[0].role === "hirer") {
                 resultsMap = [];
                 this.state.results.forEach((item, index) => {
                     // map all professions into option - select
