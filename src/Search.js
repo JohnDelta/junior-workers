@@ -199,6 +199,10 @@ class Search extends React.Component{
             if(this.state.results[0].role === "candidate") {
                 resultsMap = [];
                 this.state.results.forEach((item, index) => {
+
+                    let viewProfilButtonUnable = false;
+                    if(this.state.jwt === null || this.state.jwt === "") viewProfilButtonUnable = true;
+
                     resultsMap.push(
                         <div className="result" key={"result"+index}>
                             <img src={"http://localhost/junior-workers/api/uploads/"+item.image_path} />
@@ -206,7 +210,9 @@ class Search extends React.Component{
                                 <div className="name">{item.firstname}</div>
                                 <div className="lastname">{item.lastname}</div>
                                 <div className="title">{item.title}</div>
-                                <button id={"view-profil"+index+"_"+item.email+"_"+item.role} onClick={this.viewProfil}>
+                                <button id={"view-profil"+index+"_"+item.email+"_"+item.role}
+                                        title="Login and view this person's profil!"
+                                        disabled={viewProfilButtonUnable} onClick={this.viewProfil}>
                                     <i className="fa fa-eye" />
                                     <div>View profil</div>
                                 </button>

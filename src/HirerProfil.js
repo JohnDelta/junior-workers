@@ -99,8 +99,11 @@ class HirerProfil extends React.Component {
                 console.error("Unable to get user's data");
             }
             else if (response.status === 200) {
-                var json = await response.json().then((res)=>{
-                    this.setState({data : res});
+                await response.json().then((res)=>{
+                    this.setState({
+                        data : res,
+                        navbar: <Navbar selectedLink="profil" role={res.user.role} />
+                    });
                 });
             }
         } catch (error) {

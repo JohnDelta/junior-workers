@@ -8,6 +8,7 @@ class CandidateProfil extends React.Component {
         super();
         this.state = {
             redirect: "",
+            emailViewOnly: localStorage.getItem("emailViewOnly"),
             email: localStorage.getItem("email"),
             role: localStorage.getItem("role"),
             jwt: localStorage.getItem("jwt"),
@@ -79,7 +80,7 @@ class CandidateProfil extends React.Component {
         var url = 'http://localhost:8080/api/user/get';
         var data = {
             "jwt": this.state.jwt,
-            "email": this.state.email
+            "email": this.state.emailViewOnly
         };
         try {
             var response = await fetch(url, {
@@ -94,8 +95,11 @@ class CandidateProfil extends React.Component {
                 console.error("Unable to get user's data");
             }
             else if (response.status === 200) {
-                var json = await response.json().then((res)=>{
-                    this.setState({data : res});
+                await response.json().then((res)=>{
+                    this.setState({
+                        data : res,
+                        navbar: <Navbar selectedLink="profil" role={res.user.role} />
+                    });
                 });
             }
         } catch (error) {
