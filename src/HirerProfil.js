@@ -180,7 +180,7 @@ class HirerProfil extends React.Component {
                 {this.state.navbar}
 
                 <div className="profil-container">
-                    <img className="profil-image" src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["image_path"]} />
+                    <img className="profil-image" src={"http://localhost:8080/api/media/images/get/"+this.state.data.user.image_path} />
                     <div className="profil-header">
                         <button className="profil-edit-btn" onClick={this.redirectBack}>
                             <i className="fa fa-arrow-left" id="edit-button"/>

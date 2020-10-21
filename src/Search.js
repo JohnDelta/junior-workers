@@ -31,8 +31,7 @@ class Search extends React.Component{
         this.getDropListData = this.getDropListData.bind(this);
         this.viewProfil = this.viewProfil.bind(this);
         this.goToMain = this.goToMain.bind(this);
-    }
-
+}
 
     // Check if the jwt of user is valid in order to display the navbar
     componentDidMount() {
@@ -205,7 +204,7 @@ class Search extends React.Component{
 
                     resultsMap.push(
                         <div className="result" key={"result"+index}>
-                            <img src={"http://localhost/junior-workers/api/uploads/"+item.image_path} />
+                            <img src={"http://localhost:8080/api/media/images/get/"+item.image_path} />
                             <div className="labels">
                                 <div className="name">{item.firstname}</div>
                                 <div className="lastname">{item.lastname}</div>

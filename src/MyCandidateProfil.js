@@ -247,20 +247,13 @@ class MyCandidateProfil extends React.Component {
         //var fileSize = file.size;
 
         if(extensions.includes(fileExtention)) {
-           /*
-            NOTE : codes returned from the post-image.php
-            $SUCCESS_CODE = "0";
-            $ERROR_CODE = "1";
-            $ERROR_FORMAT_CODE = "2";
-            $ERROR_SIZE_CODE = "3";
-            */
 
             // procced to upload image
-            const url = 'http://localhost:80//junior-workers/api/post-image.php';
-            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+            const url = 'http://localhost:8080/api/media/images/update';
+            
             var formData = new FormData();
-            formData.append("image_file", file);
-            formData.append("jwt", this.state.jwt);
+            formData.append("file", file);
+            //formData.append("jwt", this.state.jwt);
 
             try {
                 const response = await fetch(url, {
@@ -269,21 +262,11 @@ class MyCandidateProfil extends React.Component {
                 });
                 const json = await response.json();
                 if(response.status !== 200) {
-                    if(json["code"] === "1") {
-                        this.setState({
-                            displayMessage: "Unable to upload image"
-                        });
-                    } else if (json["code"] === "2") {
-                        this.setState({
-                            displayMessage: "Image not in proper format"
-                        });
-                    } else if (json["code"] === "3") {
-                        this.setState({
-                            displayMessage: "Image's size cannot be larger than 10mb"
-                        });
-                    }
+                    this.setState({
+                        displayMessage: "Unable to upload image"
+                    });
                 }
-                else if (response.status === 200 && json["code"] === "0") {
+                else if (response.status === 200) {
                     this.setState({
                         displayMessage: "Profil image has been updated"
                     });
@@ -986,7 +969,7 @@ class MyCandidateProfil extends React.Component {
                 <Navbar selectedLink="profil" role={this.state.data["user"]["role"]} />
 
                 <div className="profil-container">
-                    <img className="profil-image" src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["image_path"]} />
+                    <img className="profil-image" src={"http://localhost:8080/api/media/images/get/"+this.state.data.user.image_path} />
                     <div className="profil-header">
                         <button className="profil-edit-btn" onClick={this.toggleEdit}>
                             <i className="fa fa-edit" id="edit-button"/>

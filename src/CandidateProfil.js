@@ -177,7 +177,7 @@ class CandidateProfil extends React.Component {
 
         // display availability according to state
         var availabilityText = <p>Not available</p>;
-        if(this.state.data["user"]["availability"] === "1") availabilityText = <p>Available</p>; 
+        if(Number(this.state.data["user"]["availability"]) === 1) availabilityText = <p>Available</p>; 
 
         // Map experience from json to div
         var experienceMap = [];
@@ -367,7 +367,7 @@ class CandidateProfil extends React.Component {
                 {this.state.navbar}
 
                 <div className="profil-container">
-                    <img className="profil-image" src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["image_path"]} />
+                    <img className="profil-image" src={"http://localhost:8080/api/media/images/get/"+this.state.data.user.image_path} />
                     <div className="profil-header">
                         <button className="profil-edit-btn" onClick={this.redirectBack}>
                             <i className="fa fa-arrow-left" id="edit-button"/>
