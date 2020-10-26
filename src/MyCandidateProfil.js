@@ -253,14 +253,14 @@ class MyCandidateProfil extends React.Component {
             
             var formData = new FormData();
             formData.append("file", file);
-            //formData.append("jwt", this.state.jwt);
+            formData.append("jwt", this.state.jwt);
+            formData.append("file_type", fileExtention);
 
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     body: formData,
                 });
-                const json = await response.json();
                 if(response.status !== 200) {
                     this.setState({
                         displayMessage: "Unable to upload image"
@@ -291,7 +291,7 @@ class MyCandidateProfil extends React.Component {
     // remove user's image
     async removeImage() {
 
-        var url = 'http://localhost:80//junior-workers/api/remove-user-image.php';
+        var url = 'http://localhost:8080/api/media/images/reset';
         var data = {"jwt": this.state.jwt};
 
         try {
@@ -311,8 +311,6 @@ class MyCandidateProfil extends React.Component {
                 });
             }
             else if (response.status === 200) {
-                //var json = await response.json();
-                //console.log("Data posted");
                 this.setState({
                     displayMessage: "Profil image has been removed",
                     displayMessageFlag: !this.state.displayMessageFlag
@@ -334,44 +332,28 @@ class MyCandidateProfil extends React.Component {
         //var fileSize = file.size;
 
         if(extensions.includes(fileExtention)) {
-           /*
-            NOTE : codes returned from the post-video.php
-            $SUCCESS_CODE = "0";
-            $ERROR_CODE = "1";
-            $ERROR_FORMAT_CODE = "2";
-            $ERROR_SIZE_CODE = "3";
-            */
 
             // procced to upload video
-            const url = 'http://localhost:80//junior-workers/api/post-video.php';
-            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+            const url = 'http://localhost:8080/api/media/video/update';
             var formData = new FormData();
-            formData.append("video_file", file);
+            formData.append("file", file);
             formData.append("jwt", this.state.jwt);
+            formData.append("file_type", fileExtention);
 
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     body: formData,
                 });
-                const json = await response.json();
-                if(json["code"] === "1") {
-                    this.setState({
-                        displayMessage: "Unable to upload video",
-                    });
-                } else if (json["code"] === "2") {
-                    this.setState({
-                        displayMessage: "Video not in proper format (MP4)",
-                    });
-                } else if (json["code"] === "3") {
-                    this.setState({
-                        displayMessage: "Video's size cannot be larger than 50mb",
-                    });
-                } else if (json["code"] === "0") {
+                if (response.status === 200) {
                     this.setState({
                         displayMessage: "Video has been Added"
                     });
                     this.getUserData();
+                } else {
+                    this.setState({
+                        displayMessage: "Unable to upload video",
+                    });    
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -394,7 +376,7 @@ class MyCandidateProfil extends React.Component {
     async removeVideo(e) {
         e.preventDefault();
 
-        var url = 'http://localhost:80//junior-workers/api/remove-user-video.php';
+        var url = 'http://localhost:8080/api/media/video/reset';
         var data = {"jwt": this.state.jwt};
 
         try {
@@ -742,7 +724,7 @@ class MyCandidateProfil extends React.Component {
             videoMap = <video 
                             className="video"
                             type="video/mp4"
-                            src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["video_path"]}
+                            src={"http://localhost:8080/api/media/video/get/"+this.state.data.user.video_path}
                             controls={true}>
                             Unable to play video. Please consider updating your browser.
                         </video>;

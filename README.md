@@ -1,4 +1,4 @@
-# Junior Workers
+# Junior-Workers-web-app 
 
 This branch is build to work with the restful API written in Java.
 Small differences have been made in fetch links and response handings.

@@ -160,7 +160,7 @@ class CandidateProfil extends React.Component {
             videoMap = <video 
                             className="video"
                             type="video/mp4"
-                            src={"http://localhost/junior-workers/api/uploads/"+this.state.data["user"]["video_path"]}
+                            src={"http://localhost:8080/api/media/video/get/"+this.state.data.user.video_path}
                             controls={true}>
                             Unable to play video. Please consider updating your browser.
                         </video>;

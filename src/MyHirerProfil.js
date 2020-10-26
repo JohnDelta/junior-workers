@@ -211,43 +211,26 @@ class MyHirerProfil extends React.Component {
         //var fileSize = file.size;
 
         if(extensions.includes(fileExtention)) {
-           /*
-            NOTE : codes returned from the post-image.php
-            $SUCCESS_CODE = "0";
-            $ERROR_CODE = "1";
-            $ERROR_FORMAT_CODE = "2";
-            $ERROR_SIZE_CODE = "3";
-            */
 
             // procced to upload image
-            const url = 'http://localhost:80//junior-workers/api/post-image.php';
-            //const data = {"jwt": this.state.jwt, "data": this.state.imageFile};
+            const url = 'http://localhost:8080/api/media/images/update';
+            
             var formData = new FormData();
-            formData.append("image_file", file);
+            formData.append("file", file);
             formData.append("jwt", this.state.jwt);
+            formData.append("file_type", fileExtention);
 
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     body: formData,
                 });
-                const json = await response.json();
                 if(response.status !== 200) {
-                    if(json["code"] === "1") {
-                        this.setState({
-                            displayMessage: "Unable to upload image",
-                        });
-                    } else if (json["code"] === "2") {
-                        this.setState({
-                            displayMessage: "Image not in proper format",
-                        });
-                    } else if (json["code"] === "3") {
-                        this.setState({
-                            displayMessage: "Image's size cannot be larger than 10mb",
-                        });
-                    }
+                    this.setState({
+                        displayMessage: "Unable to upload image"
+                    });
                 }
-                else if (response.status === 200 && json["code"] === "0") {
+                else if (response.status === 200) {
                     this.setState({
                         displayMessage: "Profil image has been updated"
                     });
@@ -256,25 +239,24 @@ class MyHirerProfil extends React.Component {
             } catch (error) {
                 console.error('Error:', error);
                 this.setState({
-                    displayMessage: "Unable to upload image",
+                    displayMessage: "Unable to upload image"
                 });
             }
         } else {
             this.setState({
-                displayMessage: "File doesn't have valid image extension.",
+                displayMessage: "File doesn't have valid image extension."
             });
         }
-
         this.setState({
             displayMessageFlag: !this.state.displayMessageFlag
         });
-        
     }
 
     // remove user's image
+    // remove user's image
     async removeImage() {
 
-        var url = 'http://localhost:80//junior-workers/api/remove-user-image.php';
+        var url = 'http://localhost:8080/api/media/images/reset';
         var data = {"jwt": this.state.jwt};
 
         try {
@@ -294,8 +276,6 @@ class MyHirerProfil extends React.Component {
                 });
             }
             else if (response.status === 200) {
-                //var json = await response.json();
-                //console.log("Data posted");
                 this.setState({
                     displayMessage: "Profil image has been removed",
                     displayMessageFlag: !this.state.displayMessageFlag
